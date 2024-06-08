@@ -34,8 +34,9 @@ fn bloom_filter_contains(bits, key) -> bool {
 }
 ```
 
-The false positive rate stems from the fact that the hash function's output is mapped a much smaller codomain (the bit array).tiered_point_read
-To reduce false positive rates, multiple hash functions are used to create a key's fingerprint. Only if all bit positions are 1, then the key may exist:
+The false positive rate stems from the fact that the hash function's output is mapped a much smaller codomain (the bit array).
+
+To reduce false positive rates because of accidental hash conflicts, multiple hash functions are used to create a key's fingerprint. Only if all bit positions are 1, then the key may exist:
 
 ```rs
 fn bloom_filter_contains(bits, key) -> bool {
