@@ -105,12 +105,11 @@ Data is buffered in-memory, and flushed out to disk when the memory usage crosse
 The disk segments are immutable, sorted flat files of key-value pairs.
 
 When searching a value in the tree, multiple segments will likely need to be checked.
-If the key does not exist, this may involve multiple I/O operations, decreasing read throughput.
-These superfluous operations can be reduced by using bloom filters to check if there is any point in reading from disk at all.
+This may involve multiple I/O operations, decreasing read throughput.
+If the key does not exist, these superfluous operations can be minimized by using a bloom filter to check if there is any point in reading from disk at all.
 The downside is somewhat higher memory usage.
 
-As more data arrives, segments may need to be merged & rewritten (compaction).
-
+As more data arrives, segments may need to be merged & rewritten (compaction), to keep read performance acceptable.
 The are two major compaction strategies: Levelling & Tiering.
 
 ### Levelling
