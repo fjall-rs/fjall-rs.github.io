@@ -202,7 +202,7 @@ for segment in &self.segments {
 }
 ```
 
-and has been replaced with:
+which has been modified to pre-compute the given key's hash and reusing it across all segments it visits:
 
 ```rs
 let key_hash = BloomFilter::get_hash(key);
@@ -215,8 +215,6 @@ for segment in &self.segments {
   }
 }
 ```
-
-to pre-compute the given key's hash and reusing it across all segments it visits.
 
 This optimization comes at no cost, so it will be internally be used in `lsm-tree` from 1.2.0 onwards.
 
