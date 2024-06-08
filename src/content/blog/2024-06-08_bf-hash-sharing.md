@@ -16,7 +16,7 @@ image: /media/posts/evergreen.jpg
 
 Bloom filters are a probabilistic data structure to answer a membership question: _is this item contained in my set?_
 
-The bloom filter returns `true` (_probably yes_) or `false` (_definitely no_). The false positive rate is often shortened as `FPR`.s
+The bloom filter returns `true` (_probably yes_) or `false` (_definitely no_). The false positive rate is often shortened as `FPR`.
 In that regard, it works a bit like a sieve.
 By adjusting the memory usage of the filter, we can control how much unwanted requests are sieved out, but we will never get a perfect 0% FPR.
 
