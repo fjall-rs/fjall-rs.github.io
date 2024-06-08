@@ -498,7 +498,7 @@ The <code>Segment</code> struct has been extended by <code>Segment::get_with_has
 <span class="line"><span style="color:#908CAA">  }</span></span>
 <span class="line"><span style="color:#908CAA">}</span></span>
 <span class="line"></span></code></pre>
-<p>and has been replaced with:</p>
+<p>which has been modified to pre-compute the given key’s hash and reusing it across all segments it visits:</p>
 <pre class="astro-code rose-pine-moon" style="background-color:#232136;color:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0">let</span><span style="color:#E0DEF4;font-style:italic"> key_hash</span><span style="color:#3E8FB0"> =</span><span style="color:#9CCFD8"> BloomFilter</span><span style="color:#3E8FB0">::</span><span style="color:#EA9A97">get_hash</span><span style="color:#908CAA">(</span><span style="color:#E0DEF4;font-style:italic">key</span><span style="color:#908CAA">);</span></span>
 <span class="line"></span>
 <span class="line"><span style="color:#3E8FB0">for</span><span style="color:#E0DEF4;font-style:italic"> segment</span><span style="color:#3E8FB0"> in</span><span style="color:#3E8FB0"> &#x26;</span><span style="color:#E0DEF4;font-style:italic">self</span><span style="color:#3E8FB0">.</span><span style="color:#E0DEF4">segments </span><span style="color:#908CAA">{</span></span>
@@ -509,7 +509,6 @@ The <code>Segment</code> struct has been extended by <code>Segment::get_with_has
 <span class="line"><span style="color:#908CAA">  }</span></span>
 <span class="line"><span style="color:#908CAA">}</span></span>
 <span class="line"></span></code></pre>
-<p>to pre-compute the given key’s hash and reusing it across all segments it visits.</p>
 <p>This optimization comes at no cost, so it will be internally be used in <code>lsm-tree</code> from 1.2.0 onwards.</p>
 <h2 id="interested-in-lsm-trees-and-rust">Interested in LSM-trees and Rust?</h2>
 <p>Check out <a href="https://github.com/fjall-rs/fjall">fjall</a>, an MIT-licensed LSM-based storage engine written in Rust.</p> </article>   <hr class="h-1 mb-2 border-gray-200 dark:border-gray-700"> <div class="flex flex-col gap-3"> <div class="dark:text-gray-300 italic">Tags</div> <ul class="text-sm text-sky-800 dark:text-sky-300 flex items-center gap-3"> <li class="transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/bloom filter" data-astro-transition-scope="astro-x7amp3kc-1">
