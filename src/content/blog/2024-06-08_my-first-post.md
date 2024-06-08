@@ -151,7 +151,7 @@ When checking more than a couple of segments, CPU time of repeated hashing becom
 As shown in `Zichen Zhu: SHaMBa: Reducing Bloom Filter Overhead in LSM Trees, 2023` by only computing the hash(es) of the requested key once, and sharing that hash across all necessary segments effectively reduces the hashing time complexity to O(1).
 
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-width: 640px" src="/media/bf_hash_sharing.png" />
+  <img style="border-radius: 16px; width: 100%; max-width: 640px" src="/media/bf_hash_sharing.png" />
 </div>
 <div style="text-align: center">
   <i>Credit: Zichen Zhu: SHaMBa: Reducing Bloom Filter Overhead in LSM Trees, 2023</i>
