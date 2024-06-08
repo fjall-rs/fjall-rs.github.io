@@ -139,7 +139,7 @@ This improves write performance at the cost of read performance: because segment
 Using bloom filters becomes much more important to minimize disk I/O for keys that do not exist.
 This inadvertently increases the amount of hashing required:
 
-The worst-case bloom filter lookups in a tiered LSM-tree is simply `segment_count`, with segment_count being `O(log n)`, where `n` is the amount of items in the tree.
+The worst-case bloom filter lookups in a tiered LSM-tree is simply `segment_count`, with `segment_count` being `O(log n)`, where `n` is the amount of items in the tree.
 
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
   <img style="border-radius: 16px; max-height: 500px" src="/media/tiered_point_read.svg" />
