@@ -83,7 +83,7 @@ fn bloom_filter_contains(bits, key) -> bool {
   for i in 0..k {
     let idx = hash0 % m;
 
-    if bits[idx % bits.len()] == 0 {
+    if bits[idx] == 0 {
         return false;
     }
 
