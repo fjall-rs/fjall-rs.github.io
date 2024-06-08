@@ -103,12 +103,13 @@ This technique is described to be effective in bloom filters in the paper `Adam 
 LSM-trees are differential indexes, meaning that data on disk is never overwritten.
 Data is buffered in-memory, and flushed out to disk when the memory usage crosses a configurable threshold.
 The disk segments are immutable, sorted flat files of key-value pairs.
-As more data arrives, segments may need to be merged & rewritten (compaction).
 
 When searching a value in the tree, multiple segments will likely need to be checked.
 If the key does not exist, this may involve multiple I/O operations, decreasing read throughput.
 These superfluous operations can be reduced by using bloom filters to check if there is any point in reading from disk at all.
 The downside is somewhat higher memory usage.
+
+As more data arrives, segments may need to be merged & rewritten (compaction).
 
 The are two major compaction strategies: Levelling & Tiering.
 
