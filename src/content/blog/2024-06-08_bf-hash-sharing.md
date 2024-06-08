@@ -45,7 +45,7 @@ fn bloom_filter_contains(bits, key) -> bool {
 }
 ```
 
-A bloom filters thus can be configured using four dimensions:
+A bloom filter thus can be described using four dimensions:
 
 - bit array size (m)
 - number of hash functions (k)
