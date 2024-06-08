@@ -442,7 +442,7 @@ The downside is somewhat higher memory usage.</p>
 <p>Levelling initially stores flushed segments in L0.
 These segments may have overlapping key range, which is detremental for performance.
 If too many segments are kept in L0, they are merged into the next level into fixed-size segments (default = 64 MiB), that are non-overlapping.
-This makes sure a point read only ever needs to check a single segment for data.</p>
+This makes sure a point read only ever needs to check a single segment <em>per level</em> for data.</p>
 <p>When that level grows too large, parts of it are merged into the next level, which is N times larger (default N = 8).
 That means there are up to 8 times more segments in L2 than L1.
 This strategy makes the key range increasingly more granular because the level size increases exponentially while the segment size is fixed.</p>
@@ -454,8 +454,8 @@ This strategy makes the key range increasingly more granular because the level s
 </div>
 <h3 id="tiered">Tiered</h3>
 <p>Tiered compaction simply merged together an entire level and puts the result into the next level, creating increasingly larger segments.
-This improves write performance at the cost of read performance.
-Also, because segments may always be overlapping, using bloom filters becomes much more important to minimize disk I/O for keys that do not exist.
+This improves write performance at the cost of read performance: because segments may be overlapping in any level, more segments may need to be checked per level (worst case: all segments).
+Using bloom filters becomes much more important to minimize disk I/O for keys that do not exist.
 This inadvertently increases the amount of hashing required:</p>
 <p>The worst-case bloom filter lookups in a tiered LSM-tree is simply <code>segment_count</code>, with segment_count being <code>O(log n)</code>, where <code>n</code> is the amount of items in the tree.</p>
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
