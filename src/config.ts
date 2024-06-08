@@ -24,7 +24,7 @@ export default {
     pageSize: 5,
 
     /// Post list style
-    postListStyle: "compact_list" as PostListStyle,
+    postListStyle: "list" as PostListStyle,
 
     landingPage: {
       /// Show recent posts on landing page

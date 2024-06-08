@@ -9,6 +9,7 @@ tags:
   - performance
 published_at: 2024-06-08T10:44:33.259Z
 last_modified_at: 2024-06-08T10:44:33.259Z
+image: /posts/evergreen.jpg
 ---
 
 ## Bloom Filter basics
