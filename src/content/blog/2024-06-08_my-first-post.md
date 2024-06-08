@@ -135,8 +135,8 @@ This strategy makes the key range increasingly more granular because the level s
 ### Tiered
 
 Tiered compaction simply merged together an entire level and puts the result into the next level, creating increasingly larger segments.
-This improves write performance at the cost of read performance.
-Also, because segments may always be overlapping, using bloom filters becomes much more important to minimize disk I/O for keys that do not exist.
+This improves write performance at the cost of read performance: because segments may be overlapping in any level, more segments may need to be checked per level (worst case: all segments).
+Using bloom filters becomes much more important to minimize disk I/O for keys that do not exist.
 This inadvertently increases the amount of hashing required:
 
 The worst-case bloom filter lookups in a tiered LSM-tree is simply `segment_count`, with segment_count being `O(log n)`, where `n` is the amount of items in the tree.
