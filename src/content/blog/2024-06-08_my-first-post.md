@@ -118,7 +118,7 @@ The are two major compaction strategies: Levelling & Tiering.
 Levelling initially stores flushed segments in L0.
 These segments may have overlapping key range, which is detremental for performance.
 If too many segments are kept in L0, they are merged into the next level into fixed-size segments (default = 64 MiB), that are non-overlapping.
-This makes sure a point read only ever needs to check a single segment for data.
+This makes sure a point read only ever needs to check a single segment _per level_ for data.
 
 When that level grows too large, parts of it are merged into the next level, which is N times larger (default N = 8).
 That means there are up to 8 times more segments in L2 than L1.
