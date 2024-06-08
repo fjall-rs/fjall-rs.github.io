@@ -129,7 +129,7 @@ This strategy makes the key range increasingly more granular because the level s
 </p>
 
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; height: 500px" src="/media/levelled_point_read.svg" />
+  <img style="border-radius: 16px; max-height: 500px" src="/media/levelled_point_read.svg" />
 </div>
 
 ### Tiered
@@ -142,7 +142,7 @@ This inadvertently increases the amount of hashing required:
 The worst-case bloom filter lookups in a tiered LSM-tree is simply `segment_count`, with segment_count being `O(log n)`, where `n` is the amount of items in the tree.
 
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; height: 500px" src="/media/tiered_point_read.svg" />
+  <img style="border-radius: 16px; max-height: 500px" src="/media/tiered_point_read.svg" />
 </div>
 
 ### Hash sharing
@@ -162,7 +162,7 @@ As shown in `Zichen Zhu: SHaMBa: Reducing Bloom Filter Overhead in LSM Trees, 20
 Implementing hash sharing in `lsm-tree` confirms the paper's idea:
 
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; height: 500px" src="/media/bf_hash_sharing_results.svg" />
+  <img style="border-radius: 16px; max-height: 500px" src="/media/bf_hash_sharing_results.svg" />
 </div>
 
 Without hash sharing, checking more than 24 segments can easily cost more than 1µs of CPU time, at which point it may become slower than simply reading from a SSD.
