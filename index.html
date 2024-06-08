@@ -1,0 +1,75 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v4.10.1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="sitemap" href="/sitemap-index.xml"><!-- SEO --><title>fjall-rs</title><meta name="title"><meta name="description" content="Organizing data in Rust"><!-- OG --><meta property="og:title"><meta property="og:description"><meta property="og:url" content="https://fjall-rs.github.io/"><!-- TODO: image --><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://fjall-rs.github.io/"><meta property="twitter:title"><meta property="twitter:description"><!-- TODO: <meta property="twitter:image" content={img} /> --><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><link rel="stylesheet" href="/_astro/index.VXG5YfwT.css">
+<style>.astro-route-announcer{position:absolute;left:0;top:0;clip:rect(0 0 0 0);clip-path:inset(50%);overflow:hidden;white-space:nowrap;width:1px;height:1px}
+</style><script type="module" src="/_astro/hoisted.o3X7mdw7.js"></script>
+<script type="module" src="/_astro/page.D0Zdqonr.js"></script></head> <body class="text-gray-700 dark:text-gray-400 dark:bg-gray-950"> <header class="backdrop-blur w-full px-8 py-5 fixed z-10 border-b dark:border-gray-900 bg-white/80 dark:bg-gray-950/75"> <div class="flex items-center gap-5 mx-auto w-full max-w-3xl"> <a class="text-black dark:text-white font-medium transition-colors hover:brightness-80" href="/" class="text-lg"> <!-- SETUP: If you have a logo, replace this component with it --><span> fjall-rs </span> </a> <div class="flex-grow"></div> <div class="flex items-center gap-4"> <a href="/posts" class="text-gray-800 dark:text-gray-400 transition-colors hover:brightness-80"> Posts </a><a href="/tags" class="text-gray-800 dark:text-gray-400 transition-colors hover:brightness-80"> Tags </a> </div> <div class="flex items-center gap-3"> <a href="/search" aria-label="Search content" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path><path d="M21 21l-6 -6"></path></svg> </a> <button aria-label="Switch theme" class="theme-switch transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path></svg> </button> <script>
+  const iconMoon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" /></svg>`;
+  const iconSun = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" /></svg>`;
+
+  function theme() {
+    const local = localStorage.getItem("theme");
+    if (local) {
+      return local;
+    }
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      return "dark";
+    }
+    return "light";
+  }
+
+  function registerStuff(document) {
+    const root = document.documentElement;
+    const themeSwitch = document.querySelector(".theme-switch");
+
+    if (theme() === "light") {
+      root.classList.remove("dark");
+      themeSwitch.innerHTML = iconMoon;
+    } else {
+      root.classList.add("dark");
+      themeSwitch.innerHTML = iconSun;
+    }
+
+    themeSwitch.addEventListener("click", () => {
+      const isDark = root.classList.contains("dark");
+      localStorage.setItem("theme", isDark ? "light" : "dark");
+      console.log(isDark);
+
+      if (isDark) {
+        root.classList.remove("dark");
+        themeSwitch.innerHTML = iconMoon;
+      } else {
+        root.classList.add("dark");
+        themeSwitch.innerHTML = iconSun;
+      }
+    });
+  }
+
+  registerStuff(document);
+
+  document.addEventListener("astro:after-swap", (ev) => {
+    registerStuff(document);
+  });
+</script> <a target="_blank" href="/rss.xml" aria-label="Get RSS feed" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path> <path d="M5 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path> <path d="M4 4a16 16 0 0 1 16 16"></path> <path d="M4 11a9 9 0 0 1 9 9"></path>  </svg> </a> </div> </div> </header> <main class="px-4 pt-30 mx-auto max-w-3xl">  <div class="flex flex-col gap-8"> <!-- SETUP: This component serves as the landing page's main content (hero section) --><h1 class="text-xl">Organizing data in Rust</h1> <section id="projects"> <h2 class="mb-3 italic">Repositories</h2> <div class="md:grid-cols-3 grid grid grid-cols-2 gap-4 sm:grid-cols-3"> <a href="https://github.com/fjall-rs/fjall" target="_blank" class="flex flex-col gap-2 rounded-lg border border-gray-500 border-opacity-30 bg-white bg-opacity-5 p-3 transition-all hover:border-blue-500 hover:bg-blue-500 hover:bg-opacity-5"> <div class="flex items-center justify-between gap-2"> <h3 class="text-lg font-medium">fjall</h3> <div class="rounded bg-black bg-opacity-20 px-2 py-1 text-xs font-semibold">MIT</div> </div> <div class="text-sm opacity-75">LSM-based embedded key-value storage engine</div> </a> <a href="https://github.com/fjall-rs/lsm-tree" target="_blank" class="flex flex-col gap-2 rounded-lg border border-gray-500 border-opacity-30 bg-white bg-opacity-5 p-3 transition-all hover:border-blue-500 hover:bg-blue-500 hover:bg-opacity-5"> <div class="flex items-center justify-between gap-2"> <h3 class="text-lg font-medium">lsm-tree</h3> <div class="rounded bg-black bg-opacity-20 px-2 py-1 text-xs font-semibold">MIT</div> </div> <div class="text-sm opacity-75">K.I.S.S. implementation of log-structured merge trees</div> </a> <!--   href="https://github.com/fjall-rs/value-log"
+      target="_blank" --> <div class="select-none opacity-50 flex flex-col gap-2 rounded-lg border border-gray-500 border-opacity-30 bg-white bg-opacity-5 p-3 transition-all border-blue-500 bg-blue-500 bg-opacity-5"> <div class="flex items-center justify-between gap-2"> <h3 class="text-lg font-medium">value-log</h3> <div class="rounded bg-black bg-opacity-20 px-2 py-1 text-xs font-semibold">MIT</div> </div> <div class="text-sm opacity-75"> <!-- TODO: reenable hover styles --> <!-- Generic value log implementation for key-value-separated LSM storage --> <div class="italic">Coming soon...</div> </div> </div> </div> </section>  <div class="flex flex-col gap-5"> <h1 class="text-2xl dark:text-gray-200 font-medium">Recent posts</h1> <div class="flex flex-col gap-5"><div class="flex gap-4"><!--$--><!--/--><div class="truncate"><a href="/post/bloom-filter-hash-sharing" class="hover:brightness-80 transition-all text-lg font-medium text-sky-700 dark:text-sky-300 truncate" aria-label="Improving LSM-tree read performance using hash sharing">Improving LSM-tree read performance using hash sharing</a><div class="text-sm">Jun 8, 2024</div><div class="dark:text-gray-300">Improving LSM-tree read performance using hash sharing</div></div></div></div> <a class="text-center" href="/posts"> <button class="text-sky-800 hover:bg-sky-50 dark:text-sky-300 font-medium p-2 hover:dark:bg-sky-950/50 rounded-lg transition-all">
+Show all posts
+</button> </a> </div> </div>  </main> <footer class="flex flex-col gap-5 py-10 mx-auto max-w-3xl w-full"> <!-- TODO: move into a fixed FAB button, outside of footer --> <div class="text-right"> <button onclick="scrollToTop()">Back to top</button> </div> <div class="text-center">
+&copy; 2024 fjall-rs 
+- powered by <a class="text-sky-700 dark:text-sky-300 italic transition-all hover:brightness-80" href="https://github.com/marvin-j97/nanoblog" target="_blank">
+nanoblog
+</a>  </div> </footer> <script>
+  function scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }
+</script> <!--  <style is:global>
+      html.dark .astro-code,
+      html.dark .astro-code span {
+        color: var(--shiki-dark) !important;
+        background-color: var(--shiki-dark-bg) !important;
+        font-style: var(--shiki-dark-font-style) !important;
+        font-weight: var(--shiki-dark-font-weight) !important;
+        text-decoration: var(--shiki-dark-text-decoration) !important;
+      }
+    </style> --> </body></html>

@@ -1,0 +1,536 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v4.10.1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="sitemap" href="/sitemap-index.xml"><!-- SEO --><title>Improving LSM-tree read performance using hash sharing | fjall-rs</title><meta name="title" content="Improving LSM-tree read performance using hash sharing"><meta name="description" content="Improving LSM-tree read performance using hash sharing"><!-- OG --><meta property="og:title" content="Improving LSM-tree read performance using hash sharing"><meta property="og:description" content="Improving LSM-tree read performance using hash sharing"><meta property="og:url" content="https://fjall-rs.github.io/post/bloom-filter-hash-sharing/"><!-- TODO: image --><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://fjall-rs.github.io/post/bloom-filter-hash-sharing/"><meta property="twitter:title" content="Improving LSM-tree read performance using hash sharing"><meta property="twitter:description" content="Improving LSM-tree read performance using hash sharing"><!-- TODO: <meta property="twitter:image" content={img} /> --><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><link rel="stylesheet" href="/_astro/index.VXG5YfwT.css">
+<style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0}}@keyframes astroFadeOut{to{opacity:0}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}[data-astro-transition-scope]{animation:none!important}}
+article a{color:#075985!important}.dark article a{color:#38bdf8!important}article table{table-layout:auto;border:1px solid #d1d5db;border-radius:4px}article table{border-bottom:1px solid #fafafa}.dark article table{border:1px solid #374151}code:before,code:after{display:none}p code{border-radius:4px;padding:2px 4px}.dark p code{color:#d0d0d0!important;background:#07598566!important}html:not(.dark) p code{color:#000!important;background:#7fc3e766!important}
+.astro-route-announcer{position:absolute;left:0;top:0;clip:rect(0 0 0 0);clip-path:inset(50%);overflow:hidden;white-space:nowrap;width:1px;height:1px}
+</style><script type="module" src="/_astro/hoisted.o3X7mdw7.js"></script>
+<script type="module" src="/_astro/page.D0Zdqonr.js"></script><style>[data-astro-transition-scope="astro-x7amp3kc-1"] { view-transition-name: astro-x7amp3kc-1; }@layer astro { ::view-transition-old(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-2"] { view-transition-name: astro-x7amp3kc-2; }@layer astro { ::view-transition-old(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-3"] { view-transition-name: astro-x7amp3kc-3; }@layer astro { ::view-transition-old(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-4"] { view-transition-name: astro-x7amp3kc-4; }@layer astro { ::view-transition-old(astro-x7amp3kc-4) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-4) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-4) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-4) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-5"] { view-transition-name: bloom_20filter; }@layer astro { ::view-transition-old(bloom_20filter) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(bloom_20filter) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(bloom_20filter) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(bloom_20filter) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-6"] { view-transition-name: lsm_20tree; }@layer astro { ::view-transition-old(lsm_20tree) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(lsm_20tree) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(lsm_20tree) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(lsm_20tree) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-7"] { view-transition-name: point_20reads; }@layer astro { ::view-transition-old(point_20reads) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(point_20reads) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(point_20reads) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(point_20reads) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-7"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-7"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-7"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-7"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-7"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-7"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-7"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-7"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-8"] { view-transition-name: performance; }@layer astro { ::view-transition-old(performance) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(performance) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(performance) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(performance) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-8"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-8"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-8"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-8"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-8"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-8"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-8"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-8"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style></head> <body class="text-gray-700 dark:text-gray-400 dark:bg-gray-950"> <header class="backdrop-blur w-full px-8 py-5 fixed z-10 border-b dark:border-gray-900 bg-white/80 dark:bg-gray-950/75"> <div class="flex items-center gap-5 mx-auto w-full max-w-3xl"> <a class="text-black dark:text-white font-medium transition-colors hover:brightness-80" href="/" class="text-lg"> <!-- SETUP: If you have a logo, replace this component with it --><span> fjall-rs </span> </a> <div class="flex-grow"></div> <div class="flex items-center gap-4"> <a href="/posts" class="text-gray-800 dark:text-gray-400 transition-colors hover:brightness-80"> Posts </a><a href="/tags" class="text-gray-800 dark:text-gray-400 transition-colors hover:brightness-80"> Tags </a> </div> <div class="flex items-center gap-3"> <a href="/search" aria-label="Search content" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path><path d="M21 21l-6 -6"></path></svg> </a> <button aria-label="Switch theme" class="theme-switch transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path></svg> </button> <script>
+  const iconMoon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" /></svg>`;
+  const iconSun = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" /></svg>`;
+
+  function theme() {
+    const local = localStorage.getItem("theme");
+    if (local) {
+      return local;
+    }
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      return "dark";
+    }
+    return "light";
+  }
+
+  function registerStuff(document) {
+    const root = document.documentElement;
+    const themeSwitch = document.querySelector(".theme-switch");
+
+    if (theme() === "light") {
+      root.classList.remove("dark");
+      themeSwitch.innerHTML = iconMoon;
+    } else {
+      root.classList.add("dark");
+      themeSwitch.innerHTML = iconSun;
+    }
+
+    themeSwitch.addEventListener("click", () => {
+      const isDark = root.classList.contains("dark");
+      localStorage.setItem("theme", isDark ? "light" : "dark");
+      console.log(isDark);
+
+      if (isDark) {
+        root.classList.remove("dark");
+        themeSwitch.innerHTML = iconMoon;
+      } else {
+        root.classList.add("dark");
+        themeSwitch.innerHTML = iconSun;
+      }
+    });
+  }
+
+  registerStuff(document);
+
+  document.addEventListener("astro:after-swap", (ev) => {
+    registerStuff(document);
+  });
+</script> <a target="_blank" href="/rss.xml" aria-label="Get RSS feed" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path> <path d="M5 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path> <path d="M4 4a16 16 0 0 1 16 16"></path> <path d="M4 11a9 9 0 0 1 9 9"></path>  </svg> </a> </div> </div> </header> <main class="px-4 pt-30 mx-auto max-w-3xl">   <div class="reading-progress z-10 fixed left-0 top-0 h-1 dark:bg-sky-500 bg-sky-700 opacity-75"></div> <script>
+  /**
+   * Gets the vertical scroll percent (0.0 - 1.0)
+   */
+  function getScrollPercent() {
+    const doc = document.documentElement;
+    const body = document.body;
+
+    return (
+      (doc.scrollTop || body.scrollTop) /
+      ((doc.scrollHeight || body.scrollHeight) - doc.clientHeight)
+    );
+  }
+
+  document.addEventListener("astro:page-load", () => {
+    document.addEventListener("scroll", () => {
+      const el = document.querySelector(".reading-progress");
+      if (el) {
+        el.style.width = `${getScrollPercent() * 100}%`;
+      }
+    });
+  });
+</script> <div class="flex flex-col gap-4"> <h1 class="text-sky-800 dark:text-sky-400 text-4xl md:text-5xl font-bold"> Improving LSM-tree read performance using hash sharing </h1> <div class="flex items-center gap-2">  <div> June 8, 2024 </div> 
+- <div>6 min. read</div>  </div> <ul class="text-sm text-sky-800 dark:text-sky-300 flex items-center gap-3"> <li class="transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/bloom filter" data-astro-transition-scope="astro-x7amp3kc-5">
+#bloom filter </a> </li><li class="transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/lsm tree" data-astro-transition-scope="astro-x7amp3kc-6">
+#lsm tree </a> </li><li class="transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/point reads" data-astro-transition-scope="astro-x7amp3kc-7">
+#point reads </a> </li><li class="transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/performance" data-astro-transition-scope="astro-x7amp3kc-8">
+#performance </a> </li> </ul>  </div>  <article class="my-10 w-full !max-w-full prose dark:prose-invert text-justify"> <h2 id="bloom-filter-basics">Bloom Filter basics</h2>
+<p>Bloom filters are a probabilistic data structure to answer a membership question: <em>is this item contained in my set?</em></p>
+<p>The bloom filter returns <code>true</code> (<em>probably yes</em>) or <code>false</code> (<em>definitely no</em>). The false positive rate is often shortened as <code>FPR</code>.s
+In that regard, it works a bit like a sieve.
+By adjusting the memory usage of the filter, we can control how much unwanted requests are sieved out, but we will never get a perfect 0% FPR.</p>
+<p>The main advantage of bloom filters is their low memory usage footprint, which is decoupled from the key size.
+Keys are not actually stored in the data structure like you would in a hash set.</p>
+<p>Instead keys are run through a hash function.
+The resulting number <code>i</code> indexes into a bit array.
+The bit at the calculated position determines if the item can possibly exist (1 = may exist, 0 = does not exist):</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#F97583">fn</span><span style="color:#B392F0"> bloom_filter_contains</span><span style="color:#E1E4E8">(bits, key) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> bool</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  let</span><span style="color:#E1E4E8"> hash </span><span style="color:#F97583">=</span><span style="color:#B392F0"> h</span><span style="color:#E1E4E8">(key);</span></span>
+<span class="line"><span style="color:#E1E4E8">  bits[hash </span><span style="color:#F97583">%</span><span style="color:#E1E4E8"> bits</span><span style="color:#F97583">.</span><span style="color:#B392F0">len</span><span style="color:#E1E4E8">()] </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> 1</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p>The false positive rate stems from the fact that the hash function’s output is mapped a much smaller codomain (the bit array).tiered_point_read
+To reduce false positive rates, multiple hash functions are used to create a key’s fingerprint. Only if all bit positions are 1, then the key may exist:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#F97583">fn</span><span style="color:#B392F0"> bloom_filter_contains</span><span style="color:#E1E4E8">(bits, key) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> bool</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  let</span><span style="color:#E1E4E8"> hashes </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span><span style="color:#B392F0">h0</span><span style="color:#E1E4E8">(key), </span><span style="color:#B392F0">h1</span><span style="color:#E1E4E8">(key), </span><span style="color:#B392F0">h2</span><span style="color:#E1E4E8">(key), </span><span style="color:#B392F0">h3</span><span style="color:#E1E4E8">(key)];</span></span>
+<span class="line"><span style="color:#E1E4E8">  hashes</span><span style="color:#F97583">.</span><span style="color:#B392F0">all</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">|</span><span style="color:#E1E4E8">hash</span><span style="color:#F97583">|</span><span style="color:#E1E4E8"> bits[hash </span><span style="color:#F97583">%</span><span style="color:#E1E4E8"> bits</span><span style="color:#F97583">.</span><span style="color:#B392F0">len</span><span style="color:#E1E4E8">()] </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p>A bloom filters thus can be configured using four dimensions:</p>
+<ul>
+<li>bit array size (m)</li>
+<li>number of hash functions (k)</li>
+<li>number of items (n)</li>
+<li>false positive rate (p)</li>
+</ul>
+<p>We can calculate the <em>optimal</em> bloom filter, using the following formulas:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#E1E4E8">n </span><span style="color:#F97583">=</span><span style="color:#B392F0"> ceil</span><span style="color:#E1E4E8">(m </span><span style="color:#F97583">/</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">-</span><span style="color:#E1E4E8">k </span><span style="color:#F97583">/</span><span style="color:#B392F0"> log</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">1</span><span style="color:#F97583"> -</span><span style="color:#B392F0"> exp</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">log</span><span style="color:#E1E4E8">(p) </span><span style="color:#F97583">/</span><span style="color:#E1E4E8"> k))))</span></span>
+<span class="line"><span style="color:#E1E4E8">p </span><span style="color:#F97583">=</span><span style="color:#B392F0"> pow</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">1</span><span style="color:#F97583"> -</span><span style="color:#B392F0"> exp</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">-</span><span style="color:#E1E4E8">k </span><span style="color:#F97583">/</span><span style="color:#E1E4E8"> (m </span><span style="color:#F97583">/</span><span style="color:#E1E4E8"> n)), k)</span></span>
+<span class="line"><span style="color:#E1E4E8">m </span><span style="color:#F97583">=</span><span style="color:#B392F0"> ceil</span><span style="color:#E1E4E8">((n </span><span style="color:#F97583">*</span><span style="color:#B392F0"> log</span><span style="color:#E1E4E8">(p)) </span><span style="color:#F97583">/</span><span style="color:#B392F0"> log</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">1</span><span style="color:#F97583"> /</span><span style="color:#B392F0"> pow</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, </span><span style="color:#B392F0">log</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">))));</span></span>
+<span class="line"><span style="color:#E1E4E8">k </span><span style="color:#F97583">=</span><span style="color:#B392F0"> round</span><span style="color:#E1E4E8">((m </span><span style="color:#F97583">/</span><span style="color:#E1E4E8"> n) </span><span style="color:#F97583">*</span><span style="color:#B392F0"> log</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">));</span></span>
+<span class="line"></span></code></pre>
+<p><strong>Example 1</strong>: To get a FPR of 1% for 1’000’000 <em>arbitrarily long</em> keys, we would need 7 hash functions and 1.14 MiB of memory.</p>
+<p><strong>Example 2</strong>: To get a FPR of 0.00001% for 1’000 <em>arbitrarily long</em> keys, we would need <strong>20</strong> hash functions and just 3.51 KiB of memory.</p>
+<h2 id="double-hashing">Double hashing</h2>
+<p>Calculating many hash functions per lookup can get pretty expensive.</p>
+<p><code>lsm-tree</code> currently uses <a href="https://docs.rs/seahash/latest/seahash/"><code>seahash</code></a>, which is already a very fast hashing function.
+On my CPU, calculating a 40-character key hash takes about 50ns.</p>
+<p>A single lookup with 20 hash functions would cost around 1’000ns (1µs) of pure CPU power. That is just slightly faster than reading a single page on my SSD (~1.5µs).</p>
+<p>We can reduce the amount of hash functions per lookup, by using <em>double hashing</em>:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#F97583">fn</span><span style="color:#B392F0"> bloom_filter_contains</span><span style="color:#E1E4E8">(bits, key) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> bool</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  let</span><span style="color:#E1E4E8"> hash0 </span><span style="color:#F97583">=</span><span style="color:#B392F0"> f</span><span style="color:#E1E4E8">(key);</span></span>
+<span class="line"><span style="color:#F97583">  let</span><span style="color:#E1E4E8"> hash1 </span><span style="color:#F97583">=</span><span style="color:#B392F0"> g</span><span style="color:#E1E4E8">(key);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  for</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">in</span><span style="color:#79B8FF"> 0</span><span style="color:#F97583">..</span><span style="color:#E1E4E8">k {</span></span>
+<span class="line"><span style="color:#F97583">    let</span><span style="color:#E1E4E8"> idx </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> hash0 </span><span style="color:#F97583">%</span><span style="color:#E1E4E8"> m;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> bits[idx </span><span style="color:#F97583">%</span><span style="color:#E1E4E8"> bits</span><span style="color:#F97583">.</span><span style="color:#B392F0">len</span><span style="color:#E1E4E8">()] </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#79B8FF"> false</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">    hash0 </span><span style="color:#F97583">+=</span><span style="color:#E1E4E8"> hash1;</span></span>
+<span class="line"><span style="color:#E1E4E8">    hash1 </span><span style="color:#F97583">+=</span><span style="color:#E1E4E8"> i;</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">  true</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p>Now any lookup only requires two invocations of our hashing function, and a bit of indexing and modulo magic.
+This technique is described to be effective in bloom filters in the paper <code>Adam K et al.: Less Hashing, Same Performance: Building a Better Bloom Filter, 2006</code>.</p>
+<h2 id="bloom-filters-in-lsm-trees">Bloom filters in LSM-trees</h2>
+<p>LSM-trees are differential indexes, meaning that data on disk is never overwritten.
+Data is buffered in-memory, and flushed out to disk when the memory usage crosses a configurable threshold.
+The disk segments are immutable, sorted flat files of key-value pairs.
+As more data arrives, segments may need to be merged &#x26; rewritten (compaction).</p>
+<p>The are two major compaction strategies: Levelling &#x26; Tiering.</p>
+<h3 id="levelling">Levelling</h3>
+<p>Levelling initially stores flushed segments in L0.
+These segments may have overlapping key range, which is detremental for performance.
+If too many segments are kept in L0, they are merged into the next level into fixed-size segments (default = 64 MiB), that are non-overlapping.
+This makes sure a point read only ever needs to check a single segment for data.</p>
+<p>When that level grows too large, parts of it are merged into the next level, which is N times larger (default N = 8).
+That means there are up to 8 times more segments in L2 than L1.
+This strategy makes the key range increasingly more granular because the level size increases exponentially while the segment size is fixed.</p>
+<p class="text-left">
+  The worst-case amount of bloom filter lookups in a levelled LSM-tree is <code>L0_segments + (level_count - 1)</code> because on every level after L0 segments are disjoint, so only one can be a candidate containing the searched key.
+</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; height: 500px" src="/media/levelled_point_read.svg">
+</div>
+<h3 id="tiered">Tiered</h3>
+<p>Tiered compaction simply merged together an entire level and puts the result into the next level, creating increasingly larger segments.
+This improves write performance at the cost of read performance.
+Also, because segments may always be overlapping, using bloom filters becomes much more important to minimize disk I/O for keys that do not exist.
+This inadvertently increases the amount of hashing required:</p>
+<p>The worst-case bloom filter lookups in a tiered LSM-tree is simply <code>segment_count</code>, with segment_count being <code>O(log n)</code>, where <code>n</code> is the amount of items in the tree.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; height: 500px" src="/media/tiered_point_read.svg">
+</div>
+<h3 id="hash-sharing">Hash sharing</h3>
+<p>When checking more than a couple of segments, CPU time of repeated hashing becomes non-trivial.
+As shown in <code>Zichen Zhu: SHaMBa: Reducing Bloom Filter Overhead in LSM Trees, 2023</code> by only computing the hash(es) of the requested key once, and sharing that hash across all necessary segments effectively reduces the hashing time complexity to O(1).</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-width: 640px" src="/media/bf_hash_sharing.png">
+</div>
+<div style="text-align: center">
+  <i>Credit: Zichen Zhu: SHaMBa: Reducing Bloom Filter Overhead in LSM Trees, 2023</i>
+</div>
+<h3 id="implementation-in-lsm-tree">Implementation in <code>lsm-tree</code></h3>
+<p>Implementing hash sharing in <code>lsm-tree</code> confirms the paper’s idea:</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; height: 500px" src="/media/bf_hash_sharing_results.svg">
+</div>
+<p>Without hash sharing, checking more than 24 segments can easily cost more than 1µs of CPU time, at which point it may become slower than simply reading from a SSD.
+And performance of longer keys suffers even more because keys are not truncated before the hashing phase.</p>
+<p>The implementation itself is very straightforward.
+The <code>BloomFilter</code> struct was extended by a <code>contains_hash</code> method that takes the requested key <em>and</em> two hashes (for double hashing, called <code>CompositeHash</code>):</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#F97583">pub</span><span style="color:#F97583"> fn</span><span style="color:#B392F0"> contains_hash</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">&#x26;</span><span style="color:#79B8FF">self</span><span style="color:#E1E4E8">, hash</span><span style="color:#F97583">:</span><span style="color:#B392F0"> CompositeHash</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> bool</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span></code></pre>
+<p>The key hash can be calculated using <code>BloomFilter::get_hash</code>, which is a static method that returns the required <code>CompositeHash</code> for the given key.</p>
+<p>The disk segment struct (<code>Segment</code>) has a method called <code>Segment::get</code>:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#F97583">pub</span><span style="color:#F97583"> fn</span><span style="color:#B392F0"> get</span><span style="color:#E1E4E8">&#x3C;</span><span style="color:#B392F0">K</span><span style="color:#F97583">:</span><span style="color:#B392F0"> AsRef</span><span style="color:#E1E4E8">&#x3C;[</span><span style="color:#B392F0">u8</span><span style="color:#E1E4E8">]>>(</span><span style="color:#F97583">&#x26;</span><span style="color:#79B8FF">self</span><span style="color:#E1E4E8">, key</span><span style="color:#F97583">:</span><span style="color:#B392F0"> K</span><span style="color:#E1E4E8">, seqno</span><span style="color:#F97583">:</span><span style="color:#B392F0"> Option</span><span style="color:#E1E4E8">&#x3C;</span><span style="color:#B392F0">SeqNo</span><span style="color:#E1E4E8">>) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> Result</span><span style="color:#E1E4E8">&#x3C;</span><span style="color:#B392F0">Option</span><span style="color:#E1E4E8">&#x3C;</span><span style="color:#B392F0">Value</span><span style="color:#E1E4E8">>>;</span></span>
+<span class="line"></span></code></pre>
+<p>which checks if the key can possibly be contained in the segment by checking its key range and then its bloom filter.
+The <code>Segment</code> struct has been extended by <code>Segment::get_with_hash</code> to allow using a pre-computed hash:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#F97583">pub</span><span style="color:#F97583"> fn</span><span style="color:#B392F0"> get_with_hash</span><span style="color:#E1E4E8">&#x3C;</span><span style="color:#B392F0">K</span><span style="color:#F97583">:</span><span style="color:#B392F0"> AsRef</span><span style="color:#E1E4E8">&#x3C;[</span><span style="color:#B392F0">u8</span><span style="color:#E1E4E8">]>>(</span><span style="color:#F97583">&#x26;</span><span style="color:#79B8FF">self</span><span style="color:#E1E4E8">, key</span><span style="color:#F97583">:</span><span style="color:#B392F0"> K</span><span style="color:#E1E4E8">, seqno</span><span style="color:#F97583">:</span><span style="color:#B392F0"> Option</span><span style="color:#E1E4E8">&#x3C;</span><span style="color:#B392F0">SeqNo</span><span style="color:#E1E4E8">>, hash</span><span style="color:#F97583">:</span><span style="color:#B392F0"> CompositeHash</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">-></span><span style="color:#B392F0"> Result</span><span style="color:#E1E4E8">&#x3C;</span><span style="color:#B392F0">Option</span><span style="color:#E1E4E8">&#x3C;</span><span style="color:#B392F0">Value</span><span style="color:#E1E4E8">>></span></span>
+<span class="line"></span></code></pre>
+<p>When serving a point read, the <code>Tree</code> struct checks each eligible segment (pseudo-code):</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#F97583">for</span><span style="color:#E1E4E8"> segment </span><span style="color:#F97583">in</span><span style="color:#F97583"> &#x26;</span><span style="color:#79B8FF">self</span><span style="color:#F97583">.</span><span style="color:#E1E4E8">segments {</span></span>
+<span class="line"><span style="color:#F97583">  let</span><span style="color:#E1E4E8"> maybe_item </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> segment</span><span style="color:#F97583">.</span><span style="color:#B392F0">get</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">&#x26;</span><span style="color:#E1E4E8">key, seqno)</span><span style="color:#F97583">?</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  if</span><span style="color:#F97583"> let</span><span style="color:#B392F0"> Some</span><span style="color:#E1E4E8">(item) </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> maybe_item {</span></span>
+<span class="line"><span style="color:#F97583">      return</span><span style="color:#B392F0"> Ok</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">Some</span><span style="color:#E1E4E8">(item));</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p>and has been replaced with:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#F97583">let</span><span style="color:#E1E4E8"> key_hash </span><span style="color:#F97583">=</span><span style="color:#B392F0"> BloomFilter</span><span style="color:#F97583">::</span><span style="color:#B392F0">get_hash</span><span style="color:#E1E4E8">(key);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">for</span><span style="color:#E1E4E8"> segment </span><span style="color:#F97583">in</span><span style="color:#F97583"> &#x26;</span><span style="color:#79B8FF">self</span><span style="color:#F97583">.</span><span style="color:#E1E4E8">segments {</span></span>
+<span class="line"><span style="color:#F97583">  let</span><span style="color:#E1E4E8"> maybe_item </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> segment</span><span style="color:#F97583">.</span><span style="color:#B392F0">get_with_hash</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">&#x26;</span><span style="color:#E1E4E8">key, seqno, key_hash)</span><span style="color:#F97583">?</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  if</span><span style="color:#F97583"> let</span><span style="color:#B392F0"> Some</span><span style="color:#E1E4E8">(item) </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> maybe_item {</span></span>
+<span class="line"><span style="color:#F97583">      return</span><span style="color:#B392F0"> Ok</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">Some</span><span style="color:#E1E4E8">(item));</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p>to pre-compute the given key’s hash and reusing it across all segments it visits.</p>
+<p>This optimization comes at no cost, so it will be internally be used in <code>lsm-tree</code> from 1.2.0 onwards.</p>
+<h2 id="interested-in-lsm-trees-and-rust">Interested in LSM-trees and Rust?</h2>
+<p>Check out <a href="https://github.com/fjall-rs/fjall">fjall</a>, an MIT-licensed LSM-based storage engine written in Rust.</p> </article>   <hr class="h-1 mb-2 border-gray-200 dark:border-gray-700"> <div class="flex flex-col gap-3"> <div class="dark:text-gray-300 italic">Tags</div> <ul class="text-sm text-sky-800 dark:text-sky-300 flex items-center gap-3"> <li class="transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/bloom filter" data-astro-transition-scope="astro-x7amp3kc-1">
+#bloom filter </a> </li><li class="transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/lsm tree" data-astro-transition-scope="astro-x7amp3kc-2">
+#lsm tree </a> </li><li class="transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/point reads" data-astro-transition-scope="astro-x7amp3kc-3">
+#point reads </a> </li><li class="transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/performance" data-astro-transition-scope="astro-x7amp3kc-4">
+#performance </a> </li> </ul> </div>  </main> <footer class="flex flex-col gap-5 py-10 mx-auto max-w-3xl w-full"> <!-- TODO: move into a fixed FAB button, outside of footer --> <div class="text-right"> <button onclick="scrollToTop()">Back to top</button> </div> <div class="text-center">
+&copy; 2024 fjall-rs 
+- powered by <a class="text-sky-700 dark:text-sky-300 italic transition-all hover:brightness-80" href="https://github.com/marvin-j97/nanoblog" target="_blank">
+nanoblog
+</a>  </div> </footer> <script>
+  function scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }
+</script> <!--  <style is:global>
+      html.dark .astro-code,
+      html.dark .astro-code span {
+        color: var(--shiki-dark) !important;
+        background-color: var(--shiki-dark-bg) !important;
+        font-style: var(--shiki-dark-font-style) !important;
+        font-weight: var(--shiki-dark-font-weight) !important;
+        text-decoration: var(--shiki-dark-text-decoration) !important;
+      }
+    </style> --> </body></html> 
