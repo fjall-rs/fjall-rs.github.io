@@ -71,7 +71,7 @@ Calculating many hash functions per lookup can get pretty expensive.
 `lsm-tree` currently uses [`seahash`](https://docs.rs/seahash/latest/seahash/), which is already a very fast hashing function.
 On my CPU, calculating a 40-character key hash takes about 50ns.
 
-A single lookup with 20 hash functions would cost around 1'000ns (1µs) of pure CPU power. That is just slightly faster than reading a single page on my SSD (~1.5µs).
+A single lookup with 20 hash functions would cost around 1'000ns (1µs) of pure CPU time. That is just slightly faster than reading a single page on my SSD (~1.5µs).
 
 We can reduce the amount of hash functions per lookup, by using _double hashing_:
 
