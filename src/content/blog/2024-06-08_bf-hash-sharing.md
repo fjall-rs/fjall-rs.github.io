@@ -1,5 +1,5 @@
 ---
-title: Improved LSM-tree read latency using hash sharing
+title: Improved LSM-tree point read latency using hash sharing
 slug: bloom-filter-hash-sharing
 description: A look into bloom filter usage inside LSM-trees and optimizing CPU time using hash sharing
 tags:
