@@ -1,0 +1,103 @@
+---
+import PostHeader from "../../../components/PostHeader.astro";
+import ReadingProgressBar from "../../../components/ReadingProgressBar.astro";
+import TagList from "../../../components/TagList.astro";
+import config from "../../../config";
+import { getPublishedPosts } from "../../../data/posts";
+import BaseLayout from "../../../layouts/base.astro";
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+
+const readingMinutes = Math.max(
+  1,
+  Math.round(post.body.split(" ").length / config.post.readingTime.speed),
+);
+---
+
+<BaseLayout author={post.data.author} title={post.data.title} description={post.data.description}>
+  <!-- Global -->
+  {config.post.showReadingProgress && <ReadingProgressBar />}
+
+  <!-- Post header -->
+  <PostHeader
+    title={post.data.title}
+    author={post.data.author}
+    readingMinutes={readingMinutes}
+    tags={post.data.tags}
+    publishedAt={new Date(post.data.last_modified_at ?? post.data.published_at)}
+    image={post.data.image}
+  />
+
+  <!-- Content -->
+  <article class="my-10 w-full !max-w-full prose dark:prose-invert text-justify">
+    <Content />
+  </article>
+
+  <!-- Post footer -->
+  {
+    post.data.tags.length > 0 && (
+      <>
+        <hr class="h-1 mb-2 border-gray-200 dark:border-gray-700" />
+        <div class="flex flex-col gap-3">
+          <div class="dark:text-gray-300 italic">Tags</div>
+          <TagList items={post.data.tags} />
+        </div>
+      </>
+    )
+  }
+</BaseLayout>
+
+<style is:global>
+  article a {
+    color: rgb(7 89 133) !important;
+  }
+
+  .dark article a {
+    color: rgb(56 189 248) !important;
+  }
+
+  /* TODO: finish table styling */
+  article table {
+    table-layout: auto;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+  }
+
+  article table {
+    border-bottom: 1px solid #fafafa;
+  }
+
+  .dark article table {
+    border: 1px solid #374151;
+  }
+
+  code:before,
+  code:after {
+    display: none;
+  }
+
+  p code {
+    border-radius: 4px;
+    padding: 2px 4px;
+  }
+
+  .dark p code {
+    color: #d0d0d0 !important;
+    background: rgba(7, 89, 133, 0.4) !important;
+  }
+
+  html:not(.dark) p code {
+    color: black !important;
+    background: rgba(127, 195, 231, 0.4) !important;
+  }
+</style>
