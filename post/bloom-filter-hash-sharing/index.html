@@ -450,7 +450,7 @@ This strategy makes the key range increasingly more granular because the level s
   The worst-case amount of bloom filter lookups in a levelled LSM-tree is <code>L0_segments + (level_count - 1)</code> because on every level after L0 segments are disjoint, so only one can be a candidate containing the searched key.
 </p>
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; height: 500px" src="/media/levelled_point_read.svg">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/levelled_point_read.svg">
 </div>
 <h3 id="tiered">Tiered</h3>
 <p>Tiered compaction simply merged together an entire level and puts the result into the next level, creating increasingly larger segments.
@@ -459,7 +459,7 @@ Using bloom filters becomes much more important to minimize disk I/O for keys th
 This inadvertently increases the amount of hashing required:</p>
 <p>The worst-case bloom filter lookups in a tiered LSM-tree is simply <code>segment_count</code>, with segment_count being <code>O(log n)</code>, where <code>n</code> is the amount of items in the tree.</p>
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; height: 500px" src="/media/tiered_point_read.svg">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/tiered_point_read.svg">
 </div>
 <h3 id="hash-sharing">Hash sharing</h3>
 <p>When checking more than a couple of segments, CPU time of repeated hashing becomes non-trivial.
@@ -473,7 +473,7 @@ As shown in <code>Zichen Zhu: SHaMBa: Reducing Bloom Filter Overhead in LSM Tree
 <h3 id="implementation-in-lsm-tree">Implementation in <code>lsm-tree</code></h3>
 <p>Implementing hash sharing in <code>lsm-tree</code> confirms the paper’s idea:</p>
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; height: 500px" src="/media/bf_hash_sharing_results.svg">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/bf_hash_sharing_results.svg">
 </div>
 <p>Without hash sharing, checking more than 24 segments can easily cost more than 1µs of CPU time, at which point it may become slower than simply reading from a SSD.
 And performance of longer keys suffers even more because keys are not truncated before the hashing phase.</p>
