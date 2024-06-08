@@ -457,7 +457,7 @@ This strategy makes the key range increasingly more granular because the level s
 This improves write performance at the cost of read performance: because segments may be overlapping in any level, more segments may need to be checked per level (worst case: all segments).
 Using bloom filters becomes much more important to minimize disk I/O for keys that do not exist.
 This inadvertently increases the amount of hashing required:</p>
-<p>The worst-case bloom filter lookups in a tiered LSM-tree is simply <code>segment_count</code>, with segment_count being <code>O(log n)</code>, where <code>n</code> is the amount of items in the tree.</p>
+<p>The worst-case bloom filter lookups in a tiered LSM-tree is simply <code>segment_count</code>, with <code>segment_count</code> being <code>O(log n)</code>, where <code>n</code> is the amount of items in the tree.</p>
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
   <img style="border-radius: 16px; max-height: 500px" src="/media/tiered_point_read.svg">
 </div>
