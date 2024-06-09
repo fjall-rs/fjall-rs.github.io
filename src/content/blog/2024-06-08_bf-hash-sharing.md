@@ -28,6 +28,11 @@ The resulting number `i` indexes into a bit array.
 The bit at the calculated position determines if the item can possibly exist (1 = may exist, 0 = does not exist):
 
 ```rs
+fn bloom_filter_add(bits, key) {
+  let hash = h(key);
+  bits[hash % bits.len()] = 1;
+}
+
 fn bloom_filter_contains(bits, key) -> bool {
   let hash = h(key);
   bits[hash % bits.len()] == 1
@@ -39,6 +44,14 @@ The false positive rate stems from the fact that the hash function's output is m
 To reduce false positive rates because of accidental hash conflicts, multiple hash functions are used to create a key's fingerprint. Only if all bit positions are 1, then the key may exist:
 
 ```rs
+fn bloom_filter_add(bits, key) {
+  let hashes = [h0(key), h1(key), h2(key), h3(key)];
+
+  for hash in hashes {
+    bits[hash % bits.len()] = 1;
+  }
+}
+
 fn bloom_filter_contains(bits, key) -> bool {
   let hashes = [h0(key), h1(key), h2(key), h3(key)];
   hashes.all(|hash| bits[hash % bits.len()] == 1)
@@ -134,7 +147,7 @@ This strategy makes the key range increasingly more granular because the level s
 
 ### Tiered
 
-Tiered compaction simply merged together an entire level and puts the result into the next level, creating increasingly larger segments.
+Tiered compaction simply merges together an entire level and puts the result into the next level, creating increasingly larger segments.
 This improves write performance at the cost of read performance: because segments may be overlapping in any level, more segments may need to be checked per level (worst case: all segments).
 Using bloom filters becomes much more important to minimize disk I/O for keys that do not exist.
 This inadvertently increases the amount of hashing required:
@@ -169,7 +182,7 @@ Without hash sharing, checking more than 24 segments can easily cost more than 1
 And performance of longer keys suffers even more because keys are not truncated before the hashing phase.
 
 The implementation itself is very straightforward.
-The `BloomFilter` struct was extended by a `contains_hash` method that takes the requested key _and_ two hashes (for double hashing, called `CompositeHash`):
+The `BloomFilter` struct was extended by a `contains_hash` method that takes two hashes of a key (for double hashing, called `CompositeHash`):
 
 ```rs
 pub fn contains_hash(&self, hash: CompositeHash) -> bool;
