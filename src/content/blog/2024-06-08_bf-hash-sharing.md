@@ -8,7 +8,7 @@ tags:
   - point reads
   - performance
 published_at: 2024-06-08T10:44:33.259Z
-last_modified_at: 2024-06-08T10:44:33.259Z
+last_modified_at: 2024-06-09T10:44:33.259Z
 image: /media/posts/evergreen.jpg
 ---
 
@@ -161,12 +161,25 @@ The worst-case bloom filter lookups in a tiered LSM-tree is simply `segment_coun
 ### Hash sharing
 
 When checking more than a couple of segments, CPU time of repeated hashing becomes non-trivial.
-As shown in `Zichen Zhu: SHaMBa: Reducing Bloom Filter Overhead in LSM Trees, 2023` by only computing the hash(es) of the requested key once, and sharing that hash across all necessary segments effectively reduces the hashing time complexity to O(1).
+As shown in `Zichen Zhu: SHaMBa: Reducing Bloom Filter Overhead in LSM Trees, 2023` by only computing the hash(es) of the requested key once, and sharing that hash across all necessary segments effectively reduces the hashing time complexity to O(1):
+
+> The key observation is
+> that for a specific query, the same hash digest calculation
+> is repeated across levels. The BFs are different across
+> levels (they have indexed different elements). However,
+> calculating the hash digest is repeated for every queried
+> level until finding the matching key or the tree is entirely
+> searched. Thus, to mitigate this overhead, we share the
+> hash digest calculation across levels by re-engineering
+> the BF implementation and allowing the BFs residing in
+> different levels to work in concert during the course of a
+> single query (Fig. 1). As a result, the hashing cost stays
+> constant regardless of the number of levels.
 
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
   <img style="border-radius: 16px; width: 100%; max-width: 640px" src="/media/bf_hash_sharing.png" />
 </div>
-<div style="text-align: center">
+<div class="text-sm mt-1" style="text-align: center; opacity: 0.75">
   <i>Credit: Zichen Zhu: SHaMBa: Reducing Bloom Filter Overhead in LSM Trees, 2023</i>
 </div>
 
