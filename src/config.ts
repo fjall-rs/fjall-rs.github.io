@@ -57,7 +57,7 @@ export default {
       enabled: true,
 
       /// Reading speed in words per minute (WPM) - 200 is a good baseline
-      speed: 200,
+      speed: 175,
     },
 
     /// Code editor configuration
