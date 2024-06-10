@@ -8,7 +8,7 @@ tags:
   - point reads
   - performance
 published_at: 2024-06-08T10:44:33.259Z
-last_modified_at: 2024-06-09T10:44:33.259Z
+last_modified_at: 2024-06-10T22:44:33.259Z
 image: /media/posts/evergreen.jpg
 ---
 
@@ -83,9 +83,9 @@ k = round((m / n) * log(2));
 Calculating many hash functions per lookup can get pretty expensive.
 
 `lsm-tree` currently uses [`seahash`](https://docs.rs/seahash/latest/seahash/), which is already a very fast hashing function.
-On my CPU, calculating a 40-character key hash takes about 50ns.
+On my CPU, calculating a 40-character key hash takes about 5ns.
 
-A single lookup with 20 hash functions would cost around 1'000ns (1µs) of pure CPU time. That is just slightly faster than reading a single page from my SSD (~1.5µs).
+A _single_ bloom filter lookup with 20 hash functions would cost around 100ns of pure CPU time.
 
 We can reduce the amount of hash functions per lookup, by using _double hashing_:
 
