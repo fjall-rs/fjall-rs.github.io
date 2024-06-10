@@ -450,9 +450,9 @@ This may involve multiple I/O operations, decreasing read throughput.
 If the key does not exist, these superfluous operations can be minimized by using a bloom filter to check if there is any point in reading from disk at all.
 The downside is somewhat higher memory usage.</p>
 <p>As more data arrives, segments may need to be merged &#x26; rewritten (compaction), to keep read performance acceptable.
-The are two major compaction strategies: Levelling &#x26; Tiering.</p>
-<h3 id="levelling">Levelling</h3>
-<p>Levelling initially stores flushed segments in L0.
+The are two major compaction strategies: Leveling &#x26; Tiering.</p>
+<h3 id="leveling">Leveling</h3>
+<p>Leveling initially stores flushed segments in L0.
 These segments may have overlapping key range, which is detremental for performance.
 If too many segments are kept in L0, they are merged into the next level into fixed-size segments (default = 64 MiB), that are non-overlapping.
 This makes sure a point read only ever needs to check a single segment <em>per level</em> for data.</p>
@@ -460,10 +460,10 @@ This makes sure a point read only ever needs to check a single segment <em>per l
 That means there are up to 8 times more segments in L2 than L1.
 This strategy makes the key range increasingly more granular because the level size increases exponentially while the segment size is fixed.</p>
 <p class="text-left">
-  The worst-case amount of bloom filter lookups in a levelled LSM-tree is <code>L0_segments + (level_count - 1)</code> because on every level after L0 segments are disjoint, so only one can be a candidate containing the searched key.
+  The worst-case amount of bloom filter lookups in a leveled LSM-tree is <code>L0_segments + (level_count - 1)</code> because on every level after L0 segments are disjoint, so only one can be a candidate containing the searched key.
 </p>
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 500px" src="/media/levelled_point_read.svg">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/leveled_point_read.svg">
 </div>
 <h3 id="tiered">Tiered</h3>
 <p>Tiered compaction simply merges together an entire level and puts the result into the next level, creating increasingly larger segments.
@@ -536,7 +536,7 @@ The <code>Segment</code> struct has been extended by <code>Segment::get_with_has
 <span class="line"><span style="color:#908CAA">  }</span></span>
 <span class="line"><span style="color:#908CAA">}</span></span>
 <span class="line"></span></code></pre>
-<p>This optimization comes at no cost, so it will be internally be used in <code>lsm-tree</code> from 1.2.0 onwards.</p>
+<p>This optimization comes at no cost, so it will be internally be used in <code>lsm-tree</code> from version 1.1.2 onwards.</p>
 <h2 id="interested-in-lsm-trees-and-rust">Interested in LSM-trees and Rust?</h2>
 <p>Check out <a href="https://github.com/fjall-rs/fjall">fjall</a>, an MIT-licensed LSM-based storage engine written in Rust.</p> </article>   <hr class="h-1 mb-2 border-gray-200 dark:border-gray-700"> <div class="flex flex-col gap-3"> <div class="dark:text-gray-300 italic">Tags</div> <ul class="text-sm text-sky-800 dark:text-sky-300 flex flex-wrap items-center gap-3"> <li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/bloom filter" data-astro-transition-scope="astro-x7amp3kc-1">
 #bloom filter </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/lsm tree" data-astro-transition-scope="astro-x7amp3kc-2">
