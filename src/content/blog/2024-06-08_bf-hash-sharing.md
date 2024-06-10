@@ -124,11 +124,11 @@ If the key does not exist, these superfluous operations can be minimized by usin
 The downside is somewhat higher memory usage.
 
 As more data arrives, segments may need to be merged & rewritten (compaction), to keep read performance acceptable.
-The are two major compaction strategies: Levelling & Tiering.
+The are two major compaction strategies: Leveling & Tiering.
 
-### Levelling
+### Leveling
 
-Levelling initially stores flushed segments in L0.
+Leveling initially stores flushed segments in L0.
 These segments may have overlapping key range, which is detremental for performance.
 If too many segments are kept in L0, they are merged into the next level into fixed-size segments (default = 64 MiB), that are non-overlapping.
 This makes sure a point read only ever needs to check a single segment _per level_ for data.
@@ -138,11 +138,11 @@ That means there are up to 8 times more segments in L2 than L1.
 This strategy makes the key range increasingly more granular because the level size increases exponentially while the segment size is fixed.
 
 <p class="text-left">
-  The worst-case amount of bloom filter lookups in a levelled LSM-tree is <code>L0_segments + (level_count - 1)</code> because on every level after L0 segments are disjoint, so only one can be a candidate containing the searched key.
+  The worst-case amount of bloom filter lookups in a leveled LSM-tree is <code>L0_segments + (level_count - 1)</code> because on every level after L0 segments are disjoint, so only one can be a candidate containing the searched key.
 </p>
 
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 500px" src="/media/levelled_point_read.svg" />
+  <img style="border-radius: 16px; max-height: 500px" src="/media/leveled_point_read.svg" />
 </div>
 
 ### Tiered
@@ -242,7 +242,7 @@ for segment in &self.segments {
 }
 ```
 
-This optimization comes at no cost, so it will be internally be used in `lsm-tree` from 1.2.0 onwards.
+This optimization comes at no cost, so it will be internally be used in `lsm-tree` from version 1.1.2 onwards.
 
 ## Interested in LSM-trees and Rust?
 
