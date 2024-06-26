@@ -243,7 +243,3 @@ for segment in &self.segments {
 ```
 
 This optimization comes at no cost, so it will be internally be used in `lsm-tree` from version 1.1.2 onwards.
-
-## Interested in LSM-trees and Rust?
-
-Check out [fjall](https://github.com/fjall-rs/fjall), an MIT-licensed LSM-based storage engine written in Rust.
