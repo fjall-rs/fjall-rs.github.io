@@ -8,9 +8,9 @@ importers:
 
   .:
     dependencies:
-      '@fontsource/atkinson-hyperlegible':
-        specifier: 5.0.20
-        version: 5.0.20
+      '@fontsource/inter':
+        specifier: 5.0.18
+        version: 5.0.18
       fuse.js:
         specifier: 7.0.0
         version: 7.0.0
@@ -574,8 +574,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@fontsource/atkinson-hyperlegible@5.0.20':
-    resolution: {integrity: sha512-YczGmDvJ23lheBaEJGNdUDTUwl1uG6xrU1rG+ftOVCdkmOaXtuZI/zq1KW+02d1eGsqKCrtaabHQMrtLjCYQbg==}
+  '@fontsource/inter@5.0.18':
+    resolution: {integrity: sha512-YCsoYPTcs713sI7tLtxaPrIhXAXvEetGg5Ry02ivA8qUOb3fQHojbK/X9HLD5OOKvFUNR2Ynkwb1kR1hVKQHpw==}
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -3031,7 +3031,7 @@ snapshots:
   '@esbuild/win32-x64@0.21.4':
     optional: true
 
-  '@fontsource/atkinson-hyperlegible@5.0.20': {}
+  '@fontsource/inter@5.0.18': {}
 
   '@iconify/types@2.0.0': {}
 
