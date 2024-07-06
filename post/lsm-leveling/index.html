@@ -1,0 +1,520 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v4.10.1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="sitemap" href="/sitemap-index.xml"><!-- SEO --><title>An overview of Leveled Compaction in LSM-trees | fjall-rs</title><meta name="title" content="An overview of Leveled Compaction in LSM-trees"><meta name="description" content="Exploring the Leveled Compaction Strategy in LSM-tree"><!-- OG --><meta property="og:title" content="An overview of Leveled Compaction in LSM-trees"><meta property="og:description" content="Exploring the Leveled Compaction Strategy in LSM-tree"><meta property="og:url" content="https://fjall-rs.github.io/post/lsm-leveling/"><meta property="og:image" content="https://fjall-rs.github.io/media/posts/levels_skogafoss.jpg"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://fjall-rs.github.io/post/lsm-leveling/"><meta property="twitter:title" content="An overview of Leveled Compaction in LSM-trees"><meta property="twitter:description" content="Exploring the Leveled Compaction Strategy in LSM-tree"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><link rel="stylesheet" href="/_astro/index.BqZRQjaw.css">
+<style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0}}@keyframes astroFadeOut{to{opacity:0}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}[data-astro-transition-scope]{animation:none!important}}
+@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-cyrillic-ext-400-normal.tyfMZHQw.woff2) format("woff2"),url(/_astro/inter-cyrillic-ext-400-normal.CzG7Kr3z.woff) format("woff");unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-cyrillic-400-normal.Df6ckaLK.woff2) format("woff2"),url(/_astro/inter-cyrillic-400-normal.JrS_4yms.woff) format("woff");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-greek-ext-400-normal.CIdlr5YK.woff2) format("woff2"),url(/_astro/inter-greek-ext-400-normal._Rr29XE2.woff) format("woff");unicode-range:U+1F00-1FFF}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-greek-400-normal.DQXyrmoy.woff2) format("woff2"),url(/_astro/inter-greek-400-normal.DvIPHDQ7.woff) format("woff");unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-vietnamese-400-normal.Cnt0N5Vm.woff2) format("woff2"),url(/_astro/inter-vietnamese-400-normal.DIOGfGLL.woff) format("woff");unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-latin-ext-400-normal.D3W-OpO-.woff2) format("woff2"),url(/_astro/inter-latin-ext-400-normal.8tIzm-yw.woff) format("woff");unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-latin-400-normal.BT1H-PT_.woff2) format("woff2"),url(/_astro/inter-latin-400-normal.Cdi8t5Mu.woff) format("woff");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}.astro-route-announcer{position:absolute;left:0;top:0;clip:rect(0 0 0 0);clip-path:inset(50%);overflow:hidden;white-space:nowrap;width:1px;height:1px}:not(.astro-code *){font-family:Inter,sans-serif}
+article a{color:#075985!important}.dark article a{color:#38bdf8!important}article table{table-layout:auto;border:1px solid #d1d5db;border-radius:4px}article table{border-bottom:1px solid #fafafa}.dark article table{border:1px solid #374151}code:before,code:after{display:none}.astro-code{font-size:16px}p code{border-radius:4px;padding:2px 4px;white-space:normal!important}.dark p code{color:#d0d0d0!important;background:#07598566!important}html:not(.dark) p code{color:#333!important;background:#99d4f566!important}.dark article blockquote{border-left-color:#064566!important}html:not(.dark) article blockquote{border-left-width:.25rem;border-left-style:solid;border-left-color:#63c8ff!important}html.dark .astro-code,html.dark .astro-code span{color:var(--shiki-dark)!important;background-color:var(--shiki-dark-bg)!important;font-style:var(--shiki-dark-font-style)!important;font-weight:var(--shiki-dark-font-weight)!important;text-decoration:var(--shiki-dark-text-decoration)!important}
+</style><script type="module" src="/_astro/hoisted.o3X7mdw7.js"></script>
+<script type="module" src="/_astro/page.D0Zdqonr.js"></script><style>[data-astro-transition-scope="astro-x7amp3kc-1"] { view-transition-name: astro-x7amp3kc-1; }@layer astro { ::view-transition-old(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-2"] { view-transition-name: astro-x7amp3kc-2; }@layer astro { ::view-transition-old(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-3"] { view-transition-name: astro-x7amp3kc-3; }@layer astro { ::view-transition-old(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-4"] { view-transition-name: lsm_20tree; }@layer astro { ::view-transition-old(lsm_20tree) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(lsm_20tree) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(lsm_20tree) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(lsm_20tree) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-5"] { view-transition-name: compaction; }@layer astro { ::view-transition-old(compaction) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(compaction) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(compaction) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(compaction) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-6"] { view-transition-name: leveling; }@layer astro { ::view-transition-old(leveling) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(leveling) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(leveling) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(leveling) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style></head> <body class="text-gray-700 dark:text-gray-400 dark:bg-gray-950"> <header class="backdrop-blur w-full px-8 py-5 fixed z-10 border-b dark:border-gray-900 bg-white/80 dark:bg-gray-950/75"> <div class="flex items-center gap-5 mx-auto w-full max-w-3xl"> <a class="text-black dark:text-white font-medium transition-colors hover:brightness-80" href="/" class="text-lg"> <!-- SETUP: If you have a logo, replace this component with it --><span> fjall-rs </span> </a> <div class="flex-grow"></div> <div class="flex items-center gap-4"> <a href="/posts" class="text-gray-800 dark:text-gray-400 transition-colors hover:brightness-80"> Posts </a><a href="/tags" class="text-gray-800 dark:text-gray-400 transition-colors hover:brightness-80"> Tags </a> </div> <div class="flex items-center gap-3"> <a href="/search" aria-label="Search content" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path><path d="M21 21l-6 -6"></path></svg> </a> <button aria-label="Switch theme" class="theme-switch transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path></svg> </button> <script>
+  const iconMoon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" /></svg>`;
+  const iconSun = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" /></svg>`;
+
+  function theme() {
+    const local = localStorage.getItem("theme");
+    if (local) {
+      return local;
+    }
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      return "dark";
+    }
+    return "light";
+  }
+
+  function registerStuff(document) {
+    const root = document.documentElement;
+    const themeSwitch = document.querySelector(".theme-switch");
+
+    if (theme() === "light") {
+      root.classList.remove("dark");
+      themeSwitch.innerHTML = iconMoon;
+    } else {
+      root.classList.add("dark");
+      themeSwitch.innerHTML = iconSun;
+    }
+
+    themeSwitch.addEventListener("click", () => {
+      const isDark = root.classList.contains("dark");
+      localStorage.setItem("theme", isDark ? "light" : "dark");
+      console.log(isDark);
+
+      if (isDark) {
+        root.classList.remove("dark");
+        themeSwitch.innerHTML = iconMoon;
+      } else {
+        root.classList.add("dark");
+        themeSwitch.innerHTML = iconSun;
+      }
+    });
+  }
+
+  registerStuff(document);
+
+  document.addEventListener("astro:after-swap", (ev) => {
+    registerStuff(document);
+  });
+</script> <a target="_blank" href="/rss.xml" aria-label="Get RSS feed" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path> <path d="M5 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path> <path d="M4 4a16 16 0 0 1 16 16"></path> <path d="M4 11a9 9 0 0 1 9 9"></path>  </svg> </a> </div> </div> </header> <main class="px-4 pt-30 mx-auto max-w-3xl">   <div class="reading-progress z-10 fixed left-0 top-0 h-1 dark:bg-sky-500 bg-sky-700 opacity-75"></div> <script>
+  /**
+   * Gets the vertical scroll percent (0.0 - 1.0)
+   */
+  function getScrollPercent() {
+    const doc = document.documentElement;
+    const body = document.body;
+
+    return (
+      (doc.scrollTop || body.scrollTop) /
+      ((doc.scrollHeight || body.scrollHeight) - doc.clientHeight)
+    );
+  }
+
+  document.addEventListener("astro:page-load", () => {
+    document.addEventListener("scroll", () => {
+      const el = document.querySelector(".reading-progress");
+      if (el) {
+        el.style.width = `${getScrollPercent() * 100}%`;
+      }
+    });
+  });
+</script> <div class="flex flex-col gap-4"> <h1 class="text-sky-800 dark:text-sky-400 text-4xl md:text-5xl font-bold"> An overview of Leveled Compaction in LSM-trees </h1> <div class="flex items-center gap-2">  <div> July 6, 2024 </div> 
+- <div>14 min. read</div>  </div> <ul class="text-sm text-sky-800 dark:text-sky-300 flex flex-wrap items-center gap-3"> <li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/lsm tree" data-astro-transition-scope="astro-x7amp3kc-4">
+#lsm tree </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/compaction" data-astro-transition-scope="astro-x7amp3kc-5">
+#compaction </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/leveling" data-astro-transition-scope="astro-x7amp3kc-6">
+#leveling </a> </li> </ul> <img class="mt-5 rounded-xl w-full object-cover aspect-2" src="/media/posts/levels_skogafoss.jpg" alt="Blog post thumbnail"> </div>  <article class="my-10 w-full !max-w-full prose dark:prose-invert text-lg text-justify dark:prose-gray"> <p>LSM-trees never overwrite existing data on disk (<em>“differential index”</em>).
+Instead incoming writes are buffered in a sorted in-memory data structure (<code>MemTable</code>).
+When a size threshold is reached, the memtable is flushed to the first level (L0) as an immutable, sorted file on disk, called a <code>Segment</code> (a.k.a. <code>SSTable</code>, <code>SST</code>).
+As more data arrives, segments build up and read performance suffers.
+We either need to reduce the amount of segments, or reorganize them in a way to make searching requested data easier.
+Reducing the amount of segments is the goal of <code>Tiered Compaction (STCS)</code>, but today we will look at <code>Leveled Compaction (LCS)</code>, which may be a bit harder to grasp initially.</p>
+<h2 id="overview-of-leveling">Overview of Leveling</h2>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/leveled_tree.svg">
+</div>
+<p>The basic idea of Leveling is to work with fixed-size segments and organize them to be disjoint to each other in any level that is not L0.
+Initially, as segments are written in L0 we cannot guarantee they do not overlap.
+However once L0 grows too large, its segments can be written out in sorted order and split into fixed-size segments, making L1 disjoint.
+When L1 grows too large, segments will be picked to reduce it back to its intended size.
+If these selected segments have some overlap with segments in L2, they will be merged and written out in new segments, keeping L2 disjoint.
+This process is repeated for any level that grows too large.</p>
+<h2 id="point-reads">Point reads</h2>
+<p>To read a single key in a Leveled LSM-tree, first the write buffer is checked.
+The write buffer consists of the active memtable and possibly multiple, temporary immutable memtables.
+If the key can found in either of these memtables, the search can be terminated without ever touching the disk.
+If the key is not found in memory, first the segments in L0 are checked, from most recently written to least recently written.
+Because the segments in L0 may overlap, multiple segments may need to be checked.
+While segments that do can not possibly contain the requested key (because it lies outside their key range) can be discarded immediately, any segment which could possibly contain the key <em>needs</em> to be checked, which may involve unnecessary disk I/O if the key is not contained in them.</p>
+<p>Every level after L0 segments is disjoint, so only one segment in each level can be a candidate containing the searched key:</p>
+<p class="text-left">
+  The worst-case amount of disk I/O operations in a leveled LSM-tree is <code>L0_segments + (level_count - 1)</code>.
+</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/leveled_point_read.svg">
+</div>
+<p>Consider 1’000 segments in a single non-L0 level:
+We know the level is disjoint, and we know what part of the keyspace each segment holds.
+This enables us to binary-search a segment for any requested key, effectively nullifying the impact of storing many segments on read performance:</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 400px" src="/media/segment_lookup_log.svg">
+</div>
+<p>(For a level with less than 5 segments, <code>lsm-tree</code> uses linear search instead of binary search)</p>
+<p>Please note that this is a log scale, with a linear scale the magnitude of binary search’s impact becomes more obvious:</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 400px" src="/media/segment_lookup_linear.svg">
+</div>
+<h3 id="bloom-filters">Bloom filters</h3>
+<p>Consider in the tree above, our requested key (blue line) lies in L3.
+We need to check all segments in L0 that may contain the key, plus one segment in L1 and L2 each, and then read our item from L3.
+This degrades the read performance from 1 disk I/O to 7 disk I/Os.</p>
+<p>To reduce unnecessary disk I/O, we can build a <a href="http://localhost:4321/post/bloom-filter-hash-sharing">Bloom filter</a> for each segment.
+Bloom filters use little memory, but can filter out a lot of superfluous work done if no bloom filters were used.
+Especially in L0 and L1, bloom filters are trivially small, so very low false positive rates can be achieved without using a lot of little memory. Because the level’s segments do not contain a huge amount of items, we can essentially eliminate superfluous I/O operations in those levels, which is especially great because these levels are always visited first.
+This is well described in <code>Niv Dayan et. al.: Monkey: Optimal Navigable Key-Value Store, 2017</code>.</p>
+<p>Example: With a FPR = 0.0001%, we only get 1 false positive per 10’000 items.
+For a segment with 100’000 items, the bloom filter only needs 234 KiB of memory (and disk space, which is essentially negligible).</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/bf_point_reads.svg">
+</div>
+<div class="text-sm mt-1" style="text-align: center; opacity: 0.75">
+  <i>Point reads in L1 with and without bloom filters</i>
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/bf_point_reads_log.svg">
+</div>
+<div class="text-sm mt-1" style="text-align: center; opacity: 0.75">
+  <i>Point reads in L1 with and without bloom filters (logarithmic)</i>
+</div>
+<h2 id="range-reads">Range reads</h2>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/leveled_range_read.svg">
+</div>
+<p>Range reads need to reconcile a range by checking every segment that is part of the requested range, then merging the ranges to get the final range.
+This is done by creating a segment reader over each “run”, seeked to the range start, and advancing it, and comparing all segment readers (<em>k-way merge</em>).
+The first read will incur the highest cost, as each reader’s start block needs to be loaded from disk (unless it is cached), because the minimum item needs to be found first.
+In the image above, this results in 8 I/O operations, highlighted using the blue arrows.</p>
+<p>But the requested range is affecting way more than 8 segments, so why are there only 5 arrows?
+Due to the disjoint nature of levels L1, …, Lmax, only one segment in those levels needs to be checked initially.
+When that segment is fully read, the next segment reader is initialized.
+In the LSM-tree above, this optimization saves 5 I/O operations when initiating the shown range.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/disjoint_multi_read.svg">
+</div>
+<div class="text-sm mt-1" style="text-align: center; opacity: 0.75">
+  <i>Range reads over disjoint sets of segments</i>
+</div>
+<p>Compare this to reading a disjoint set of segments the naive way:</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 250px" src="/media/disjoint_naive_read.svg">
+</div>
+<div class="text-sm mt-1" style="text-align: center; opacity: 0.75">
+  <i>The naive implementation of the range needs 4 I/O operations initially, decreasing performance of short ranges by <b>4x</b></i>
+</div>
+<p>In <code>lsm-tree</code> this is implemented in the <code>SegmentMultiReader</code>, which stores each level as a double-ended queue and only consumes from the first (forward iteration) or last segment (reverse iteration), discarding fully read segments, until it is completely done:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA;font-style:italic;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;--shiki-dark:#6E6A86;font-style:italic;--shiki-dark-font-style:italic"> The implementation is simplified a bit by</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA;font-style:italic;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;--shiki-dark:#6E6A86;font-style:italic;--shiki-dark-font-style:italic"> omitting unnecessary details such as lifetimes.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">pub</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> struct</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> MultiReader</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
+<span class="line"><span style="color:#E0DEF4;--shiki-dark:#E0DEF4;font-style:italic;--shiki-dark-font-style:italic">    readers</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">:</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> VecDeque</span><span style="color:#908CAA;--shiki-dark:#908CAA">&#x3C;</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">BoxedIterator</span><span style="color:#908CAA;--shiki-dark:#908CAA">>,</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">impl</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Iterator</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> for</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> MultiReader</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    fn</span><span style="color:#EA9A97;--shiki-dark:#EA9A97"> next</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">&#x26;mut</span><span style="color:#E0DEF4;--shiki-dark:#E0DEF4;font-style:italic;--shiki-dark-font-style:italic"> self</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> -></span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Option</span><span style="color:#908CAA;--shiki-dark:#908CAA">&#x3C;</span><span style="color:#E0DEF4;--shiki-dark:#E0DEF4;font-style:italic;--shiki-dark-font-style:italic">Self</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Item</span><span style="color:#908CAA;--shiki-dark:#908CAA">></span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">        loop</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">            if</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> let</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Some</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#E0DEF4;--shiki-dark:#E0DEF4;font-style:italic;--shiki-dark-font-style:italic">item</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;--shiki-dark:#E0DEF4;font-style:italic;--shiki-dark-font-style:italic"> self</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#E0DEF4;--shiki-dark:#E0DEF4">readers</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">front_mut</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">next</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">                return</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Some</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#E0DEF4;--shiki-dark:#E0DEF4;font-style:italic;--shiki-dark-font-style:italic">item</span><span style="color:#908CAA;--shiki-dark:#908CAA">);</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">            }</span></span>
+<span class="line"><span style="color:#E0DEF4;--shiki-dark:#E0DEF4;font-style:italic;--shiki-dark-font-style:italic">            self</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#E0DEF4;--shiki-dark:#E0DEF4">readers</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">pop_front</span><span style="color:#908CAA;--shiki-dark:#908CAA">();</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">        }</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">    }</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA;font-style:italic;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;--shiki-dark:#6E6A86;font-style:italic;--shiki-dark-font-style:italic"> DoubleEndedIterator::next_back works the same way, just inverted</span></span>
+<span class="line"></span></code></pre>
+<h3 id="scanning-monotonic-data">Scanning monotonic data</h3>
+<p>The above optimization can be further improved if the entire tree is disjoint.
+In that case, we do not need to create a SegmentMultiReader per level, but only a single one for the entire tree and enqueue each level.
+This only works for monotonic key inserts (e.g. timeseries data), but will reduce the initialization cost of the tree from N (number of non-vacant levels) to 1:</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/disjoint_tree.svg">
+</div>
+<div class="text-sm mt-1" style="text-align: center; opacity: 0.75">
+  <i>The tree is disjoint: no segment overlaps with another in any level</i>
+</div>
+<p>The resulting segment read order is fully ordered, so only a single block read is needed to initialize the range read.
+This reduces the above tree’s initialization cost down from 4 to 1 I/O.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 250px" src="/media/disjoint_tree_scan_reader.svg">
+</div>
+<p>While this initialization cost reduction is negligible for a large OLAP-style range scan, it can be valuable in a scenario in which the minimum or maximum key needs to be found (<code>Tree::first_key_value</code> or <code>Tree::last_key_value</code>), e.g. in a FIFO queue.</p>
+<blockquote>
+<p>This is currently not implemented in <code>lsm-tree</code></p>
+<p>See <a href="https://github.com/fjall-rs/lsm-tree/issues/47">https://github.com/fjall-rs/lsm-tree/issues/47</a></p>
+</blockquote>
+<h3 id="range-filters">Range filters</h3>
+<p>Setting up a range read over all affected segments is expensive, and be undesirable for short range scans.
+As with point reads, in-memory filters may be used to avoid unnecessary disk seeks, especially in L0, where checking most, if not all, segments is unavoidable.
+There are a bunch of proposed range filters, such as SuRF, Rosetta, GRF, REMIX and others.
+Some range filters may also double as a point read filter, replacing the default bloom filter implementation, which may save some memory.
+These filters are called <code>PRF</code> (<strong>P</strong>oint-read-<strong>R</strong>ange-<strong>F</strong>ilter).</p>
+<blockquote>
+<p>Range filters are currently not implemented in <code>lsm-tree</code></p>
+<p>See <a href="https://github.com/fjall-rs/lsm-tree/issues/46">https://github.com/fjall-rs/lsm-tree/issues/46</a></p>
+</blockquote>
+<h2 id="configuring-leveling">Configuring Leveling</h2>
+<h3 id="l0-compaction-trigger">L0 compaction trigger</h3>
+<p>Because segments in L0 may always span the entire keyspace, they may have to be merged with every segment in L1, causing high write amplification and preventing parallel compactions in those levels.
+On the other hand, waiting for more segments to arrive in L0 will decrease read performance as segments in L0 are generally not disjoint.</p>
+<p>We can control how aggressive to compact into L1 by configuring how many segments to amass in L0, allowing to adjust between better read performance or lower write amplification.</p>
+<h2 id="l0-fragmentation">L0 fragmentation</h2>
+<p>By now you probably have realized that most issues stem from the fact L0 is not disjoint.
+While this is an unavoidable fact of life, it can be alleviated by fragmenting L0 segments across the <em>key boundaries</em> of L1 segments.
+Because we know have disjoint sets of segments, we can now be smarter about picking a subset of L0 (instead of all of it) and merge that into L1.
+More importantly, compaction can be parallelized because the compaction workers never get in the way of other compaction worker’s key ranges.</p>
+<p>Fragmentation increases flushing times as one L0 segment may involve up to <code>level_ratio</code> fsyncs instead of 1, and also rolling over a segment writer incurs some overhead.
+Also, L0 will house more very small segments which increases bookkeeping costs a bit.
+But as shown above, point reads and range reads can both be optimized for disjoint sets of segments.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/leveled_l0_fragmentation.svg">
+</div>
+<div class="text-sm mt-1" style="text-align: center; opacity: 0.75">
+  <i>The key boundaries (vertical dotted lines) in L1 determine the fragmentation in L0, and thus the maximum possible parallelism for L0->L1 compactions</i>
+</div>
+<blockquote>
+<p>L0 fragmentation is currently not implemented in <code>lsm-tree</code></p>
+<p>See <a href="https://github.com/fjall-rs/lsm-tree/issues/48">https://github.com/fjall-rs/lsm-tree/issues/48</a></p>
+</blockquote>
+<h3 id="level-fanout">Level fanout</h3>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 400px" src="/media/leveled_wide.svg">
+</div>
+<p>The level fanout has a pretty simple effect on LSM performance.
+Consider the tree configuration in the image above:
+L1 is configured to store 128 MB of data.
+The tree has a level fanout of 8, meaning L2 has a maximum size of 1024.
+When L1 grows too large, its overshoot will be merged into the next level, by picking as many L1 segments as needed to reduce the level back to its intended size, plus all the overlapping segments in L2 (coloured in red).
+Picking overlapped segments is required for the invariant of Leveling to hold: every level after L0 is disjoint.
+This operation needs to rewrite 320 MB of data.
+The target size of any level after L0 is: <code>level_fanout ^ level_idx</code>.</p>
+<p>Example 1: With a fanout of 8, L1 should contain a maximum of 8^1 = <strong>8</strong> segments.</p>
+<p>Example 2: With a fanout of 10, L2 should contain a maximum of 10^2 = <strong>100</strong> segments.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/leveled_narrow.svg">
+</div>
+<p>Now, consider this LSM-tree with an extreme level fanout of 2:
+When L1 grows too large, the L1’s overshoot only needs to be merged with one segment in L2, resulting in 128 MB of rewritten data, which is a much lower write amplification than the tree with a fanout of 8.
+But the downside is how deep the tree has grown.
+Both trees store the same amount of data, but the narrow tree has twice as many levels (ignoring L0).
+This effectively doubles the worse case read latency of the tree compared to the wide tree.</p>
+<p>With the level fanout we effectively control how much the tree behaves like a log (low fanout) or a sorted array (high fanout).
+Consider an absurd of level fanout of 1’000:
+With the default segment size, we can store 64 GB in just one level, which results in very fast writes, but any overshoot of the previous level may result in 100s of segments to be rewritten, resulting in extreme write amplification.
+The tree thus becomes more like a flat file that we are overwriting again and again.</p>
+<p>Summarized:</p>
+<blockquote>
+<p><strong>High level fanout = faster reads, higher write amplification</strong></p>
+<p><strong>Low level fanout = slower reads, lower write amplification</strong></p>
+</blockquote>
+<h3 id="segment-size">Segment size</h3>
+<p>Segments in a Leveled tree have a fixed size.
+Smaller segments allow allow more granular more compaction, especially in larger levels, where the keyspace is fragmented into a large amount of segments.</p>
+<p>However, having a lot of segments comes with a caveat:
+unlike a B-tree, which stored in a single file, we may have hundreds or thousands of segment files!
+Ideally, we want to keep file descriptors open to enable faster reads by avoiding rather expensive <code>fopen</code> syscalls.
+File descriptors are kept in a global cache called the <code>DescriptorTable</code> (<code>TableCache</code> in RocksDB).
+If the descriptor table limit is much lower than amount of segments, file descriptors may get evicted resulting in higher read latency because <code>fopen</code> needs to be called more often.</p>
+<h2 id="summary">Summary</h2>
+<p>LCS needs some care to both understand, implement and optimize effectively.
+It is the default compaction strategy used in RocksDB, CockroachDB’s Pebble, Dgraph’s BadgerDB, Fjall, and the only compaction strategy implemented LevelDB (probably where it got its name from, really).
+Interestingly, Cassandra and ScyllaDB opt for STCS as default compaction strategy instead.
+While suffering from higher compaction overhead, LCS has more predictable read performance and is much more tuned for range-based queries, which a lot of databases depend on.
+Leveling and Tiering are a spectrum, and switching between compaction strategies, thus allowing LSM-trees to morph depending on workload spikes (lazy leveling, leveled-N and incremental compaction strategies to name a few) is an interesting topic for future investigations.</p>
+<!-- TODO: intra-L0 --> <h2>Interested in LSM-trees and Rust?</h2> <p>
+Check out <a href="https://github.com/fjall-rs/fjall" target="_blank">fjall</a>, an
+      MIT-licensed LSM-based storage engine written in Rust.
+</p> </article>   <hr class="h-1 mb-2 border-gray-200 dark:border-gray-700"> <div class="flex flex-col gap-3"> <div class="dark:text-gray-300 italic">Tags</div> <ul class="text-sm text-sky-800 dark:text-sky-300 flex flex-wrap items-center gap-3"> <li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/lsm tree" data-astro-transition-scope="astro-x7amp3kc-1">
+#lsm tree </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/compaction" data-astro-transition-scope="astro-x7amp3kc-2">
+#compaction </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/leveling" data-astro-transition-scope="astro-x7amp3kc-3">
+#leveling </a> </li> </ul> </div>  </main> <footer class="flex flex-col gap-5 py-10 mx-auto max-w-3xl w-full"> <!-- TODO: move into a fixed FAB button, outside of footer --> <div class="text-right"> <button onclick="scrollToTop()">Back to top</button> </div> <div class="text-center">
+&copy; 2024 fjall-rs 
+- powered by <a class="text-sky-700 dark:text-sky-300 italic transition-all hover:brightness-80" href="https://github.com/marvin-j97/nanoblog" target="_blank">
+nanoblog
+</a>  </div> </footer> <script>
+  function scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }
+</script>  </body> </html> 
