@@ -510,11 +510,11 @@ Interestingly, Cassandra and ScyllaDB opt for STCS as default compaction strateg
 While suffering from higher compaction overhead, LCS has more predictable read performance and is much more tuned for range-based queries, which a lot of databases depend on.</p>
 <p>Leveling and Tiering are a spectrum [1], and switching between compaction strategies and fine-tuning sizing ratios [2] between different levels, thus allowing LSM-trees to morph depending on workload spikes (lazy leveling [3], leveled-N [4] and incremental [5] compaction strategies to name a few) is an interesting topic for future investigations.</p>
 <h2 id="footnotes">Footnotes</h2>
-<p>[1] <a href="https://github.com/facebook/rocksdb/wiki/Compaction#tieredleveled">https://github.com/facebook/rocksdb/wiki/Compaction#tieredleveled</a></p>
-<p>[2] Niv Dayan et. al.: The Log-Structured Merge-Bush &#x26; the Wacky Continuum</p>
-<p>[3] Niv Dayan et. al.: Dostoevsky: Better Space-Time Trade-Offs for LSM-Tree Based Key-Value Stores via Adaptive Removal of Superfluous Merging</p>
-<p>[4] <a href="https://github.com/facebook/rocksdb/wiki/Compaction#leveled-n">https://github.com/facebook/rocksdb/wiki/Compaction#leveled-n</a></p>
-<p>[5] <a href="https://www.scylladb.com/2021/04/28/incremental-compaction-2-0-a-revolutionary-space-and-write-optimized-compaction-strategy/">https://www.scylladb.com/2021/04/28/incremental-compaction-2-0-a-revolutionary-space-and-write-optimized-compaction-strategy/</a></p> <h2>Interested in LSM-trees and Rust?</h2> <p>
+<p>[1] <a href="https://github.com/facebook/rocksdb/wiki/Compaction#tieredleveled">RocksDB Wiki - Tiered + Leveled</a></p>
+<p>[2] Niv Dayan et. al.: The Log-Structured Merge-Bush &#x26; the Wacky Continuum, 2019</p>
+<p>[3] Niv Dayan et. al.: Dostoevsky: Better Space-Time Trade-Offs for LSM-Tree Based Key-Value Stores via Adaptive Removal of Superfluous Merging, 2018</p>
+<p>[4] <a href="https://github.com/facebook/rocksdb/wiki/Compaction#leveled-n">RocksDB Wiki - Leveled N</a></p>
+<p>[5] <a href="https://www.scylladb.com/2021/04/28/incremental-compaction-2-0-a-revolutionary-space-and-write-optimized-compaction-strategy">ScyllaDB Blog - Incremental Compaction 2.0</a></p> <h2>Interested in LSM-trees and Rust?</h2> <p>
 Check out <a href="https://github.com/fjall-rs/fjall" target="_blank">fjall</a>, an
       MIT-licensed LSM-based storage engine written in Rust.
 </p> </article>   <hr class="h-1 mb-2 border-gray-200 dark:border-gray-700"> <div class="flex flex-col gap-3"> <div class="dark:text-gray-300 italic">Tags</div> <ul class="text-sm text-sky-800 dark:text-sky-300 flex flex-wrap items-center gap-3"> <li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/lsm tree" data-astro-transition-scope="astro-x7amp3kc-1">
