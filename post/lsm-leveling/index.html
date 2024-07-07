@@ -505,7 +505,7 @@ File descriptors are kept in a global cache called the <code>DescriptorTable</co
 If the descriptor table limit is much lower than amount of segments, file descriptors may get evicted resulting in higher read latency because <code>fopen</code> needs to be called more often.</p>
 <h2 id="summary">Summary</h2>
 <p>LCS needs some care to both understand, implement and optimize effectively.
-It is the default compaction strategy used in RocksDB, CockroachDB’s Pebble, Dgraph’s BadgerDB, Fjall, and the only compaction strategy implemented LevelDB (probably where it got its name from, really).
+It is the default compaction strategy used in RocksDB, CockroachDB’s Pebble, Dgraph’s BadgerDB, Fjall, and the only compaction strategy implemented in LevelDB (probably where it got its name from, really).
 Interestingly, Cassandra and ScyllaDB opt for STCS as default compaction strategy instead.
 While suffering from higher compaction overhead, LCS has more predictable read performance and is much more tuned for range-based queries, which a lot of databases depend on.</p>
 <p>Leveling and Tiering are a spectrum [1], and switching between compaction strategies and fine-tuning sizing ratios [2] between different levels, thus allowing LSM-trees to morph depending on workload spikes (lazy leveling [3], leveled-N [4] and incremental [5] compaction strategies to name a few) is an interesting topic for future investigations.</p>
