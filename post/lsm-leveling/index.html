@@ -417,10 +417,6 @@ This reduces the above tree’s initialization cost down from 4 to 1 I/O.</p>
   <img style="border-radius: 16px; max-height: 250px" src="/media/disjoint_tree_scan_reader.svg">
 </div>
 <p>While this initialization cost reduction is negligible for a large OLAP-style range scan, it can be valuable in a scenario in which the minimum or maximum key needs to be found (<code>Tree::first_key_value</code> or <code>Tree::last_key_value</code>), e.g. in a FIFO queue.</p>
-<blockquote>
-<p>This is currently not implemented in <code>lsm-tree</code></p>
-<p>See <a href="https://github.com/fjall-rs/lsm-tree/issues/47">https://github.com/fjall-rs/lsm-tree/issues/47</a></p>
-</blockquote>
 <h3 id="range-filters">Range filters</h3>
 <p>Setting up a range read over all affected segments is expensive, and be undesirable for short range scans.
 As with point reads, in-memory filters may be used to avoid unnecessary disk seeks, especially in L0, where checking most, if not all, segments is unavoidable.
