@@ -359,7 +359,9 @@ For a segment with 100’000 items, the bloom filter only needs 234 KiB of memor
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
   <img style="border-radius: 16px; max-height: 500px" src="/media/leveled_range_read.svg">
 </div>
-<p>Range reads need to reconcile a range by checking every segment that is part of the requested range, then merging the ranges to get the final range.
+<p>Range reads need to reconcile a range by reading multiple runs of segments.
+To do so, segments are collected, discarding all those that fall outside the requested range (“culling”).
+Those segments are then scanned and merged to get the final, reconciled range.
 This is done by creating a segment reader over each “run”, seeked to the range start, and advancing it, and comparing all segment readers (<em>k-way merge</em>).
 The first read will incur the highest cost, as each reader’s start block needs to be loaded from disk (unless it is cached), because the minimum item needs to be found first.
 In the image above, this results in 8 I/O operations, highlighted using the blue arrows.</p>
