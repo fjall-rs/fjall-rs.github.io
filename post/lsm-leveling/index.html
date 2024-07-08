@@ -303,16 +303,16 @@ Reducing the amount of segments is the goal of <code>Tiered Compaction (STCS)</c
   <img style="border-radius: 16px; max-height: 500px" src="/media/leveled_tree.svg">
 </div>
 <p>The basic idea of Leveling is to work with fixed-size segments and organize them to be disjoint to each other in any level that is not L0.
-Initially, as segments are written in L0 we cannot guarantee they do not overlap.
-However once L0 grows too large, its segments can be written out in sorted order and split into fixed-size segments, making L1 disjoint.
+Initially, as segments are written in L0 we cannot guarantee they do not overlap.</p>
+<p>Once L0 grows too large, its segments can be written out in sorted order and split into fixed-size segments, making L1 disjoint.
 When L1 grows too large, segments will be picked to reduce it back to its intended size.
 If these selected segments have some overlap with segments in L2, they will be merged and written out in new segments, keeping L2 disjoint.
 This process is repeated for any level that grows too large.</p>
 <h2 id="point-reads">Point reads</h2>
 <p>To read a single key in a Leveled LSM-tree, first the write buffer is checked.
 The write buffer consists of the active memtable and possibly multiple, temporary immutable memtables.
-If the key can be found in either of these memtables, the search can be terminated without ever touching the disk.
-If the key is not found in memory, first the segments in L0 are checked, from most recently written to least recently written.
+If the key can be found in either of these memtables, the search can be terminated without ever touching the disk.</p>
+<p>If the key is not found in memory, first the segments in L0 are checked, from most recently written to least recently written.
 Because the segments in L0 may overlap, multiple segments may need to be checked.
 While segments that do can not possibly contain the requested key (because it lies outside their key range) can be discarded immediately, any segment which could possibly contain the key <em>needs</em> to be checked, which may involve unnecessary disk I/O if the key is not contained in them.</p>
 <p>Every level after L0 segments is disjoint, so only one segment in each level can be a candidate containing the searched key:</p>
