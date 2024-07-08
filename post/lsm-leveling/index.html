@@ -363,7 +363,7 @@ For a segment with 100’000 items, the bloom filter only needs 234 KiB of memor
 This is done by creating a segment reader over each “run”, seeked to the range start, and advancing it, and comparing all segment readers (<em>k-way merge</em>).
 The first read will incur the highest cost, as each reader’s start block needs to be loaded from disk (unless it is cached), because the minimum item needs to be found first.
 In the image above, this results in 8 I/O operations, highlighted using the blue arrows.</p>
-<p>But the requested range is affecting way more than 8 segments, so why are there only 5 arrows?
+<p>But the requested range is affecting way more than 8 segments, so why are there only 8 arrows?
 Due to the disjoint nature of levels L1, …, Lmax, only one segment in those levels needs to be checked initially.
 When that segment is fully read, the next segment reader is initialized.
 In the LSM-tree above, this optimization saves 5 I/O operations when initiating the shown range.</p>
