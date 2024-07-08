@@ -404,7 +404,7 @@ In the LSM-tree above, this optimization saves 5 I/O operations when initiating 
 <h3 id="scanning-monotonic-data">Scanning monotonic data</h3>
 <p>The above optimization can be further improved if the entire tree is disjoint.
 In that case, we do not need to create a SegmentMultiReader per level, but only a single one for the entire tree and enqueue each level.
-This only works for monotonic key inserts (e.g. timeseries data), but will reduce the initialization cost of the tree from N (number of non-vacant levels) to 1:</p>
+This only works for monotonic key inserts (e.g. time series data), but will reduce the initialization cost of the tree from N (number of non-vacant levels) to 1:</p>
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
   <img style="border-radius: 16px; max-height: 500px" src="/media/disjoint_tree.svg">
 </div>
@@ -416,7 +416,7 @@ This reduces the above tree’s initialization cost down from 4 to 1 I/O.</p>
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
   <img style="border-radius: 16px; max-height: 250px" src="/media/disjoint_tree_scan_reader.svg">
 </div>
-<p>While this initialization cost reduction is negligible for a large OLAP-style range scan, it can be valuable in a scenario in which the minimum or maximum key needs to be found (<code>Tree::first_key_value</code> or <code>Tree::last_key_value</code>), e.g. in a FIFO queue.</p>
+<p>While this initialization cost reduction is negligible for a large OLAP-style range scan, it can be valuable in a scenario in which a limited range neefs to be read, e.g. in a FIFO queue, or a small slice in a time series data set.</p>
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
   <img style="border-radius: 16px; max-height: 300px" src="/media/disjoint_tree_scan_latest.svg">
 </div>
