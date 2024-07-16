@@ -501,7 +501,7 @@ The tree thus becomes more like a flat file that we are overwriting again and ag
 </blockquote>
 <h3 id="segment-size">Segment size</h3>
 <p>Segments in a Leveled tree have a fixed size.
-Smaller segments allow allow more granular more compaction, especially in larger levels, where the keyspace is fragmented into a large amount of segments.</p>
+Smaller segments allow more granular more compaction, especially in larger levels, where the keyspace is fragmented into a large amount of segments.</p>
 <p>However, having a lot of segments comes with a caveat:
 unlike a B-tree, which stored in a single file, we may have hundreds or thousands of segment files!
 Ideally, we want to keep file descriptors open to enable faster reads by avoiding rather expensive <code>fopen</code> syscalls.
