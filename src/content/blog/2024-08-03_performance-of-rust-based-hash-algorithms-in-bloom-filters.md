@@ -11,7 +11,7 @@ tags:
   - short
   - benchmark
 published_at: 2024-08-03T20:42:53.520Z
-last_modified_at: 2024-08-03T20:42:53.520Z
+last_modified_at: 2024-08-05T20:42:53.520Z
 image: /media/posts/bloom.jpg
 ---
 
@@ -23,7 +23,7 @@ Even squeezing out 10-20ns can increase hot read performance by about 5-10%.
 
 ## Results
 
-The benchmark code sets up a single disk segment and reads an existing key from it 20 million times.
+The benchmark code sets up a single disk segment and reads an existing key from it 25 million times.
 
 All benchmarks ran on an i9 11900k.
 
@@ -31,25 +31,27 @@ All benchmarks ran on an i9 11900k.
   <img style="border-radius: 16px; max-height: 500px" src="/media/hash_function_performance.svg" />
 </div>
 
-Results (zoomed in) ignoring 1000 byte keys, as they are unlikely and not recommended for any kind of workload.
+### ns per read
 
-<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 500px" src="/media/hash_function_performance_2.svg" />
-</div>
+| Key Size | xxhash::h3 | seahash | cityhash | metrohash | rustc_hash | fasthash::spooky |
+| -------- | ---------- | ------- | -------- | --------- | ---------- | ---------------- |
+| 1B       | 182ns      | 225ns   | 200ns    | 186ns     | 191ns      | 218ns            |
+| 8B       | 193ns      | 208ns   | 197ns    | 186ns     | 190ns      | 216ns            |
+| 36B      | 196ns      | 215ns   | 200ns    | 190ns     | 196ns      | 226ns            |
+| 73B      | 202ns      | 227ns   | 218ns    | 194ns     | 197ns      | 242ns            |
+| 147B     | 210ns      | 240ns   | 232ns    | 202ns     | 207ns      | 256ns            |
+| 1000B    | 253ns      | 388ns   | 324ns    | 257ns     | 288ns      | 318ns            |
 
-| key size | xxhash::xxh3 | seahash   | cityhasher | metrohash | fxhash    | fasthash::spooky |
-| -------- | ------------ | --------- | ---------- | --------- | --------- | ---------------- |
-| 1        | 4,424,778    | 4,065,040 | 4,424,778  | 4,219,409 | 4,545,454 | 4,587,155        |
-| 8        | 4,424,778    | 4,329,004 | 4,329,004  | 4,273,504 | 4,545,454 | 4,524,886        |
-| 36       | 4,385,964    | 4,184,100 | 4,237,288  | 4,048,582 | 4,504,504 | 4,484,304        |
-| 73       | 4,255,319    | 3,952,569 | 3,937,007  | 3,846,153 | 4,385,964 | 4,291,845        |
-| 147      | 4,098,360    | 3,717,472 | 3,773,584  | 3,759,398 | 4,000,000 | 4,048,582        |
-| 1000     | 3,225,806    | 2,272,727 | 2,724,795  | 2,631,578 | 2,032,520 | 3,205,128        |
+### RPS
 
-I think it's fair to say `xxhash xxh3` and `spookyhash` dominate pretty much across the board.
-
-`fxhash` has a bit of a lead for keys up to 72 bytes (2x UUIDv4), but its performance decay is more steep than any other hash function in this benchmark.
-But it may be the best hashing function in this benchmark for typical key lengths (< 128 bytes).
+| Key Size | xxhash::h3 | seahash | cityhash | metrohash | rustc_hash | fasthash::spooky |
+| -------- | ---------- | ------- | -------- | --------- | ---------- | ---------------- |
+| 1B       | 5494505    | 4444444 | 5000000  | 5376344   | 5235602    | 4587155          |
+| 8B       | 5376344    | 4807692 | 5076142  | 5376344   | 5263157    | 4629629          |
+| 36B      | 5102040    | 4651162 | 5000000  | 5263157   | 5102040    | 4424778          |
+| 73B      | 4950495    | 4405286 | 4587155  | 5154639   | 5076142    | 4201680          |
+| 147B     | 4761904    | 4166666 | 4310344  | 4950495   | 4830917    | 3937007          |
+| 1000B    | 3952569    | 2577319 | 3086419  | 3891050   | 3472222    | 3154574          |
 
 I don't know which hashing function I will end up using in `lsm-tree 2` yet. Probably `xxhash`, but I have not benchmarked if the hashing functions have any meaningful impact on false positive rates yet.
 The future will decide...
