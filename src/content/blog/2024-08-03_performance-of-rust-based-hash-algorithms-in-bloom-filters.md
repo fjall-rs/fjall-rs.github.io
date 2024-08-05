@@ -33,25 +33,25 @@ All benchmarks ran on an i9 11900k.
 
 ### ns per read
 
-| Key Size | xxhash::h3 | seahash | cityhash | metrohash | rustc_hash | fasthash::spooky |
-| -------- | ---------- | ------- | -------- | --------- | ---------- | ---------------- |
-| 1B       | 182ns      | 225ns   | 200ns    | 186ns     | 191ns      | 218ns            |
-| 8B       | 193ns      | 208ns   | 197ns    | 186ns     | 190ns      | 216ns            |
-| 36B      | 196ns      | 215ns   | 200ns    | 190ns     | 196ns      | 226ns            |
-| 73B      | 202ns      | 227ns   | 218ns    | 194ns     | 197ns      | 242ns            |
-| 147B     | 210ns      | 240ns   | 232ns    | 202ns     | 207ns      | 256ns            |
-| 1000B    | 253ns      | 388ns   | 324ns    | 257ns     | 288ns      | 318ns            |
+| Key Size | xxhash::h3 | seahash | cityhash | metrohash | rustc_hash | fasthash::spooky | fxhash |
+| -------- | ---------- | ------- | -------- | --------- | ---------- | ---------------- | ------ |
+| 1B       | 182ns      | 225ns   | 200ns    | 186ns     | 191ns      | 218ns            | 192ns  |
+| 8B       | 193ns      | 208ns   | 197ns    | 186ns     | 190ns      | 216ns            | 198ns  |
+| 36B      | 196ns      | 215ns   | 200ns    | 190ns     | 196ns      | 226ns            | 206ns  |
+| 73B      | 202ns      | 227ns   | 218ns    | 194ns     | 197ns      | 242ns            | 206ns  |
+| 147B     | 210ns      | 240ns   | 232ns    | 202ns     | 207ns      | 256ns            | 227ns  |
+| 1000B    | 253ns      | 388ns   | 324ns    | 257ns     | 288ns      | 318ns            | 457ns  |
 
 ### RPS
 
-| Key Size | xxhash::h3 | seahash | cityhash | metrohash | rustc_hash | fasthash::spooky |
-| -------- | ---------- | ------- | -------- | --------- | ---------- | ---------------- |
-| 1B       | 5494505    | 4444444 | 5000000  | 5376344   | 5235602    | 4587155          |
-| 8B       | 5376344    | 4807692 | 5076142  | 5376344   | 5263157    | 4629629          |
-| 36B      | 5102040    | 4651162 | 5000000  | 5263157   | 5102040    | 4424778          |
-| 73B      | 4950495    | 4405286 | 4587155  | 5154639   | 5076142    | 4201680          |
-| 147B     | 4761904    | 4166666 | 4310344  | 4950495   | 4830917    | 3937007          |
-| 1000B    | 3952569    | 2577319 | 3086419  | 3891050   | 3472222    | 3154574          |
+| Key Size | xxhash::h3 | seahash | cityhash | metrohash | rustc_hash | fasthash::spooky | fxhash  |
+| -------- | ---------- | ------- | -------- | --------- | ---------- | ---------------- | ------- |
+| 1B       | 5494505    | 4444444 | 5000000  | 5376344   | 5235602    | 4587155          | 5208333 |
+| 8B       | 5376344    | 4807692 | 5076142  | 5376344   | 5263157    | 4629629          | 5050505 |
+| 36B      | 5102040    | 4651162 | 5000000  | 5263157   | 5102040    | 4424778          | 4854368 |
+| 73B      | 4950495    | 4405286 | 4587155  | 5154639   | 5076142    | 4201680          | 4854368 |
+| 147B     | 4761904    | 4166666 | 4310344  | 4950495   | 4830917    | 3937007          | 4405286 |
+| 1000B    | 3952569    | 2577319 | 3086419  | 3891050   | 3472222    | 3154574          | 2188183 |
 
 I don't know which hashing function I will end up using in `lsm-tree 2` yet. Probably `xxhash`, but I have not benchmarked if the hashing functions have any meaningful impact on false positive rates yet.
 The future will decide...
