@@ -577,7 +577,7 @@
     });
   });
 </script> <div class="flex flex-col gap-4"> <h1 class="text-sky-800 dark:text-sky-400 text-4xl md:text-5xl font-bold"> Which hash function makes the fastest bloom filter? </h1> <div class="flex items-center gap-2">  <div> August 5, 2024 </div> 
-- <div>4 min. read</div>  </div> <ul class="text-sm text-sky-800 dark:text-sky-300 flex flex-wrap items-center gap-3"> <li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/benchmark" data-astro-transition-scope="astro-x7amp3kc-8">
+- <div>5 min. read</div>  </div> <ul class="text-sm text-sky-800 dark:text-sky-300 flex flex-wrap items-center gap-3"> <li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/benchmark" data-astro-transition-scope="astro-x7amp3kc-8">
 #benchmark </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/bloom filter" data-astro-transition-scope="astro-x7amp3kc-9">
 #bloom filter </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/hashing" data-astro-transition-scope="astro-x7amp3kc-10">
 #hashing </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/lsm tree" data-astro-transition-scope="astro-x7amp3kc-11">
@@ -663,7 +663,14 @@ Even squeezing out 10-20ns can increase hot read performance by about 5-10%.</p>
 
 
 
-<table><thead><tr><th>Key Size</th><th>xxhash::h3</th><th>seahash</th><th>cityhash</th><th>metrohash</th><th>rustc_hash</th><th>fasthash::spooky</th></tr></thead><tbody><tr><td>1B</td><td>182ns</td><td>225ns</td><td>200ns</td><td>186ns</td><td>191ns</td><td>218ns</td></tr><tr><td>8B</td><td>193ns</td><td>208ns</td><td>197ns</td><td>186ns</td><td>190ns</td><td>216ns</td></tr><tr><td>36B</td><td>196ns</td><td>215ns</td><td>200ns</td><td>190ns</td><td>196ns</td><td>226ns</td></tr><tr><td>73B</td><td>202ns</td><td>227ns</td><td>218ns</td><td>194ns</td><td>197ns</td><td>242ns</td></tr><tr><td>147B</td><td>210ns</td><td>240ns</td><td>232ns</td><td>202ns</td><td>207ns</td><td>256ns</td></tr><tr><td>1000B</td><td>253ns</td><td>388ns</td><td>324ns</td><td>257ns</td><td>288ns</td><td>318ns</td></tr></tbody></table>
+
+
+
+
+
+
+
+<table><thead><tr><th>Key Size</th><th>xxhash::h3</th><th>seahash</th><th>cityhash</th><th>metrohash</th><th>rustc_hash</th><th>fasthash::spooky</th><th>fxhash</th></tr></thead><tbody><tr><td>1B</td><td>182ns</td><td>225ns</td><td>200ns</td><td>186ns</td><td>191ns</td><td>218ns</td><td>192ns</td></tr><tr><td>8B</td><td>193ns</td><td>208ns</td><td>197ns</td><td>186ns</td><td>190ns</td><td>216ns</td><td>198ns</td></tr><tr><td>36B</td><td>196ns</td><td>215ns</td><td>200ns</td><td>190ns</td><td>196ns</td><td>226ns</td><td>206ns</td></tr><tr><td>73B</td><td>202ns</td><td>227ns</td><td>218ns</td><td>194ns</td><td>197ns</td><td>242ns</td><td>206ns</td></tr><tr><td>147B</td><td>210ns</td><td>240ns</td><td>232ns</td><td>202ns</td><td>207ns</td><td>256ns</td><td>227ns</td></tr><tr><td>1000B</td><td>253ns</td><td>388ns</td><td>324ns</td><td>257ns</td><td>288ns</td><td>318ns</td><td>457ns</td></tr></tbody></table>
 <h3 id="rps">RPS</h3>
 
 
@@ -733,7 +740,14 @@ Even squeezing out 10-20ns can increase hot read performance by about 5-10%.</p>
 
 
 
-<table><thead><tr><th>Key Size</th><th>xxhash::h3</th><th>seahash</th><th>cityhash</th><th>metrohash</th><th>rustc_hash</th><th>fasthash::spooky</th></tr></thead><tbody><tr><td>1B</td><td>5494505</td><td>4444444</td><td>5000000</td><td>5376344</td><td>5235602</td><td>4587155</td></tr><tr><td>8B</td><td>5376344</td><td>4807692</td><td>5076142</td><td>5376344</td><td>5263157</td><td>4629629</td></tr><tr><td>36B</td><td>5102040</td><td>4651162</td><td>5000000</td><td>5263157</td><td>5102040</td><td>4424778</td></tr><tr><td>73B</td><td>4950495</td><td>4405286</td><td>4587155</td><td>5154639</td><td>5076142</td><td>4201680</td></tr><tr><td>147B</td><td>4761904</td><td>4166666</td><td>4310344</td><td>4950495</td><td>4830917</td><td>3937007</td></tr><tr><td>1000B</td><td>3952569</td><td>2577319</td><td>3086419</td><td>3891050</td><td>3472222</td><td>3154574</td></tr></tbody></table>
+
+
+
+
+
+
+
+<table><thead><tr><th>Key Size</th><th>xxhash::h3</th><th>seahash</th><th>cityhash</th><th>metrohash</th><th>rustc_hash</th><th>fasthash::spooky</th><th>fxhash</th></tr></thead><tbody><tr><td>1B</td><td>5494505</td><td>4444444</td><td>5000000</td><td>5376344</td><td>5235602</td><td>4587155</td><td>5208333</td></tr><tr><td>8B</td><td>5376344</td><td>4807692</td><td>5076142</td><td>5376344</td><td>5263157</td><td>4629629</td><td>5050505</td></tr><tr><td>36B</td><td>5102040</td><td>4651162</td><td>5000000</td><td>5263157</td><td>5102040</td><td>4424778</td><td>4854368</td></tr><tr><td>73B</td><td>4950495</td><td>4405286</td><td>4587155</td><td>5154639</td><td>5076142</td><td>4201680</td><td>4854368</td></tr><tr><td>147B</td><td>4761904</td><td>4166666</td><td>4310344</td><td>4950495</td><td>4830917</td><td>3937007</td><td>4405286</td></tr><tr><td>1000B</td><td>3952569</td><td>2577319</td><td>3086419</td><td>3891050</td><td>3472222</td><td>3154574</td><td>2188183</td></tr></tbody></table>
 <p>I don’t know which hashing function I will end up using in <code>lsm-tree 2</code> yet. Probably <code>xxhash</code>, but I have not benchmarked if the hashing functions have any meaningful impact on false positive rates yet.
 The future will decide…</p> <h2>Interested in LSM-trees and Rust?</h2> <p>
 Check out <a href="https://github.com/fjall-rs/fjall" target="_blank">fjall</a>, an MIT-licensed
