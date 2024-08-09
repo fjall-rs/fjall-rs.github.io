@@ -456,7 +456,7 @@
 <span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">}</span></span>
 <span class="line"></span></code></pre>
 <p>There’s some stuff to unpack here:</p>
-<p>First of, <code>UserKey</code> and <code>UserValue</code> are just type aliases of a <code>Slice</code>.
+<p>First off, <code>UserKey</code> and <code>UserValue</code> are just type aliases of a <code>Slice</code>.
 A slice being some sort of immutable, heap-allocated byte array.
 Right now it is backed by an <code>Arc&#x3C;[u8]></code>.</p>
 <p>The internal value is a single KV-pair, consisting of key and value.
