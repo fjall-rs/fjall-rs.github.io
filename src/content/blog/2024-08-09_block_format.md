@@ -309,4 +309,4 @@ To optimize for read performance of hot data, [smaller levels should use a full 
 
 ## Summary
 
-I hope this blog post shed some light onto the internals of an LSM-tree, and how databases may arrange data on disk, how LSM-trees retrieve data from disk, and how to trade memory usage for read performance by thinking in terms of data temperature.
+I hope this blog post shed some light onto how LSM-trees arrange their data, how they retrieve data from disk, and how to trade memory usage for read performance by thinking in terms of data temperature.
