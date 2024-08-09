@@ -41,7 +41,7 @@ struct InternalValue {
 
 There's some stuff to unpack here:
 
-First of, `UserKey` and `UserValue` are just type aliases of a `Slice`.
+First off, `UserKey` and `UserValue` are just type aliases of a `Slice`.
 A slice being some sort of immutable, heap-allocated byte array.
 Right now it is backed by an `Arc<[u8]>`.
 
