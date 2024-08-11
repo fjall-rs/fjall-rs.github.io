@@ -9,7 +9,7 @@ tags:
   - performance
   - sstable
 published_at: 2024-08-09T18:01:53.233Z
-last_modified_at: 2024-08-09T18:01:53.233Z
+last_modified_at: 2024-08-11T23:30:53.233Z
 image: /media/posts/pantheon.jpg
 ---
 
@@ -221,14 +221,7 @@ For example, his will find the handle referencing the first index block that _ma
 ```rs
 fn get_lowest_block_containing_key(&self, key: &[u8]) -> Option<&BlockHandle> {
     let idx = self.data.partition_point(|x| &*x.end_key < key);
-
-    let block = self.data.get(idx)?;
-
-    if key > &*block.end_key {
-        None
-    } else {
-        Some(block)
-    }
+    self.data.get(idx)
 }
 ```
 
