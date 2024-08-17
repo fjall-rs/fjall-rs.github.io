@@ -292,7 +292,7 @@ This can be modelled both by Zipfian and Pareto distributions:
   <img style="border-radius: 16px; max-height: 350px" src="/media/pareto.png" />
 </div>
 <div class="text-sm mt-1" style="text-align: center; opacity: 0.75">
-  <i>Source: https://commons.wikimedia.org/wiki/File:Probability_density_function_of_Pareto_distribution.svg</i>
+  <i class="break-all">Source: https://commons.wikimedia.org/wiki/File:Probability_density_function_of_Pareto_distribution.svg</i>
 </div>
 
 The LSM-tree itself essentially models data temperature through its level architecture: smaller levels hold hotter data, and as segments are compacted down, data "cools" off.
