@@ -1,41 +1,61 @@
+---
+const cards = [
+  {
+    name: "fjall",
+    repo: "https://github.com/fjall-rs/fjall",
+    description: "LSM-based embeddable key-value storage engine",
+    license: "MIT / A2 *",
+    colors: {
+      title: "text-sky-700 dark:text-sky-300",
+      card: "hover:border-sky-500 hover:bg-sky-500",
+    },
+  },
+  {
+    name: "lsm-tree",
+    repo: "https://github.com/fjall-rs/lsm-tree",
+    description: "K.I.S.S. implementation of log-structured merge trees",
+    license: "MIT / A2 *",
+    colors: {
+      title: "text-emerald-700 dark:text-emerald-300",
+      card: "hover:border-emerald-500 hover:bg-emerald-500",
+    },
+  },
+  {
+    name: "value-log",
+    repo: "https://github.com/fjall-rs/value-log",
+    description: "Log-structured value log for key-value separated storage",
+    license: "MIT / A2 *",
+    colors: {
+      title: "text-pink-700 dark:text-pink-300",
+      card: "hover:border-pink-500 hover:bg-pink-500",
+    },
+  },
+];
+---
+
 <!-- SETUP: This component serves as the landing page's main content (hero section) -->
 <h1 class="text-2xl">Organizing data in Rust</h1>
 
 <section id="projects">
   <h2 class="mb-3 italic">Repositories</h2>
-  <div class="md:grid-cols-3 grid grid-cols-2 gap-4 sm:grid-cols-3">
-    <a
-      href="https://github.com/fjall-rs/fjall"
-      target="_blank"
-      class="flex flex-col gap-2 rounded-lg border border-gray-500 border-opacity-30 bg-white bg-opacity-5 p-3 transition-all hover:border-sky-500 hover:bg-sky-500 hover:bg-opacity-5"
-    >
-      <div class="flex items-center justify-between gap-2">
-        <h3 class="text-sky-700 dark:text-sky-300 text-xl font-medium">fjall</h3>
-        <div class="rounded bg-black bg-opacity-20 px-2 py-1 text-xs font-semibold">MIT</div>
-      </div>
-      <div class="opacity-75">LSM-based embedded key-value storage engine</div>
-    </a>
-    <a
-      href="https://github.com/fjall-rs/lsm-tree"
-      target="_blank"
-      class="flex flex-col gap-2 rounded-lg border border-gray-500 border-opacity-30 bg-white bg-opacity-5 p-3 transition-all hover:border-emerald-500 hover:bg-emerald-500 hover:bg-opacity-5"
-    >
-      <div class="flex items-center justify-between gap-2">
-        <h3 class="text-emerald-700 dark:text-emerald-300 text-xl font-medium">lsm-tree</h3>
-        <div class="rounded bg-black bg-opacity-20 px-2 py-1 text-xs font-semibold">MIT</div>
-      </div>
-      <div class="opacity-75">K.I.S.S. implementation of log-structured merge trees</div>
-    </a>
-    <a
-      href="https://github.com/fjall-rs/value-log"
-      target="_blank"
-      class="flex flex-col gap-2 rounded-lg border border-gray-500 border-opacity-30 bg-white bg-opacity-5 p-3 transition-all hover:border-pink-500 hover:bg-pink-500 hover:bg-opacity-5"
-    >
-      <div class="flex items-center justify-between gap-2">
-        <h3 class="text-pink-700 dark:text-pink-300 text-xl font-medium">value-log</h3>
-        <div class="rounded bg-black bg-opacity-20 px-2 py-1 text-xs font-semibold">MIT</div>
-      </div>
-      <div class="opacity-75">Log-structured value log for key-value separated storage</div>
-    </a>
+  <div class="grid grid-cols-2 md:grid-cols-2 sm:grid-cols-2 gap-4">
+    {
+      cards.map((card) => (
+        <a
+          href={card.repo}
+          target="_blank"
+          class={`${card.colors.card} flex flex-col gap-2 rounded-lg border border-gray-500 border-opacity-30 bg-white bg-opacity-5 p-3 transition-all hover:bg-opacity-5`}
+        >
+          <div class="flex items-center justify-between gap-2">
+            <h3 class={`${card.colors.title} text-xl font-medium`}>{card.name}</h3>
+            <div class="rounded bg-black bg-opacity-20 px-2 py-1 text-xs font-semibold">
+              {card.license}
+            </div>
+          </div>
+          <div class="opacity-75">{card.description}</div>
+        </a>
+      ))
+    }
   </div>
+  <div class="mt-3 text-xs">* A2 = Apache 2.0</div>
 </section>
