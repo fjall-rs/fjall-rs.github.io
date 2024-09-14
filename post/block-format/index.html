@@ -1,9 +1,9 @@
-<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v4.10.1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="sitemap" href="/sitemap-index.xml"><!-- SEO --><title>Fjall&#39;s block format from the ground up | fjall-rs</title><meta name="title" content="Fjall's block format from the ground up"><meta name="description" content="Understanding the block format in an LSM-tree"><!-- OG --><meta property="og:title" content="Fjall's block format from the ground up"><meta property="og:description" content="Understanding the block format in an LSM-tree"><meta property="og:url" content="https://fjall-rs.github.io/post/block-format/"><meta property="og:image" content="https://fjall-rs.github.io/media/posts/pantheon.jpg"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://fjall-rs.github.io/post/block-format/"><meta property="twitter:title" content="Fjall's block format from the ground up"><meta property="twitter:description" content="Understanding the block format in an LSM-tree"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><link rel="stylesheet" href="/_astro/index.DtrjQQYF.css">
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v4.15.6"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="sitemap" href="/sitemap-index.xml"><!-- SEO --><title>Fjall&#39;s block format from the ground up | fjall-rs</title><meta name="title" content="Fjall's block format from the ground up"><meta name="description" content="Understanding the block format in an LSM-tree"><!-- OG --><meta property="og:title" content="Fjall's block format from the ground up"><meta property="og:description" content="Understanding the block format in an LSM-tree"><meta property="og:url" content="https://fjall-rs.github.io/post/block-format/"><meta property="og:image" content="https://fjall-rs.github.io/media/thumbs/pantheon.jpg"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://fjall-rs.github.io/post/block-format/"><meta property="twitter:title" content="Fjall's block format from the ground up"><meta property="twitter:description" content="Understanding the block format in an LSM-tree"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><link rel="stylesheet" href="/_astro/index.BtmJuI-p.css">
 <style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0}}@keyframes astroFadeOut{to{opacity:0}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}[data-astro-transition-scope]{animation:none!important}}
 @font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-cyrillic-ext-400-normal.tyfMZHQw.woff2) format("woff2"),url(/_astro/inter-cyrillic-ext-400-normal.CzG7Kr3z.woff) format("woff");unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-cyrillic-400-normal.Df6ckaLK.woff2) format("woff2"),url(/_astro/inter-cyrillic-400-normal.JrS_4yms.woff) format("woff");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-greek-ext-400-normal.CIdlr5YK.woff2) format("woff2"),url(/_astro/inter-greek-ext-400-normal._Rr29XE2.woff) format("woff");unicode-range:U+1F00-1FFF}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-greek-400-normal.DQXyrmoy.woff2) format("woff2"),url(/_astro/inter-greek-400-normal.DvIPHDQ7.woff) format("woff");unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-vietnamese-400-normal.Cnt0N5Vm.woff2) format("woff2"),url(/_astro/inter-vietnamese-400-normal.DIOGfGLL.woff) format("woff");unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-latin-ext-400-normal.D3W-OpO-.woff2) format("woff2"),url(/_astro/inter-latin-ext-400-normal.8tIzm-yw.woff) format("woff");unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-latin-400-normal.BT1H-PT_.woff2) format("woff2"),url(/_astro/inter-latin-400-normal.Cdi8t5Mu.woff) format("woff");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}.astro-route-announcer{position:absolute;left:0;top:0;clip:rect(0 0 0 0);clip-path:inset(50%);overflow:hidden;white-space:nowrap;width:1px;height:1px}:not(.astro-code *){font-family:Inter,sans-serif}
-:target{scroll-margin-top:80px!important}article{overflow-x:hidden}article a{color:#075985!important;text-decoration:underline dotted!important;text-underline-offset:3px;display:inline-block;transition:transform .1s ease-in-out,filter .1s ease-in-out}article a:hover{transform:translateY(-2px)}.dark article a{color:#38bdf8!important}article table{table-layout:auto;border:1px solid #d1d5db;border-radius:4px}article table{border-bottom:1px solid #fafafa}.dark article table{border:1px solid #374151}code:before,code:after{display:none}.astro-code{font-size:16px}p code{border-radius:4px;padding:2px 4px;white-space:normal!important}.dark p code{color:#c1e4f8!important;background:#07598566!important}html:not(.dark) p code{color:#045280!important;background:#99d4f566!important}.dark article blockquote{border-left-color:#064566!important}html:not(.dark) article blockquote{border-left-width:.25rem;border-left-style:solid;border-left-color:#63c8ff!important}html.dark .astro-code,html.dark .astro-code span{color:var(--shiki-dark)!important;background-color:var(--shiki-dark-bg)!important;font-style:var(--shiki-dark-font-style)!important;font-weight:var(--shiki-dark-font-weight)!important;text-decoration:var(--shiki-dark-text-decoration)!important}
-</style><script type="module" src="/_astro/hoisted.o3X7mdw7.js"></script>
-<script type="module" src="/_astro/page.D0Zdqonr.js"></script><style>[data-astro-transition-scope="astro-x7amp3kc-1"] { view-transition-name: astro-x7amp3kc-1; }@layer astro { ::view-transition-old(astro-x7amp3kc-1) { 
+:target{scroll-margin-top:80px!important}article{overflow-x:hidden}article a{color:#075985!important;text-decoration:underline dotted!important;text-underline-offset:3px;display:inline-block;transition:transform .1s ease-in-out,filter .1s ease-in-out}article a:hover{transform:translateY(-2px)}.dark article a{color:#38bdf8!important}code:before,code:after{display:none}.astro-code{font-size:16px}p code{border-radius:4px;padding:2px 4px;white-space:normal!important}.dark p code{color:#c1e4f8!important;background:#07598566!important}html:not(.dark) p code{color:#045280!important;background:#99d4f566!important}.dark article blockquote{border-left-color:#064566!important}html:not(.dark) article blockquote{border-left-width:.25rem;border-left-style:solid;border-left-color:#63c8ff!important}html.dark .astro-code,html.dark .astro-code span{color:var(--shiki-dark)!important;background-color:var(--shiki-dark-bg)!important;font-style:var(--shiki-dark-font-style)!important;font-weight:var(--shiki-dark-font-weight)!important;text-decoration:var(--shiki-dark-text-decoration)!important}
+</style><script type="module" src="/_astro/hoisted.DFPo3an7.js"></script>
+<script type="module" src="/_astro/page.VIllvXJD.js"></script><style>[data-astro-transition-scope="astro-x7amp3kc-1"] { view-transition-name: astro-x7amp3kc-1; }@layer astro { ::view-transition-old(astro-x7amp3kc-1) { 
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
@@ -438,11 +438,11 @@
 #data format </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/lsm tree" data-astro-transition-scope="astro-x7amp3kc-8">
 #lsm tree </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/performance" data-astro-transition-scope="astro-x7amp3kc-9">
 #performance </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/sstable" data-astro-transition-scope="astro-x7amp3kc-10">
-#sstable </a> </li> </ul> <img class="mt-5 rounded-xl w-full object-cover aspect-2" src="/media/posts/pantheon.jpg" alt="Blog post thumbnail"> </div>  <article class="my-10 w-full !max-w-full prose dark:prose-invert text-lg text-justify dark:prose-gray"> <p><a href="https://github.com/fjall-rs/fjall">Fjall</a> is an LSM-tree based storage engine written in Rust.</p>
+#sstable </a> </li> </ul> <img class="mt-5 rounded-xl w-full object-cover aspect-2" src="/media/thumbs/pantheon.jpg" alt="Blog post thumbnail"> </div>  <article class="my-10 w-full !max-w-full prose dark:prose-invert text-lg text-justify dark:prose-gray"> <p><a href="https://github.com/fjall-rs/fjall">Fjall</a> is an LSM-tree based storage engine written in Rust.</p>
 <p>LSM-trees consist of immutable disk segments (a.k.a. SSTable, SST), which are sorted lists of key-value pairs, chunked into (usually compressed) blocks (henceforth called “data block”).</p>
 <p>Disk segments are then arranged in levels by compaction. <a href="/post/lsm-leveling">More info here</a>.</p>
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 500px" src="/media/leveled_tree.svg">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/lsm-leveling/leveled_tree.svg">
 </div>
 <p>Today we will zoom into a disk segment specifically and look at its design.</p>
 <h2 id="the-internal-value">The internal value</h2>
@@ -535,13 +535,13 @@ We buffer the items, and when the threshold is exceeded, the block is written to
 The block is segmented into the <code>BlockHeader</code> and its content.
 The block data may be additionally compressed, to save disk space.</p>
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 400px" src="/media/segment_simple.svg">
+  <img style="border-radius: 16px; max-height: 400px" src="/media/posts/block-format/segment_simple.svg">
 </div>
 <p>Now we only need to keep track of each block’s end key to find any value in the segment.
 Because the blocks are inherently sorted, and also internally sorted (as they are constructed from a sorted iterator), we can binary search to any block quickly.</p>
 <p>To do so, pointers are stored in memory in a search tree. Each pointer stores the offset of its corresponding data block, and can be accessed using the block’s last item’s key. Now we can binary search in memory to get a pointer to any block, reducing the number of I/O operations of finding any item to 1. Each segment is effectively its own, isolated read-only database.</p>
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 400px" src="/media/segment_with_block_index.svg">
+  <img style="border-radius: 16px; max-height: 400px" src="/media/posts/block-format/segment_with_block_index.svg">
 </div>
 <p>In the image, if we wanted to find item key=‘L’, it’s obvious it needs to be in the middle block, because K &#x3C; L &#x3C; T.</p>
 <p>Building this block index is easy: every time you write a block, look at the the current file offset and insert into the index:</p>
@@ -560,7 +560,7 @@ Because the blocks are inherently sorted, and also internally sorted (as they ar
 <p>So, how can we retrieve the index when reloading the database from disk (perhaps after a system crash)? Reading every data block again is wasteful and could increase startup times to many seconds or even minutes, which is unacceptable.</p>
 <p>Instead, let’s write the block index out to disk as well, after the data blocks. Let’s call that section “index block”. Now, on recovery we only need to read that portion of the file to restore the block index, scanning kilobytes, or a couple of megabytes at most for many gigabytes of user data. This is how LevelDB (and RocksDB by default) work roughly.</p>
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 500px" src="/media/segment_with_block_index_persisted.svg">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/block-format/segment_with_block_index_persisted.svg">
 </div>
 <p>Because the block index can not be written to disk until the data blocks are all written, it needs to be buffered in memory.</p>
 <h2 id="partitioning-the-block-index">Partitioning the block index</h2>
@@ -568,7 +568,7 @@ Because the blocks are inherently sorted, and also internally sorted (as they ar
 <p>Instead, we group the index pointers (henceforth called “block handle”) - just like data blocks - into blocks.</p>
 <p>To find any given index block, we do the same as before: store one pointer per block in memory. This results in a new, fully loaded index (henceforth called “TLI”, for <em>top level index</em>).</p>
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 500px" src="/media/segment_two_level_index.svg">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/block-format/segment_two_level_index.svg">
 </div>
 <p>Now, requesting any item goes through two binary searches: the TLI, which is always fully loaded and very small, and whatever index block happens to hold the correct pointer for the data block we want to retrieve. Now, any lookup needs, in the worst case, 2 I/O operations.</p>
 <p>The TLI itself is just an array (slice) of block handles.
@@ -592,7 +592,7 @@ But when scanning a segment in reverse, we need to read a block and then seek ba
 We could look up the previous block in the block index, but that would end up causing a lot of index lookups.</p>
 <p>Instead, backlinks are stored in each block header, that way the seek position is pre-computed:</p>
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 400px" src="/media/segment_backlinks.svg">
+  <img style="border-radius: 16px; max-height: 400px" src="/media/posts/block-format/segment_backlinks.svg">
 </div>
 <h2 id="segment-trailer">Segment trailer</h2>
 <p>Now, how do we actually find the block index and TLI block in the segment file?
@@ -612,7 +612,7 @@ Writing a trailer is simple because we can just append it to the end of the file
 <span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA;font-style:italic;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;--shiki-dark:#6E6A86;font-style:italic;--shiki-dark-font-style:italic"> etc...</span></span>
 <span class="line"></span></code></pre>
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 450px" src="/media/segment_full.svg">
+  <img style="border-radius: 16px; max-height: 450px" src="/media/posts/block-format/segment_full.svg">
 </div>
 <p>We do not need to store a pointer to the first data block, because it implicitly starts at 0.</p>
 <p>The meta block contains metadata of the segment, such as the block size, block count, key range, etc.</p>
@@ -632,7 +632,7 @@ Writing a trailer is simple because we can just append it to the end of the file
 </ul>
 <p>This can be modelled both by Zipfian and Pareto distributions:</p>
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 350px" src="/media/pareto.png">
+  <img style="border-radius: 16px; max-height: 350px" src="/media/posts/block-format/pareto.png">
 </div>
 <div class="text-sm mt-1" style="text-align: center; opacity: 0.75">
   <i class="break-all">Source: https://commons.wikimedia.org/wiki/File:Probability_density_function_of_Pareto_distribution.svg</i>
