@@ -10,7 +10,7 @@ tags:
   - hashing
 published_at: 2024-06-08T10:44:33.259Z
 last_modified_at: 2024-06-10T22:44:33.259Z
-image: /media/posts/evergreen.jpg
+image: /media/thumbs/evergreen.jpg
 ---
 
 ## Bloom Filter basics
@@ -20,6 +20,8 @@ Bloom filters are a probabilistic data structure to answer a membership question
 The bloom filter returns `true` (_probably yes_) or `false` (_definitely no_). The false positive rate is often shortened as `FPR`.
 In that regard, it works a bit like a sieve.
 By adjusting the memory usage of the filter, we can control how much unwanted requests are sieved out, but we will never get a perfect 0% FPR.
+
+<!-- TODO: image -->
 
 The main advantage of bloom filters is their low memory usage footprint, which is decoupled from the key size.
 Keys are not actually stored in the data structure like you would in a hash set.
@@ -143,7 +145,7 @@ This strategy makes the key range increasingly more granular because the level s
 </p>
 
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 500px" src="/media/leveled_point_read.svg" />
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/bloom-filter-hash-sharing/leveled_point_read.svg" />
 </div>
 
 ### Tiered
@@ -156,7 +158,7 @@ This inadvertently increases the amount of hashing required:
 The worst-case bloom filter lookups in a tiered LSM-tree is simply `segment_count`, with `segment_count` being `O(log n)`, where `n` is the amount of items in the tree.
 
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 500px" src="/media/tiered_point_read.svg" />
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/bloom-filter-hash-sharing/tiered_point_read.svg" />
 </div>
 
 ### Hash sharing
@@ -178,7 +180,7 @@ As shown in `Zichen Zhu: SHaMBa: Reducing Bloom Filter Overhead in LSM Trees, 20
 > constant regardless of the number of levels.
 
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; width: 100%; max-width: 640px" src="/media/bf_hash_sharing.png" />
+  <img style="border-radius: 16px; width: 100%; max-width: 640px" src="/media/posts/bloom-filter-hash-sharing/bf_hash_sharing.png" />
 </div>
 <div class="text-sm mt-1" style="text-align: center; opacity: 0.75">
   <i>Credit: Zichen Zhu: SHaMBa: Reducing Bloom Filter Overhead in LSM Trees, 2023</i>
@@ -189,7 +191,7 @@ As shown in `Zichen Zhu: SHaMBa: Reducing Bloom Filter Overhead in LSM Trees, 20
 Implementing hash sharing in `lsm-tree` confirms the paper's idea:
 
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 500px" src="/media/bf_hash_sharing_results.svg" />
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/bloom-filter-hash-sharing/bf_hash_sharing_results.svg" />
 </div>
 
 Without hash sharing, checking more than 24 segments can easily cost more than 1µs of CPU time, at which point it may become slower than simply reading from a SSD.

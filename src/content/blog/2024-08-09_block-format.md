@@ -10,7 +10,7 @@ tags:
   - sstable
 published_at: 2024-08-09T18:01:53.233Z
 last_modified_at: 2024-08-11T23:30:53.233Z
-image: /media/posts/pantheon.jpg
+image: /media/thumbs/pantheon.jpg
 ---
 
 [Fjall](https://github.com/fjall-rs/fjall) is an LSM-tree based storage engine written in Rust.
@@ -20,7 +20,7 @@ LSM-trees consist of immutable disk segments (a.k.a. SSTable, SST), which are so
 Disk segments are then arranged in levels by compaction. [More info here](/post/lsm-leveling).
 
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 500px" src="/media/leveled_tree.svg" />
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/lsm-leveling/leveled_tree.svg" />
 </div>
 
 Today we will zoom into a disk segment specifically and look at its design.
@@ -149,7 +149,7 @@ The block is segmented into the `BlockHeader` and its content.
 The block data may be additionally compressed, to save disk space.
 
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 400px" src="/media/segment_simple.svg" />
+  <img style="border-radius: 16px; max-height: 400px" src="/media/posts/block-format/segment_simple.svg" />
 </div>
 
 Now we only need to keep track of each block's end key to find any value in the segment.
@@ -158,7 +158,7 @@ Because the blocks are inherently sorted, and also internally sorted (as they ar
 To do so, pointers are stored in memory in a search tree. Each pointer stores the offset of its corresponding data block, and can be accessed using the block’s last item's key. Now we can binary search in memory to get a pointer to any block, reducing the number of I/O operations of finding any item to 1. Each segment is effectively its own, isolated read-only database.
 
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 400px" src="/media/segment_with_block_index.svg" />
+  <img style="border-radius: 16px; max-height: 400px" src="/media/posts/block-format/segment_with_block_index.svg" />
 </div>
 
 In the image, if we wanted to find item key='L', it's obvious it needs to be in the middle block, because K < L < T.
@@ -185,7 +185,7 @@ So, how can we retrieve the index when reloading the database from disk (perhaps
 Instead, let’s write the block index out to disk as well, after the data blocks. Let’s call that section “index block”. Now, on recovery we only need to read that portion of the file to restore the block index, scanning kilobytes, or a couple of megabytes at most for many gigabytes of user data. This is how LevelDB (and RocksDB by default) work roughly.
 
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 500px" src="/media/segment_with_block_index_persisted.svg" />
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/block-format/segment_with_block_index_persisted.svg" />
 </div>
 
 Because the block index can not be written to disk until the data blocks are all written, it needs to be buffered in memory.
@@ -199,7 +199,7 @@ Instead, we group the index pointers (henceforth called “block handle”) - ju
 To find any given index block, we do the same as before: store one pointer per block in memory. This results in a new, fully loaded index (henceforth called “TLI”, for _top level index_).
 
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 500px" src="/media/segment_two_level_index.svg" />
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/block-format/segment_two_level_index.svg" />
 </div>
 
 Now, requesting any item goes through two binary searches: the TLI, which is always fully loaded and very small, and whatever index block happens to hold the correct pointer for the data block we want to retrieve. Now, any lookup needs, in the worst case, 2 I/O operations.
@@ -236,7 +236,7 @@ We could look up the previous block in the block index, but that would end up ca
 Instead, backlinks are stored in each block header, that way the seek position is pre-computed:
 
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 400px" src="/media/segment_backlinks.svg" />
+  <img style="border-radius: 16px; max-height: 400px" src="/media/posts/block-format/segment_backlinks.svg" />
 </div>
 
 ## Segment trailer
@@ -263,7 +263,7 @@ let tli = TopLevelIndex::load_by_ptr(trailer.tli_ptr)?;
 ```
 
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 450px" src="/media/segment_full.svg" />
+  <img style="border-radius: 16px; max-height: 450px" src="/media/posts/block-format/segment_full.svg" />
 </div>
 
 We do not need to store a pointer to the first data block, because it implicitly starts at 0.
@@ -289,7 +289,7 @@ Think of real-life data sets:
 This can be modelled both by Zipfian and Pareto distributions:
 
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 350px" src="/media/pareto.png" />
+  <img style="border-radius: 16px; max-height: 350px" src="/media/posts/block-format/pareto.png" />
 </div>
 <div class="text-sm mt-1" style="text-align: center; opacity: 0.75">
   <i class="break-all">Source: https://commons.wikimedia.org/wiki/File:Probability_density_function_of_Pareto_distribution.svg</i>

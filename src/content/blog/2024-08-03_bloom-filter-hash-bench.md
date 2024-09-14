@@ -12,7 +12,7 @@ tags:
   - benchmark
 published_at: 2024-08-03T20:42:53.520Z
 last_modified_at: 2024-08-05T20:42:53.520Z
-image: /media/posts/bloom.jpg
+image: /media/thumbs/bloom.jpg
 ---
 
 `lsm-tree 1` uses `seahash` for creating hashes in its bloom filters.
@@ -28,7 +28,7 @@ The benchmark code sets up a single disk segment and reads an existing key from 
 All benchmarks ran on an i9 11900k.
 
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 500px" src="/media/hash_function_performance.svg" />
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/bloom-filter-hash-bench/hash_function_performance.svg" />
 </div>
 
 ### ns per read
