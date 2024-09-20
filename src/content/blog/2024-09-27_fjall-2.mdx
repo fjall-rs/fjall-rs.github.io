@@ -1,0 +1,312 @@
+---
+title: Announcing Fjall 2.0
+slug: announcing-fjall-2
+description: Available in all Cargo registries near you
+tags:
+  - major
+  - release
+  - benchmark
+  - value log
+  - key value separation
+  - compression
+  - performance
+  - garbage collection
+published_at: 2024-09-20T18:19:35.927Z
+last_modified_at: 2024-09-20T18:19:35.927Z
+image: /media/thumbs/denali.jpg
+featured: true
+---
+
+Today, I am announcing the release of Fjall 2.0.
+
+With more than **500** commits and _countless_ hours spent on benchmarks, this release is pretty huge to say the least.
+While the changelog is pretty comprehensive, this update has laid important groundwork for all future 2.x releases.
+
+## About
+
+Fjall is an embeddable LSM-based forbid-unsafe Rust key-value storage engine.
+Its goal is to be a reliable & predictable but performant general-purpose KV storage engine.
+V2 features a new (breaking) disk format, which grants some new features:
+
+## Miniz (zlib) compression support
+
+Fjall 1.x used LZ4 compression (powered by [`lz4-flex`](https://github.com/PSeitz/lz4_flex) - shoutout to [`PSeitz`](https://github.com/PSeitz) and his work on [`tantivy`](https://github.com/quickwit-oss/tantivy)), and LZ4 is still the default in version 2.
+But now, compression algorithms can be adjusted on a per-partition basis; including zlib/DEFLATE compression, powered by [`miniz-oxide`](https://github.com/Frommi/miniz_oxide), yielding better compression ratios at the cost of slower reads and writes.
+
+Miniz support can be enabled using the `miniz` feature flag.
+
+### Compression efficiency
+
+This benchmark is storing 10GB of _ethically sourced_ HTML pages (average page size: ~3.6 MB), with key-value separation enabled.
+
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/compression_html.svg" />
+</div>
+
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/compression_html_space_amp.svg" />
+</div>
+
+With compression, we can achieve much higher storage density.
+But it's not just storage density we are optimizing for: trading some CPU time ends up reducing the transfer time between application and disk, and can have quite a significant impact on write and read performance.
+
+The following benchmark writes all 10 GB of HTML, then reads every single HTML item back.
+On an SSD we get:
+
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/compression_ssd_perf.svg" />
+</div>
+
+And on an HDD (WD Blue 1 TB):
+
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/compression_hdd_perf.svg" />
+</div>
+
+## Slice type
+
+Fjall 1.x used `Arc<[u8]>` for most of its operations, making reads to cached data allocation and memcpy free (just need to increment the Arc's reference count).
+Now all operations are built around the new `Slice` type, which is some immutable, cloneable byte slice.
+Currently it is backed by an `Arc<[u8]>`, but it will allow some optimizations regarding heap allocations in the future.
+
+## Key-value separation
+
+2.0 now features (optional) key-value separation, inspired by RocksDB's [`BlobDB`](https://github.com/facebook/rocksdb/wiki/BlobDB) and PingCAP's [`Titan`](https://docs.pingcap.com/tidb/stable/titan-overview), and powered by another newly released crate, [`value-log`](https://github.com/fjall-rs/value-log).
+Key-value separation is intended for large value use cases on SSDs, and allows for adjustable online garbage collection.
+
+There will be a separate blog post at some point about key-value separation, `value-log` and so on - but the basic idea behind key-value separation is to separate large values out of the LSM-tree into a tertiary disk structure ("value log"), to minimize write amplification.
+It is somewhat similar to how B-trees use overflow pages.
+
+Key-value separation is disabled by default, but can be toggled on a per-partition basis:
+
+```rs
+let opts = PartitionCreateOptions::default().with_kv_separation(KvSeparationOptions::default());
+let blobs = keyspace.open_partition("blobs", opts)?;
+```
+
+Note that, as is intended with key-value separation, data is not eagerly deleted.
+This increases performance (lower write amp) at the cost of possibly costing more space (higher space amp).
+
+### Garbage collection API
+
+Now, with key-value separation comes the idea of garbage collection, which gives the user fine-grained control over how eagerly stale data is evicted.
+
+> If you do not intend to delete any data, no need for garbage collection at all, so skip this!
+
+Garbage collection has two phases: scanning for eligible eviction, and actually performing eviction.
+
+Scanning can be performed at any time, using `Gc::scan`:
+
+```rs
+use fjall::GarbageCollection;
+
+// blobs is the partition from earlier
+
+let report = blobs.gc_scan()?;
+
+println!("{report}");
+```
+
+The [GC report](https://docs.rs/value-log/1.0.0/value_log/struct.GcReport.html) contains useful, aggregated statistics such as stale data percentage, space amplification, and more.
+
+To actually perform garbage collection, it can be run using two different strategies:
+
+```rs
+blobs.gc_with_space_amp_target(2.0)?;
+```
+
+`with_space_amp_target` will try and find a least-effort selection of disk segments to reach a given space amplification target.
+Depending on the space amp target this can be expensive.
+Something around 1.5-3.0 is a sensible default, but higher space amplification allows less time spent on cleaning up stale data, reducing GC overhead.
+
+```rs
+// Defragment segments with 70% or more stale data
+blobs.gc_with_staleness_threshold(0.7)?;
+```
+
+`with_staleness_threshold` will defragment disk segments that have a certain percentage of stale data.
+If the percentage is very high, it can be very low-cost to rewrite these segments as a lot of data can simply be dropped.
+However, higher percentage implies - unless the distribution of deletions is very skewed - a higher space amplification required, which may be undesirable to wait for.
+
+The garbage collection strategies can be mixed and matched to achieve certain behaviour, for example:
+
+```rs
+// First, run scan
+let report = blobs.gc_scan()?;
+
+// We never want to surpass 3x space amp
+blobs.gc_with_space_amp_target(3.0)?;
+
+// But even if our space amp is low, we may want to
+// get rid of very fragmented segments
+blobs.gc_with_staleness_threshold(0.9)?;
+```
+
+Also, `drop_stale_segments` simply drops stale segments, which has essentially no cost.
+There is no need to call it when using the other garbage collection strategies, as they will call it implicitly anyway.
+But if you know that data is deleted in a certain order (e.g. a task queue), it may be cheapest to wait for segments to become stale and then drop them.
+
+All garbage collection functions are _blocking_, and need to be called/scheduled manually.
+
+This can be easily achieved with both native threads and async tasks, here's a Tokio example:
+
+```rs
+use fjall::{Config, GarbageCollection, KvSeparationOptions, PartitionCreateOptions};
+
+#[tokio::main]
+async fn main() -> fjall::Result<()> {
+    let keyspace = Config::default().open()?;
+    let blobs = keyspace.open_partition(
+        "blobs",
+        PartitionCreateOptions::default().with_kv_separation(KvSeparationOptions::default()),
+    )?;
+
+    {
+        let blobs = blobs.clone();
+
+        tokio::spawn(async move {
+            use fjall::{Error, Gc};
+            use std::time::{Duration, Instant};
+
+            loop {
+                eprintln!("Running GC for partition {:?}", blobs.name);
+                let start = Instant::now();
+
+                let blobs = blobs.clone();
+                let result = tokio::task::spawn_blocking(move || {
+                    let _report = blobs.gc_scan()?;
+                    blobs.gc_with_space_amp_target(3.0)?;
+                    Ok::<_, Error>(())
+                })
+                .await
+                .unwrap();
+
+                if let Err(e) = result {
+                    // error handling
+                    eprintln!("GC failed: {e:?}");
+                } else {
+                    eprintln!("GC done in {:?}", start.elapsed());
+                }
+
+                // Sleep 24 hours
+                tokio::time::sleep(Duration::from_secs(60 * 60 * 24)).await;
+            }
+        });
+    }
+
+    Ok(())
+}
+```
+
+The primitiveness of the GC API allows tailoring the garbage collection behaviour to (hopefully) any application's needs.
+You can run GC on an interval, specific schedules, manual triggers (HTTP?), trigger via a channel or possibly a semaphore.
+Not to sound corny, but the possibilities really are endless.
+
+### Configuration
+
+Of course, there are a couple of configuration options.
+
+First, there's `blob_file_separation_threshold`, which controls how large a value needs to be to be separated into the value log.
+This can be controlled per-partition.
+Increasing this option much is not really recommended, setting it to way below 0.5 KiB is not recommended either.
+The default is **1 KiB**.
+
+Then, there's `blob_file_target_size`.
+This can also be controlled per-partition.
+Using smaller blob files increases the amount of files on disk and maintenance overhead, while allowing more granular compaction.
+You may want to increase this option (i.e. something like 256 MiB) if you know you will store a lot of data (>10 GB), or are not frequently updating/deleting blobs.
+The default is **64 MiB**.
+
+### When to use
+
+When to use key-value separation:
+
+- when you always store large values (e.g. JSON, HTML, etc.)
+- when the size of values is unknown and may be large (e.g. user-written chat messages, descriptions, etc.)
+
+When *not* to use key-value separation:
+
+- when values are known to be small (e.g. time series, small database rows)
+- when values are written in monotonic order and **never never never** deleted
+
+### Benchmark: Garbage collection
+
+This benchmark writes a history of blob items, truncating it, if there are more than 5 versions for the same key.
+
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/webtable_gc_du.png" />
+</div>
+
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/webtable_gc_spaceamp.png" />
+</div>
+
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/webtable_gc_writeamp.png" />
+</div>
+
+- Green used no garbage collection, hence the ever increasing disk space
+- Blue, Purple and Yellow used increasingly lax garbage collection, resulting in different temporary space amplification and write amplification
+- The write amplification is sometimes below 2, which might seem impossible because every value is written twice (WAL + value log) - this is because of compression
+
+Without key-value separation, large values take up a lot of disk I/O when compacting, reducing disk bandwidth that could instead be used to serve requests:
+
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/webtable_kvsep.png" />
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/webtable_kvsep4.png" />
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/webtable_kvsep2.png" />
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/webtable_kvsep3.png" />
+</div>
+
+Compared to the non-KV-separated flavour, enabling key-value separation gives essentially linear write scaling through very low write amplification.
+Both GC configurations perform very similarly, but the more aggressive GC prevents higher temporary space usage, with essentially the same write amplification.
+Note that the plateaus in the graphs are caused by the workload stopping writes to truncate the history of items.
+
+### Benchmark: Bulk loading blobs
+
+Testing rig: i9 11900k, Samsung PM9A3 960 GB
+
+This benchmark bulk loads the above data set (10GB HTML), then reads for 1 minute from it, using a Zipfian distribution.
+Cache size: 64 MB (32 + 32 for Fjall).
+
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/html_cmp_du.png" />
+</div>
+
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/html_cmp_spaceamp.png" />
+</div>
+
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/html_cmp_writeamp.png" />
+</div>
+
+Fjall uses by far the least amount of disk space, because of its built-in blob compression.
+Because of key-value separation and the compression, the write amplification is also the lowest.
+Sled had its `compression` feature turned on, yet used the most amount of disk space.
+
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/html_cmp_read.png" />
+</div>
+
+Point reads are pretty competitive between all the engines.
+
+Notes:
+
+- Sled ended up taking **~11 GB** of memory, so it is disqualified
+- Fjall, Sled and Persy used low durability writes
+- ReDB used the `Immediate` durability and a single write transaction. The `None` durability was faster, but would cause reads to be slow (probably fragmentation?)
+
+## Into the future
+
+The rest of 2.x is more or less planned out, so there will be a pretty regular, more bite-sized release schedule of new features, better documentation, performance improvements and maintenance; instead of cramming everything into the 2.0 release, I will [take it slow](https://www.youtube.com/watch?v=0cjpAz5iUnA).
+
+## Discord
+
+Join the discord server if you want to chat about databases, Rust or whatever: https://discord.gg/HvYGp4NFFk
