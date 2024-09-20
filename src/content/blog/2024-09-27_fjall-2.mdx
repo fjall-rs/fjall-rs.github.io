@@ -156,10 +156,11 @@ use fjall::{Config, GarbageCollection, KvSeparationOptions, PartitionCreateOptio
 #[tokio::main]
 async fn main() -> fjall::Result<()> {
     let keyspace = Config::default().open()?;
-    let blobs = keyspace.open_partition(
-        "blobs",
-        PartitionCreateOptions::default().with_kv_separation(KvSeparationOptions::default()),
-    )?;
+
+    let opts = PartitionCreateOptions::default()
+        .with_kv_separation(KvSeparationOptions::default());
+
+    let blobs = keyspace.open_partition("blobs", opts)?;
 
     {
         let blobs = blobs.clone();
