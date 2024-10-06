@@ -10,17 +10,17 @@
     "post:create": "node scripts/create_post.mjs"
   },
   "devDependencies": {
-    "@astrojs/check": "0.9.3",
-    "@astrojs/mdx": "3.1.6",
+    "@astrojs/check": "0.9.4",
+    "@astrojs/mdx": "3.1.7",
     "@astrojs/rss": "4.0.7",
-    "@astrojs/sitemap": "3.1.6",
-    "@astrojs/solid-js": "4.4.1",
-    "@unocss/reset": "0.62.3",
-    "astro": "4.15.6",
+    "@astrojs/sitemap": "3.2.0",
+    "@astrojs/solid-js": "4.4.2",
+    "@unocss/reset": "0.63.3",
+    "astro": "4.15.11",
     "prettier-plugin-astro": "0.14.1",
     "slug": "9.1.0",
     "typescript": "5.6.2",
-    "unocss": "0.62.3"
+    "unocss": "0.63.3"
   },
   "dependencies": {
     "@fontsource/inter": "5.0.18",
