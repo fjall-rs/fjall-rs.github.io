@@ -252,12 +252,13 @@ And reading a trailer is also simple, because we can simply seek to the correct 
 
 ```rs
 let file = File::open(path)?;
+let reader = BufReader::new(file);
 reader.seek(std::io::SeekFrom::End(-TRAILER_SIZE))?;
 
 let trailer = Trailer::from(&mut reader)?;
 
-let meta = Metadata::load_by_ptr(trailer.meta_ptr)?;
-let tli = TopLevelIndex::load_by_ptr(trailer.tli_ptr)?;
+let meta = Metadata::load_by_ptr(&mut reader, trailer.meta_ptr)?;
+let tli = TopLevelIndex::load_by_ptr(&mut reader, trailer.tli_ptr)?;
 
 // etc...
 ```

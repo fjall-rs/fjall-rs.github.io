@@ -8,6 +8,7 @@ tags:
   - point reads
   - performance
   - hashing
+  - benchmark
 published_at: 2024-06-08T10:44:33.259Z
 last_modified_at: 2024-06-10T22:44:33.259Z
 image: /media/thumbs/evergreen.jpg

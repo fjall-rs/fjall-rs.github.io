@@ -12,7 +12,7 @@ tags:
   - benchmark
 published_at: 2024-08-03T20:42:53.520Z
 last_modified_at: 2024-08-05T20:42:53.520Z
-image: /media/thumbs/bloom.jpg
+image: /media/thumbs/bloodflowers.jpg
 ---
 
 `lsm-tree 1` uses `seahash` for creating hashes in its bloom filters.
