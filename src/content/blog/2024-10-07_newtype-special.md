@@ -47,7 +47,7 @@ pub fn disjoint_get_segment_containing_key<K: AsRef<[u8]>>(
 ```
 
 It works, but the assertion makes it a bit awkward.
-Basically the caller needs to make sure, if is allowed to call this function, like this:
+Basically the caller needs to make sure it is allowed to call this function, like this:
 
 ```rs
 if level.is_disjoint {
