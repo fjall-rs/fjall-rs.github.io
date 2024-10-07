@@ -9,7 +9,7 @@ published_at: 2024-10-07T14:27:50.729Z
 last_modified_at: 2024-10-07T14:27:50.729Z
 ---
 
-In an LSM-tree, the levels contain the disk segments of the tree; depending on their key range, the level may or may not be _disjoint_.
+In an LSM-tree, the levels contain the disk segments (a.k.a. SSTable) of the tree. Each disk segment holds a sorted list of key-value pairs; depending on the segments' key ranges, the level may or may not be _disjoint_.
 During the making of [release 2.1](/post/fjall-2-1), there was a need for a specialized function inside an LSM-tree's level if it was disjoint.
 
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
