@@ -8,9 +8,14 @@ import mdx from "@astrojs/mdx";
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [unocss({
-    injectReset: true
-  }), sitemap(), solidJs(), mdx()],
+  integrations: [
+    unocss({
+      injectReset: true
+    }),
+    sitemap(),
+    solidJs(),
+    mdx()
+  ],
   site: config.site.url,
   base: config.site.baseUrl,
   prefetch: {
@@ -21,5 +26,8 @@ export default defineConfig({
     shikiConfig: {
       themes: config.post.code.theme
     }
+  },
+  redirects: {
+    "/post/announcing-fjall-22": "/post/fjall-2-2",
   }
 });
