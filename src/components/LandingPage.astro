@@ -4,7 +4,7 @@ const cards = [
     name: "fjall",
     repo: "https://github.com/fjall-rs/fjall",
     description: "LSM-based embeddable key-value storage engine",
-    license: "MIT / A2 *",
+    license: "MIT / Apache",
     colors: {
       title: "text-sky-700 dark:text-sky-300",
       card: "hover:border-sky-500 hover:bg-sky-500",
@@ -14,7 +14,7 @@ const cards = [
     name: "lsm-tree",
     repo: "https://github.com/fjall-rs/lsm-tree",
     description: "K.I.S.S. implementation of log-structured merge trees",
-    license: "MIT / A2 *",
+    license: "MIT / Apache",
     colors: {
       title: "text-emerald-700 dark:text-emerald-300",
       card: "hover:border-emerald-500 hover:bg-emerald-500",
@@ -24,10 +24,20 @@ const cards = [
     name: "value-log",
     repo: "https://github.com/fjall-rs/value-log",
     description: "Log-structured value log for key-value separated storage",
-    license: "MIT / A2 *",
+    license: "MIT / Apache",
     colors: {
       title: "text-pink-700 dark:text-pink-300",
       card: "hover:border-pink-500 hover:bg-pink-500",
+    },
+  },
+  {
+    name: "byteview",
+    repo: "https://github.com/fjall-rs/byteview",
+    description: "Clonable and inlinable immutable byte slice",
+    license: "MIT / Apache",
+    colors: {
+      title: "text-violet-700 dark:text-violet-300",
+      card: "hover:border-violet-500 hover:bg-violet-500",
     },
   },
 ];
@@ -48,14 +58,16 @@ const cards = [
         >
           <div class="flex items-center justify-between gap-2">
             <h3 class={`${card.colors.title} text-xl font-medium`}>{card.name}</h3>
+          </div>
+          <div class="opacity-75">{card.description}</div>
+          <div class="grow" />
+          <div class="flex">
             <div class="rounded bg-black bg-opacity-20 px-2 py-1 text-xs font-semibold">
               {card.license}
             </div>
           </div>
-          <div class="opacity-75">{card.description}</div>
         </a>
       ))
     }
   </div>
-  <div class="mt-3 text-xs">* A2 = Apache 2.0</div>
 </section>
