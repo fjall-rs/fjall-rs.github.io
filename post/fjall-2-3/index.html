@@ -511,7 +511,10 @@
 #performance </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/point reads" data-astro-transition-scope="astro-x7amp3kc-10">
 #point reads </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/release" data-astro-transition-scope="astro-x7amp3kc-11">
 #release </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/short" data-astro-transition-scope="astro-x7amp3kc-12">
-#short </a> </li> </ul> <img class="mt-5 rounded-xl w-full object-cover bg-center aspect-2" src="/media/thumbs/kawaii.png" alt="Blog post thumbnail"> </div>  <article class="my-10 w-full !max-w-full prose dark:prose-invert text-justify dark:prose-gray"> <p>Like <a href="/post/fjall-2-1">2.1</a>, the 2.3 release is another one focused on maintenance and performance improvements, most of them in the <code>lsm-tree</code> crate.</p>
+#short </a> </li> </ul> <img class="mt-5 rounded-xl w-full object-cover bg-center aspect-2" src="/media/thumbs/kawaii.png" alt="Blog post thumbnail"> </div>  <article class="my-10 w-full !max-w-full prose dark:prose-invert text-justify dark:prose-gray"> <p>Fjall is an embeddable LSM-based forbid-unsafe Rust key-value storage engine.
+Its goal is to be a reliable &#x26; predictable but performant general-purpose KV storage engine.</p>
+<hr>
+<p>Like <a href="/post/fjall-2-1">2.1</a>, the 2.3 release is another one focused on maintenance and performance improvements, most of them in the <code>lsm-tree</code> crate.</p>
 <h2 id="better-write-scaling-of-random-key-insertions">Better write scaling of random key insertions</h2>
 <p>In a leveled LSM-tree, when a level A exceeds its target size, some segments of it are merged into the next level A+1, by rewriting all overlapping segments in level A+1.</p>
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
