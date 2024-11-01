@@ -1,0 +1,634 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v4.15.11"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="sitemap" href="/sitemap-index.xml"><!-- SEO --><title>Announcing Fjall 2.3 | fjall-rs</title><meta name="title" content="Announcing Fjall 2.3"><meta name="description" content="Yet more performance improvements"><!-- OG --><meta property="og:title" content="Announcing Fjall 2.3"><meta property="og:description" content="Yet more performance improvements"><meta property="og:url" content="https://fjall-rs.github.io/post/fjall-2-3/"><meta property="og:image" content="https://fjall-rs.github.io/media/thumbs/kawaii.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://fjall-rs.github.io/post/fjall-2-3/"><meta property="twitter:title" content="Announcing Fjall 2.3"><meta property="twitter:description" content="Yet more performance improvements"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><link rel="stylesheet" href="/_astro/index.BG_C-HRb.css">
+<style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}[data-astro-transition-scope]{animation:none!important}}
+@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-cyrillic-ext-400-normal.tyfMZHQw.woff2) format("woff2"),url(/_astro/inter-cyrillic-ext-400-normal.CzG7Kr3z.woff) format("woff");unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-cyrillic-400-normal.Df6ckaLK.woff2) format("woff2"),url(/_astro/inter-cyrillic-400-normal.JrS_4yms.woff) format("woff");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-greek-ext-400-normal.CIdlr5YK.woff2) format("woff2"),url(/_astro/inter-greek-ext-400-normal._Rr29XE2.woff) format("woff");unicode-range:U+1F00-1FFF}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-greek-400-normal.DQXyrmoy.woff2) format("woff2"),url(/_astro/inter-greek-400-normal.DvIPHDQ7.woff) format("woff");unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-vietnamese-400-normal.Cnt0N5Vm.woff2) format("woff2"),url(/_astro/inter-vietnamese-400-normal.DIOGfGLL.woff) format("woff");unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-latin-ext-400-normal.D3W-OpO-.woff2) format("woff2"),url(/_astro/inter-latin-ext-400-normal.8tIzm-yw.woff) format("woff");unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-latin-400-normal.BT1H-PT_.woff2) format("woff2"),url(/_astro/inter-latin-400-normal.Cdi8t5Mu.woff) format("woff");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}.astro-route-announcer{position:absolute;left:0;top:0;clip:rect(0 0 0 0);clip-path:inset(50%);overflow:hidden;white-space:nowrap;width:1px;height:1px}:not(.astro-code *){font-family:Inter,sans-serif}
+:target{scroll-margin-top:80px!important}article{overflow-x:hidden}article a{color:#075985!important;text-decoration:underline dotted!important;text-underline-offset:3px;display:inline-block;transition:transform .1s ease-in-out,filter .1s ease-in-out}article a:hover{transform:translateY(-2px)}.dark article a{color:#38bdf8!important}code:before,code:after{display:none}.astro-code{font-size:15px}p code{border-radius:4px;padding:2px 4px;white-space:normal!important}.dark p code{color:#c1e4f8!important;background:#07598554!important}html:not(.dark) p code{color:#045280!important;background:#99d4f566!important}.dark article blockquote{border-left-color:#064566!important}html:not(.dark) article blockquote{border-left-width:.25rem;border-left-style:solid;border-left-color:#63c8ff!important}html.dark .astro-code,html.dark .astro-code span{color:var(--shiki-dark)!important;background-color:var(--shiki-dark-bg)!important;font-style:var(--shiki-dark-font-style)!important;font-weight:var(--shiki-dark-font-weight)!important;text-decoration:var(--shiki-dark-text-decoration)!important}
+</style><script type="module" src="/_astro/hoisted.D_PRw2OY.js"></script>
+<script type="module" src="/_astro/page.VIllvXJD.js"></script><style>[data-astro-transition-scope="astro-x7amp3kc-1"] { view-transition-name: astro-x7amp3kc-1; }@layer astro { ::view-transition-old(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-2"] { view-transition-name: astro-x7amp3kc-2; }@layer astro { ::view-transition-old(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-3"] { view-transition-name: astro-x7amp3kc-3; }@layer astro { ::view-transition-old(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-4"] { view-transition-name: astro-x7amp3kc-4; }@layer astro { ::view-transition-old(astro-x7amp3kc-4) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-4) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-4) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-4) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-5"] { view-transition-name: astro-x7amp3kc-5; }@layer astro { ::view-transition-old(astro-x7amp3kc-5) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-5) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-5) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-5) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-6"] { view-transition-name: astro-x7amp3kc-6; }@layer astro { ::view-transition-old(astro-x7amp3kc-6) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-6) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-6) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-6) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-7"] { view-transition-name: benchmark; }@layer astro { ::view-transition-old(benchmark) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(benchmark) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(benchmark) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(benchmark) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-7"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-7"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-7"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-7"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-7"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-7"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-7"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-7"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-8"] { view-transition-name: memory_20usage; }@layer astro { ::view-transition-old(memory_20usage) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(memory_20usage) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(memory_20usage) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(memory_20usage) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-8"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-8"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-8"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-8"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-8"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-8"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-8"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-8"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-9"] { view-transition-name: performance; }@layer astro { ::view-transition-old(performance) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(performance) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(performance) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(performance) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-9"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-9"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-9"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-9"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-9"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-9"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-9"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-9"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-10"] { view-transition-name: point_20reads; }@layer astro { ::view-transition-old(point_20reads) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(point_20reads) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(point_20reads) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(point_20reads) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-10"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-10"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-10"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-10"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-10"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-10"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-10"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-10"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-11"] { view-transition-name: release; }@layer astro { ::view-transition-old(release) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(release) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(release) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(release) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-11"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-11"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-11"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-11"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-11"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-11"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-11"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-11"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-12"] { view-transition-name: short; }@layer astro { ::view-transition-old(short) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(short) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(short) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(short) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-12"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-12"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-12"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-12"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-12"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-12"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-12"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-12"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style></head> <body class="text-gray-700 dark:text-gray-400 dark:bg-gray-950"> <header class="backdrop-blur w-full px-8 py-5 fixed z-10 border-b dark:border-gray-900 bg-white/80 dark:bg-gray-950/75"> <div class="flex items-center gap-5 mx-auto w-full max-w-3xl"> <a class="text-black dark:text-white font-medium transition-colors hover:brightness-80" href="/" class="text-lg"> <!-- SETUP: If you have a logo, replace this component with it --><span> fjall-rs </span> </a> <div class="flex-grow"></div> <div class="flex items-center gap-4"> <a href="/posts" class="text-gray-800 dark:text-gray-400 transition-colors hover:brightness-80"> Posts </a><a href="/tags" class="text-gray-800 dark:text-gray-400 transition-colors hover:brightness-80"> Tags </a> </div> <div class="flex items-center gap-3"> <a href="/search" aria-label="Search content" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path><path d="M21 21l-6 -6"></path></svg> </a> <button aria-label="Switch theme" class="theme-switch transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path></svg> </button> <script>
+  const iconMoon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" /></svg>`;
+  const iconSun = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" /></svg>`;
+
+  function theme() {
+    const local = localStorage.getItem("theme");
+    if (local) {
+      return local;
+    }
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      return "dark";
+    }
+    return "light";
+  }
+
+  function registerStuff(document) {
+    const root = document.documentElement;
+    const themeSwitch = document.querySelector(".theme-switch");
+
+    if (theme() === "light") {
+      root.classList.remove("dark");
+      themeSwitch.innerHTML = iconMoon;
+    } else {
+      root.classList.add("dark");
+      themeSwitch.innerHTML = iconSun;
+    }
+
+    themeSwitch.addEventListener("click", () => {
+      const isDark = root.classList.contains("dark");
+      localStorage.setItem("theme", isDark ? "light" : "dark");
+      console.log(isDark);
+
+      if (isDark) {
+        root.classList.remove("dark");
+        themeSwitch.innerHTML = iconMoon;
+      } else {
+        root.classList.add("dark");
+        themeSwitch.innerHTML = iconSun;
+      }
+    });
+  }
+
+  registerStuff(document);
+
+  document.addEventListener("astro:after-swap", (ev) => {
+    registerStuff(document);
+  });
+</script> <a target="_blank" href="https://github.com/fjall-rs" aria-label="Open GitHub page" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-github"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path></svg> </a> </div> </div> </header> <main class="px-4 pt-30 mx-auto max-w-3xl">   <div class="reading-progress z-10 fixed left-0 top-0 h-1 dark:bg-sky-500 bg-sky-700 opacity-75"></div> <script>
+  /**
+   * Gets the vertical scroll percent (0.0 - 1.0)
+   */
+  function getScrollPercent() {
+    const doc = document.documentElement;
+    const body = document.body;
+
+    return (
+      (doc.scrollTop || body.scrollTop) /
+      ((doc.scrollHeight || body.scrollHeight) - doc.clientHeight)
+    );
+  }
+
+  document.addEventListener("astro:page-load", () => {
+    document.addEventListener("scroll", () => {
+      const el = document.querySelector(".reading-progress");
+      if (el) {
+        el.style.width = `${getScrollPercent() * 100}%`;
+      }
+    });
+  });
+</script> <div class="flex flex-col gap-4"> <h1 class="text-sky-800 dark:text-sky-400 text-4xl md:text-5xl font-bold"> Announcing Fjall 2.3 </h1> <div class="flex items-center gap-2">  <div> November 8, 2024 </div> 
+- <div>6 min. read</div>  </div> <ul class="text-sm text-sky-800 dark:text-sky-300 flex flex-wrap items-center gap-3"> <li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/benchmark" data-astro-transition-scope="astro-x7amp3kc-7">
+#benchmark </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/memory usage" data-astro-transition-scope="astro-x7amp3kc-8">
+#memory usage </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/performance" data-astro-transition-scope="astro-x7amp3kc-9">
+#performance </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/point reads" data-astro-transition-scope="astro-x7amp3kc-10">
+#point reads </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/release" data-astro-transition-scope="astro-x7amp3kc-11">
+#release </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/short" data-astro-transition-scope="astro-x7amp3kc-12">
+#short </a> </li> </ul> <img class="mt-5 rounded-xl w-full object-cover bg-center aspect-2" src="/media/thumbs/kawaii.png" alt="Blog post thumbnail"> </div>  <article class="my-10 w-full !max-w-full prose dark:prose-invert text-justify dark:prose-gray"> <p>Like <a href="/post/fjall-2-1">2.1</a>, the 2.3 release is another one focused on maintenance and performance improvements, most of them in the <code>lsm-tree</code> crate.</p>
+<h2 id="better-write-scaling-of-random-key-insertions">Better write scaling of random key insertions</h2>
+<p>In a leveled LSM-tree, when a level A exceeds its target size, some segments of it are merged into the next level A+1, by rewriting all overlapping segments in level A+1.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-23/compaction.svg">
+</div>
+<p>The function that picked the segments to compact in level A was very <del>naive</del> stupid, and caused one side of the keyspace (lower keys) to be preferred.
+This caused the segments in level A+1 to be very granular for a small key range.
+Future compactions would then have to rewrite an increasing amount of segments, causing longer compaction runs, up until the system write stalled, essentially strangling itself.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-23/compaction_expensive.svg">
+</div>
+<p>The function has been improved to take into account all possible windows of segments that could be compacted, and choose the least-effort set with the most payoff.</p>
+<p>This results in much more sane write scaling for huge data sets that are writing random keys (e.g. UUIDs) - 100M x 100 bytes here:</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-23/write_stalling.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-23/write_stalling_du.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-23/write_stalling_writeio.png">
+</div>
+<p>Note: the <code>MDB_NO_SYNC</code> flag was used for <code>heed</code>, which may not be safe to use, but not using it makes writes way too slow.</p>
+<h2 id="faster-lz4-decompression">Faster LZ4 (de)compression</h2>
+<p>By default, <code>lsm-tree</code> uses the <code>lz4_flex</code> crate for compression.
+The crate has a (default) <em>safe</em> and (faster) <em>unsafe</em> mode.
+Up until now, the safe mode was used.
+But seeing the crate being used in <em>unsafe</em> mode in <code>tantivy</code> (and thus <code>quickwit</code>) gave me the confidence to change it to <em>unsafe</em> mode as well in <code>lsm-tree</code>.</p>
+<p>The change results in slightly faster compaction; micro benchmarks showed a ~5-15% decrease in decompression times.</p>
+<h2 id="fixed-degradation-in-point-reads-in-some-workloads">Fixed degradation in point reads in some workloads</h2>
+<p>Under certain conditions, point reads to old KVs in certain workloads could, at some point, hit a performance cliff.
+This was caused by a control flow mishap, causing unnecessary lookups in levels that did not contain the requested key.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-23/disjoint_point_read_fix.png">
+</div>
+<h2 id="faster-sync-writes">Faster sync writes</h2>
+<p>To reduce fsync latency, the journal file is preallocated to 16 MiB.
+However, for small values, the default memtable size, combined with the overhead of journal entries, would cross that threshold.
+This would result in sync writes flip flopping between <em>fast</em> and <em>moderate,</em> which is not desirable.</p>
+<p>The default journal preallocation has been increased to 32 MiB, which seems to be a good default for a variety of value sizes.</p>
+<p>In the future, the preallocation size will be made configurable, and should be set to around the largest expected memtable size.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-23/sync_writes.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-23/sync_write_rate.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-23/sync_write_latency.png">
+</div>
+<p>Disk used: Samsung PM9A3</p>
+<h2 id="decreased-memory-usage-in-monotonic-workloads">Decreased memory usage in monotonic workloads</h2>
+<p>LSM-trees use probabilistic filters (e.g. Bloom filters) to skip superfluous I/O operations when traversing through levels.
+Because generally 90% of data is kept in the last level, many keys will not be present in the upper (smaller) levels, so skipping I/O work there (especially L0) is very important.</p>
+<p>Because the upper levels are very small and short-lived, the bloom filter FPR can be set abnormally low at very low costs.</p>
+<p>However, when the segments are never rewritten (e.g. time series), but instead moved down (”trivial move”), the bloom filter memory overhead will end up being unexpectedly high (1.5 - 2.5x).</p>
+<p>The compaction has been tweaked to force rewriting segments when they are demoted into the deeper, “colder” levels (L2+).
+This will probably be tweaked in the future to make it less aggressive for certain workloads.</p>
+<p>The following benchmark writes ~250M time series data points:</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-23/cold_bloom_mem.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-23/cold_bloom_write_amp.png">
+</div>
+<p>This increases background I/O costs; notice how the write amplification changes from ~2 to ~3, as we now write each item three times (WAL, flush, L1→L2 compaction) instead of twice.
+However, write <em>throughput</em> stays more or less the same.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-23/cold_bloom_writes.png">
+</div>
+<p>Note: fjall 2.2.0-nb disabled bloom filters altogether</p>
+<p>Additionally, when segments are very small, they will instead be tried to merged together to reach the configured segment target size (64 MB by default).</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-23/segment_count.png">
+</div>
+<h2 id="additional-benchmarks">Additional benchmarks</h2>
+<p>I reran the benchmarks from <a href="https://github.com/arthurprs/canopydb/">CanopyDB</a> with an extended period of 5 minutes, to better demonstrate the scaling of the storage engines.</p>
+<p>Test rig: i9 11900K, 32 GB RAM (limited to 2 GB using systemd), Samsung PM9A3.</p>
+<p>Note that cumulative stats are kind of misleading right now, they will be fixed in an upcoming version of the benchmark tool.</p>
+<h3 id="50-reads-20-scans-10-overwrites-and-20-inserts-random">50% reads, 20% scans, 10% overwrites and 20% inserts (random)</h3>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px" src="/media/posts/fjall-23/arthurbench_a.png">
+</div>
+<h3 id="50-reads-20-scans-10-overwrites-and-20-inserts-sequential">50% reads, 20% scans, 10% overwrites, and 20% inserts (sequential)</h3>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px" src="/media/posts/fjall-23/arthurbench_b.png">
+</div>
+<h3 id="preloaded-50-reads-20-scans-10-overwrites-and-20-inserts">(preloaded) 50% reads, 20% scans, 10% overwrites, and 20% inserts</h3>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px" src="/media/posts/fjall-23/arthurbench_c.png">
+</div>
+<h3 id="preloaded-20-kb-values-50-reads-20-scans-10-overwrites-and-20-inserts">(preloaded, 20 KB values) 50% reads, 20% scans, 10% overwrites, and 20% inserts</h3>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px" src="/media/posts/fjall-23/arthurbench_d.png">
+</div>
+<h3 id="95-inserts-5-reads-sync-commit">95% inserts, 5% reads (sync commit)</h3>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px" src="/media/posts/fjall-23/arthurbench_e.png">
+</div> <h2>Interested in LSM-trees and Rust?</h2> <p>
+Check out <a href="https://github.com/fjall-rs/fjall" target="_blank">fjall</a>, an MIT-licensed
+  LSM-based storage engine written in Rust.
+</p> <iframe src="https://github.com/sponsors/fjall-rs/card" title="Sponsor fjall" height="80" width="100%" style="border: 0;"></iframe> </article>   <hr class="h-1 mb-2 border-gray-200 dark:border-gray-700"> <div class="flex flex-col gap-3"> <div class="dark:text-gray-300 italic">Tags</div> <ul class="text-sm text-sky-800 dark:text-sky-300 flex flex-wrap items-center gap-3"> <li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/benchmark" data-astro-transition-scope="astro-x7amp3kc-1">
+#benchmark </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/memory usage" data-astro-transition-scope="astro-x7amp3kc-2">
+#memory usage </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/performance" data-astro-transition-scope="astro-x7amp3kc-3">
+#performance </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/point reads" data-astro-transition-scope="astro-x7amp3kc-4">
+#point reads </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/release" data-astro-transition-scope="astro-x7amp3kc-5">
+#release </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/short" data-astro-transition-scope="astro-x7amp3kc-6">
+#short </a> </li> </ul> </div>  </main> <footer class="flex flex-col gap-5 py-10 mx-auto max-w-3xl w-full"> <!-- TODO: move into a fixed FAB button, outside of footer --> <div class="text-right"> <button onclick="scrollToTop()">Back to top</button> </div> <div class="text-center">
+&copy; 2024 fjall-rs 
+- powered by <a class="text-sky-700 dark:text-sky-300 italic transition-all hover:brightness-80" href="https://github.com/marvin-j97/nanoblog" target="_blank">
+nanoblog
+</a>  </div> <div class="flex gap-3 justify-center"> <a target="_blank" href="https://github.com/fjall-rs" aria-label="Open GitHub page" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-github"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path></svg> </a> <a target="_blank" href="/rss.xml" aria-label="Get RSS feed" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path> <path d="M5 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path> <path d="M4 4a16 16 0 0 1 16 16"></path> <path d="M4 11a9 9 0 0 1 9 9"></path>  </svg> </a> </div> </footer> <script>
+  function scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }
+</script>  </body> </html> 
