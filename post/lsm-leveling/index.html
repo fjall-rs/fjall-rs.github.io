@@ -320,7 +320,7 @@ While segments that do can not possibly contain the requested key (because it li
   The worst-case amount of disk I/O operations in a leveled LSM-tree is <code>L0_segments + (level_count - 1)</code>.
 </p>
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/lsm-leveling/leveled_point_read.svg">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/bloom-filter-hash-sharing/leveled_point_read.svg">
 </div>
 <p>Consider 1’000 segments in a single non-L0 level:
 We know the level is disjoint, and we know what part of the keyspace each segment holds.
