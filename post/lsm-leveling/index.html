@@ -288,7 +288,7 @@
       }
     });
   });
-</script> <div class="flex flex-col gap-4"> <h1 class="text-sky-800 dark:text-sky-400 text-4xl md:text-5xl font-bold"> An overview of Leveled Compaction in LSM-trees </h1> <div class="flex items-center gap-2">  <div> November 1, 2024 </div> 
+</script> <div class="flex flex-col gap-4"> <h1 class="text-sky-800 dark:text-sky-400 text-4xl md:text-5xl font-bold"> An overview of Leveled Compaction in LSM-trees </h1> <div class="flex items-center gap-2">  <div> December 6, 2024 </div> 
 - <div>17 min. read</div>  </div> <ul class="text-sm text-sky-800 dark:text-sky-300 flex flex-wrap items-center gap-3"> <li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/compaction" data-astro-transition-scope="astro-x7amp3kc-4">
 #compaction </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/leveling" data-astro-transition-scope="astro-x7amp3kc-5">
 #leveling </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/lsm tree" data-astro-transition-scope="astro-x7amp3kc-6">
@@ -428,7 +428,7 @@ This reduces the above tree’s initialization cost down from 4 to 1 I/O.</p>
 <h3 id="range-filters">Range filters</h3>
 <p>Setting up a range read over all affected segments is expensive, and be undesirable for short range scans.
 As with point reads, in-memory filters may be used to avoid unnecessary disk seeks, especially in L0, where checking most, if not all, segments is unavoidable.
-There are a bunch of proposed range filters, such as SuRF, Rosetta, GRF, REMIX and others.
+There are a bunch of proposed range filters, such as SuRF, Rosetta, Grafite, GRF, REMIX and others.
 Some range filters may also double as a point read filter, replacing the default bloom filter implementation, which may save some memory.
 These filters are called <code>PRF</code> (<strong>P</strong>oint-read-<strong>R</strong>ange-<strong>F</strong>ilter).</p>
 <blockquote>
@@ -451,6 +451,50 @@ This reduces the amount of segments in L0, improving read performance.</p>
 Then, if <code>l0_compaction_trigger</code> segments were present in L0, these small segments would be merged with the full-sized L1, resulting in high write amplification.
 As an example, it is more efficient to (a) merge 4 x 16 MB segments in L0, and repeating that four times, so we end up with 4 x 64 MB segments in L0 that can be merged into L1, than (b) merging those 4 x 16 MB segments into L1 (which can be ~500-600 MB in size) four times.
 If L1 is 512 MB, (a) writes ~1 GB of data, while (b) writes ~2.3 GB of data.</p>
+<h3 id="segment-size">Segment size</h3>
+<p>Segments in a Leveled tree have a fixed size.
+Smaller segments allow more granular more compaction, especially in larger levels, where the keyspace is fragmented into a large amount of segments.
+Larger segments cause the tree to grow wider, amassing more data in each level, which decreases the amount of levels needed, thus increasing read performance as more levels may be vacant.
+Smaller segment cause each level to overflow more quickly, thus data needs to be moved down more quickly, decreasing read performance.</p>
+<p>However, having a lot of segments comes with a caveat:
+unlike a B-tree, which stored in a single file, we may have hundreds or thousands of segment files!
+Ideally, we want to keep file descriptors open to enable faster reads by avoiding rather expensive <code>fopen</code> syscalls.
+File descriptors are kept in a global cache called the <code>DescriptorTable</code> (<code>TableCache</code> in RocksDB).
+If the descriptor table limit is much lower than amount of segments, file descriptors may get evicted resulting in higher read latency because <code>fopen</code> needs to be called more often.</p>
+<h3 id="level-base-size">Level base size</h3>
+<p>This is the size of L1.
+This is typically <code>segmment_base_size * l0_compaction_trigger</code>.</p>
+<h3 id="level-fanout">Level fanout</h3>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 400px" src="/media/posts/lsm-leveling/leveled_wide.svg">
+</div>
+<p>The level fanout has a pretty simple effect on LSM performance.
+Consider the tree configuration in the image above:
+L1 is configured to store 128 MB of data.
+The tree has a level fanout of 8, meaning L2 has a maximum size of 1024.
+When L1 grows too large, its overshoot will be merged into the next level, by picking as many L1 segments as needed to reduce the level back to its intended size, plus all the overlapping segments in L2 (coloured in red).
+Picking overlapped segments is required for the invariant of Leveling to hold: every level after L0 is disjoint.
+This operation needs to rewrite 320 MB of data.
+The target size of any level after L0 is: <code>level_fanout ^ level_idx</code>.</p>
+<p>Example: With a segment size of 64 MB and level base size of 256 MB, L1 contains <strong>4</strong> segments.
+With a fanout of 10, L2 should then contain a maximum of <strong>40</strong> segments, L3 could house <strong>400</strong> segments etc.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/lsm-leveling/leveled_narrow.svg">
+</div>
+<p>Now, consider this LSM-tree with an extreme level fanout of 2:
+When L1 grows too large, the L1’s overshoot only needs to be merged with one segment in L2, resulting in 128 MB of rewritten data, which is a much lower write amplification than the tree with a fanout of 8.
+But the downside is how deep the tree has grown.
+Both trees store the same amount of data, but the narrow tree has twice as many levels (ignoring L0).
+This effectively doubles the worse case read latency of the tree compared to the wide tree.</p>
+<p>With the level fanout we effectively control how much the tree behaves like a log (low fanout) or a sorted array (high fanout).
+Consider an absurd of level fanout of 1’000:
+With the default segment size, we can store 64 GB in just one level, which results in very fast writes, but any overshoot of the previous level may result in 100s of segments to be rewritten, resulting in extreme write amplification.
+The tree thus becomes more like a flat file that we are overwriting again and again.</p>
+<p>Summarized:</p>
+<blockquote>
+<p><strong>High level fanout = faster reads, higher write amplification</strong></p>
+<p><strong>Low level fanout = slower reads, lower write amplification</strong></p>
+</blockquote>
 <h2 id="l0-fragmentation">L0 fragmentation</h2>
 <p>By now you probably have realized that most issues stem from the fact L0 is not disjoint.
 While this is an unavoidable fact of life, it can be alleviated by fragmenting L0 segments across the <em>key boundaries</em> of L1 segments.
@@ -469,47 +513,6 @@ But as shown above, point reads and range reads can both be optimized for disjoi
 <p>L0 fragmentation is currently not implemented in <code>lsm-tree</code></p>
 <p>See <a href="https://github.com/fjall-rs/lsm-tree/issues/48">https://github.com/fjall-rs/lsm-tree/issues/48</a></p>
 </blockquote>
-<h3 id="level-fanout">Level fanout</h3>
-<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 400px" src="/media/posts/lsm-leveling/leveled_wide.svg">
-</div>
-<p>The level fanout has a pretty simple effect on LSM performance.
-Consider the tree configuration in the image above:
-L1 is configured to store 128 MB of data.
-The tree has a level fanout of 8, meaning L2 has a maximum size of 1024.
-When L1 grows too large, its overshoot will be merged into the next level, by picking as many L1 segments as needed to reduce the level back to its intended size, plus all the overlapping segments in L2 (coloured in red).
-Picking overlapped segments is required for the invariant of Leveling to hold: every level after L0 is disjoint.
-This operation needs to rewrite 320 MB of data.
-The target size of any level after L0 is: <code>level_fanout ^ level_idx</code>.</p>
-<p>Example 1: With a fanout of 8, L1 should contain a maximum of 8^1 = <strong>8</strong> segments.</p>
-<p>Example 2: With a fanout of 10, L2 should contain a maximum of 10^2 = <strong>100</strong> segments.</p>
-<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
-  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/lsm-leveling/leveled_narrow.svg">
-</div>
-<p>Now, consider this LSM-tree with an extreme level fanout of 2:
-When L1 grows too large, the L1’s overshoot only needs to be merged with one segment in L2, resulting in 128 MB of rewritten data, which is a much lower write amplification than the tree with a fanout of 8.
-But the downside is how deep the tree has grown.
-Both trees store the same amount of data, but the narrow tree has twice as many levels (ignoring L0).
-This effectively doubles the worse case read latency of the tree compared to the wide tree.</p>
-<p>With the level fanout we effectively control how much the tree behaves like a log (low fanout) or a sorted array (high fanout).
-Consider an absurd of level fanout of 1’000:
-With the default segment size, we can store 64 GB in just one level, which results in very fast writes, but any overshoot of the previous level may result in 100s of segments to be rewritten, resulting in extreme write amplification.
-The tree thus becomes more like a flat file that we are overwriting again and again.</p>
-<p>Summarized:</p>
-<blockquote>
-<p><strong>High level fanout = faster reads, higher write amplification</strong></p>
-<p><strong>Low level fanout = slower reads, lower write amplification</strong></p>
-</blockquote>
-<h3 id="segment-size">Segment size</h3>
-<p>Segments in a Leveled tree have a fixed size.
-Smaller segments allow more granular more compaction, especially in larger levels, where the keyspace is fragmented into a large amount of segments.
-Larger segments cause the tree to grow wider, amassing more data in each level, which decreases the amount of levels needed, thus increasing read performance as more levels may be vacant.
-Smaller segment cause each level to overflow more quickly, thus data needs to be moved down more quickly, decreasing read performance.</p>
-<p>However, having a lot of segments comes with a caveat:
-unlike a B-tree, which stored in a single file, we may have hundreds or thousands of segment files!
-Ideally, we want to keep file descriptors open to enable faster reads by avoiding rather expensive <code>fopen</code> syscalls.
-File descriptors are kept in a global cache called the <code>DescriptorTable</code> (<code>TableCache</code> in RocksDB).
-If the descriptor table limit is much lower than amount of segments, file descriptors may get evicted resulting in higher read latency because <code>fopen</code> needs to be called more often.</p>
 <h2 id="summary">Summary</h2>
 <p>LCS needs some care to both understand, implement and optimize effectively.
 It is the default compaction strategy used in RocksDB, CockroachDB’s Pebble, Dgraph’s BadgerDB, Fjall, and the only compaction strategy implemented in LevelDB (probably where it got its name from, really).
