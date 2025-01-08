@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v4.15.11"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="sitemap" href="/sitemap-index.xml"><!-- SEO --><title>Announcing Fjall 2.2 | fjall-rs</title><meta name="title" content="Announcing Fjall 2.2"><meta name="description" content="Now with concurrent write transactions"><!-- OG --><meta property="og:title" content="Announcing Fjall 2.2"><meta property="og:description" content="Now with concurrent write transactions"><meta property="og:url" content="https://fjall-rs.github.io/post/fjall-2-2/"><meta property="og:image" content="https://fjall-rs.github.io/media/thumbs/oracle.jpg"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://fjall-rs.github.io/post/fjall-2-2/"><meta property="twitter:title" content="Announcing Fjall 2.2"><meta property="twitter:description" content="Now with concurrent write transactions"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><link rel="stylesheet" href="/_astro/index.BG_C-HRb.css">
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v4.15.11"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="sitemap" href="/sitemap-index.xml"><!-- SEO --><title>Announcing Fjall 2.5 | fjall-rs</title><meta name="title" content="Announcing Fjall 2.5"><meta name="description" content="...further performance improvements"><!-- OG --><meta property="og:title" content="Announcing Fjall 2.5"><meta property="og:description" content="...further performance improvements"><meta property="og:url" content="https://fjall-rs.github.io/post/fjall-2-5/"><meta property="og:image" content="https://fjall-rs.github.io/media/thumbs/wyoming.jpg"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://fjall-rs.github.io/post/fjall-2-5/"><meta property="twitter:title" content="Announcing Fjall 2.5"><meta property="twitter:description" content="...further performance improvements"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><link rel="stylesheet" href="/_astro/index.BG_C-HRb.css">
 <style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}[data-astro-transition-scope]{animation:none!important}}
 @font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-cyrillic-ext-400-normal.tyfMZHQw.woff2) format("woff2"),url(/_astro/inter-cyrillic-ext-400-normal.CzG7Kr3z.woff) format("woff");unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-cyrillic-400-normal.Df6ckaLK.woff2) format("woff2"),url(/_astro/inter-cyrillic-400-normal.JrS_4yms.woff) format("woff");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-greek-ext-400-normal.CIdlr5YK.woff2) format("woff2"),url(/_astro/inter-greek-ext-400-normal._Rr29XE2.woff) format("woff");unicode-range:U+1F00-1FFF}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-greek-400-normal.DQXyrmoy.woff2) format("woff2"),url(/_astro/inter-greek-400-normal.DvIPHDQ7.woff) format("woff");unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-vietnamese-400-normal.Cnt0N5Vm.woff2) format("woff2"),url(/_astro/inter-vietnamese-400-normal.DIOGfGLL.woff) format("woff");unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-latin-ext-400-normal.D3W-OpO-.woff2) format("woff2"),url(/_astro/inter-latin-ext-400-normal.8tIzm-yw.woff) format("woff");unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-latin-400-normal.BT1H-PT_.woff2) format("woff2"),url(/_astro/inter-latin-400-normal.Cdi8t5Mu.woff) format("woff");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}.astro-route-announcer{position:absolute;left:0;top:0;clip:rect(0 0 0 0);clip-path:inset(50%);overflow:hidden;white-space:nowrap;width:1px;height:1px}:not(.astro-code *){font-family:Inter,sans-serif}
 :target{scroll-margin-top:80px!important}article{overflow-x:hidden}article a{color:#075985!important;text-decoration:underline dotted!important;text-underline-offset:3px;display:inline-block;transition:transform .1s ease-in-out,filter .1s ease-in-out}article a:hover{transform:translateY(-2px)}.dark article a{color:#38bdf8!important}code:before,code:after{display:none}.astro-code{font-size:15px}p code{border-radius:4px;padding:2px 4px;white-space:normal!important}.dark p code{color:#c1e4f8!important;background:#07598554!important}html:not(.dark) p code{color:#045280!important;background:#99d4f566!important}.dark article blockquote{border-left-color:#064566!important}html:not(.dark) article blockquote{border-left-width:.25rem;border-left-style:solid;border-left-color:#63c8ff!important}html.dark .astro-code,html.dark .astro-code span{color:var(--shiki-dark)!important;background-color:var(--shiki-dark-bg)!important;font-style:var(--shiki-dark-font-style)!important;font-weight:var(--shiki-dark-font-weight)!important;text-decoration:var(--shiki-dark-text-decoration)!important}
@@ -183,19 +183,19 @@
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
-	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-6"] { view-transition-name: concurrency_20control; }@layer astro { ::view-transition-old(concurrency_20control) { 
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-6"] { view-transition-name: astro-x7amp3kc-6; }@layer astro { ::view-transition-old(astro-x7amp3kc-6) { 
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
-	animation-name: astroFadeOut; }::view-transition-new(concurrency_20control) { 
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-6) { 
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
-	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(concurrency_20control) { 
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-6) { 
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
-	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(concurrency_20control) { 
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-6) { 
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
@@ -219,19 +219,19 @@
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
-	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-7"] { view-transition-name: release; }@layer astro { ::view-transition-old(release) { 
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-7"] { view-transition-name: block_20index; }@layer astro { ::view-transition-old(block_20index) { 
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
-	animation-name: astroFadeOut; }::view-transition-new(release) { 
+	animation-name: astroFadeOut; }::view-transition-new(block_20index) { 
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
-	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(release) { 
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(block_20index) { 
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
-	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(release) { 
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(block_20index) { 
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
@@ -255,19 +255,19 @@
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
-	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-8"] { view-transition-name: serializable_20snapshot_20isolation; }@layer astro { ::view-transition-old(serializable_20snapshot_20isolation) { 
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-8"] { view-transition-name: leveling; }@layer astro { ::view-transition-old(leveling) { 
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
-	animation-name: astroFadeOut; }::view-transition-new(serializable_20snapshot_20isolation) { 
+	animation-name: astroFadeOut; }::view-transition-new(leveling) { 
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
-	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(serializable_20snapshot_20isolation) { 
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(leveling) { 
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
-	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(serializable_20snapshot_20isolation) { 
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(leveling) { 
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
@@ -291,19 +291,19 @@
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
-	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-9"] { view-transition-name: short; }@layer astro { ::view-transition-old(short) { 
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-9"] { view-transition-name: performance; }@layer astro { ::view-transition-old(performance) { 
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
-	animation-name: astroFadeOut; }::view-transition-new(short) { 
+	animation-name: astroFadeOut; }::view-transition-new(performance) { 
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
-	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(short) { 
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(performance) { 
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
-	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(short) { 
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(performance) { 
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
@@ -327,19 +327,19 @@
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
-	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-10"] { view-transition-name: transactions; }@layer astro { ::view-transition-old(transactions) { 
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-10"] { view-transition-name: point_20reads; }@layer astro { ::view-transition-old(point_20reads) { 
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
-	animation-name: astroFadeOut; }::view-transition-new(transactions) { 
+	animation-name: astroFadeOut; }::view-transition-new(point_20reads) { 
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
-	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(transactions) { 
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(point_20reads) { 
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
-	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(transactions) { 
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(point_20reads) { 
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
@@ -360,6 +360,78 @@
 	animation-fill-mode: both;
 	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-10"],
 			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-10"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-11"] { view-transition-name: release; }@layer astro { ::view-transition-old(release) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(release) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(release) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(release) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-11"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-11"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-11"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-11"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-11"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-11"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-11"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-11"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-12"] { view-transition-name: short; }@layer astro { ::view-transition-old(short) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(short) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(short) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(short) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-12"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-12"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-12"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-12"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-12"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-12"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-12"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-12"] { 
 	animation-duration: 180ms;
 	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 	animation-fill-mode: both;
@@ -432,114 +504,103 @@
       }
     });
   });
-</script> <div class="flex flex-col gap-4"> <h1 class="text-sky-800 dark:text-sky-400 text-4xl md:text-5xl font-bold"> Announcing Fjall 2.2 </h1> <div class="flex items-center gap-2">  <div> October 20, 2024 </div> 
-- <div>4 min. read</div>  </div> <ul class="text-sm text-sky-800 dark:text-sky-300 flex flex-wrap items-center gap-3"> <li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/concurrency control" data-astro-transition-scope="astro-x7amp3kc-6">
-#concurrency control </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/release" data-astro-transition-scope="astro-x7amp3kc-7">
-#release </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/serializable snapshot isolation" data-astro-transition-scope="astro-x7amp3kc-8">
-#serializable snapshot isolation </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/short" data-astro-transition-scope="astro-x7amp3kc-9">
-#short </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/transactions" data-astro-transition-scope="astro-x7amp3kc-10">
-#transactions </a> </li> </ul> <img class="mt-5 rounded-xl w-full object-cover bg-center aspect-2" src="/media/thumbs/oracle.jpg" alt="Blog post thumbnail"> </div>  <article class="my-10 w-full !max-w-full prose dark:prose-invert text-justify dark:prose-gray"> <p>Fjall 2.2 was just released, featuring optimistic concurrency control for multi-writer transaction support, using serializable snapshot isolation.</p>
-<h2 id="transactions-before-22">Transactions before 2.2</h2>
-<p>Transactions have been supported since version 1.1.2 in the shape of single-writer transactions, which are serializable.
-<code>Serializable</code> is the strongest isolation level, and is supported by most, if not all, transactional databases.
-Single writers are trivially serializable, because they <em>literally</em> serialized.
-For contentious workloads, this offers low overhead because (a) there is no bookkeeping of possible transaction conflicts, (b) transactions never have to be retried because they cannot fail.
-However, for longer running transactions that do not interfere much, they are… not great.</p>
-<p>The transaction API supports pretty much all operations, such as:</p>
+</script> <div class="flex flex-col gap-4"> <h1 class="text-sky-800 dark:text-sky-400 text-4xl md:text-5xl font-bold"> Announcing Fjall 2.5 </h1> <div class="flex items-center gap-2">  <div> January 8, 2025 </div> 
+- <div>5 min. read</div>  </div> <ul class="text-sm text-sky-800 dark:text-sky-300 flex flex-wrap items-center gap-3"> <li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/block index" data-astro-transition-scope="astro-x7amp3kc-7">
+#block index </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/leveling" data-astro-transition-scope="astro-x7amp3kc-8">
+#leveling </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/performance" data-astro-transition-scope="astro-x7amp3kc-9">
+#performance </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/point reads" data-astro-transition-scope="astro-x7amp3kc-10">
+#point reads </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/release" data-astro-transition-scope="astro-x7amp3kc-11">
+#release </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/short" data-astro-transition-scope="astro-x7amp3kc-12">
+#short </a> </li> </ul> <img class="mt-5 rounded-xl w-full object-cover bg-center aspect-2" src="/media/thumbs/wyoming.jpg" alt="Blog post thumbnail"> </div>  <article class="my-10 w-full !max-w-full prose dark:prose-invert text-justify dark:prose-gray"> <p>Fjall is an embeddable LSM-based forbid-unsafe Rust key-value storage engine.
+Its goal is to be a reliable &#x26; predictable but performant general-purpose KV storage engine.</p>
+<hr>
+<p>2.5 is another performance focused update.</p>
+<h2 id="using-full-block-index-for-l0-and-l1">Using full block index for L0 and L1</h2>
+<p>Fjall uses a partitioned (two-level) block index.
+The top-level index is always fully loaded in memory, but is very small.
+The second level index is stored on disk and can be loaded partially as needed.
+This decreases memory usage for large databases, allowing more hot data to be cached instead.
+However, for an uncached read, a partitioned block index may incur 2 instead of 1 random read I/O.
+Because level 0 and 1 (L0 and L1) are very small, the memory savings in these levels are negligible.</p>
+<p>Now, L0 and L1 segments will use the full block index.</p>
+<p>Here is a benchmark of point reading 5M random KVs with virtually no block caching:</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-25/full_block_index_read_latency.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-25/full_block_index_read_percentiles.png">
+</div>
+<h2 id="fixed-point-reads-for-update-heavy-workloads">Fixed point reads for update-heavy workloads</h2>
+<p>Fjall uses MVCC (multi-version concurrency control) for snapshotting and transaction isolation.
+That means, every key may be in the database multiple times, stored from newest to oldest.
+Old versions are lazily deleted during compactions.</p>
+<p>If there were very many versions for a single key, the memtable could end up reading too much versions when a snapshot is used.
+Now it always skips to the correct version, avoiding scanning through versions, which increased read latencies.</p>
+<p>Here is a benchmark with 95% point reads and 5% updates of existing KVs:</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-25/updates_write_latency.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-25/updates_read_rate.png">
+</div>
+<h2 id="lazily-evaluate-range-bounds">Lazily evaluate range bounds</h2>
+<p>When using a bounded <code>range()</code> (or <code>prefix()</code>, which is just a <code>range()</code> internally), <code>lsm-tree</code> would try to find the range bounds (the two blocks that make up the lower and upper bound of the range).
+This requires two block index lookups, which could result in 2 read I/O’s if the blocks are not cached.
+However, most of the time, a range is only read in one direction (either using <code>next()</code> or <code>next_back()</code>), so now:</p>
 <ul>
-<li>inserts</li>
-<li>deletes</li>
-<li>point reads (get)</li>
-<li>iterators (range, prefix, …)</li>
+<li>when using <code>next()</code> the first time, the lower bound is initialized</li>
+<li>when using <code>next_back()</code> the first time, the upper bound is initialized</li>
 </ul>
-<p>and it also features extra transactional helpers for advanced atomic operations, such as <code>fetch-and-update</code>, or <code>take</code> (get-and-remove).</p>
-<p>Here is an example to get an idea of the transaction API:</p>
-<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> A default keyspace does not have a transactional layer</span></span>
-<span class="line"><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> One has to use `open_transactional` to get transactions</span></span>
-<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> keyspace</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Config</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">default</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">open_transactional</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
-<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> partition</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> keyspace</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">open_partition</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"items"</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Default</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">default</span><span style="color:#908CAA;--shiki-dark:#908CAA">())</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">{</span></span>
-<span class="line"><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">  //</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> We can set the durability of the transaction to Sync*</span></span>
-<span class="line"><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">  //</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> to get ACID transactions</span></span>
-<span class="line"><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">  //</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> That way, we guarantee that once `commit()` returns, the data is</span></span>
-<span class="line"><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">  //</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> stable on disk</span></span>
-<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">  let</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> mut</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> tx</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> keyspace</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">write_tx</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">durability</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Some</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">PersistMode</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">SyncData</span><span style="color:#908CAA;--shiki-dark:#908CAA">));</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">  tx</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">insert</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">&#x26;</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">partition</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#F6C177;--shiki-dark:#F6C177"> "hello"</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#F6C177;--shiki-dark:#F6C177"> "world"</span><span style="color:#908CAA;--shiki-dark:#908CAA">);</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">  //</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> Read-your-own-write</span></span>
-<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">  let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> item</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> tx</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">get</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">&#x26;</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">partition</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#F6C177;--shiki-dark:#F6C177"> "hello"</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
-<span class="line"><span style="color:#EA9A97;--shiki-dark:#EA9A97">  assert_eq!</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Some</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"world"</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">as_bytes</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">into</span><span style="color:#908CAA;--shiki-dark:#908CAA">()),</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> item</span><span style="color:#908CAA;--shiki-dark:#908CAA">);</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">  //</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> Commit the transaction</span></span>
-<span class="line"><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">  //</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> This can fail because of I/O errors, but not because of</span></span>
-<span class="line"><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">  //</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> transactional shenanigans</span></span>
-<span class="line"><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">  tx</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">commit</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#EA9A97;--shiki-dark:#EA9A97">  assert_eq!</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">b"world"</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> &#x26;*</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">partition</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">get</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"hello"</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">unwrap</span><span style="color:#908CAA;--shiki-dark:#908CAA">());</span></span>
-<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">{</span></span>
-<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">  let</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> mut</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> tx</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> keyspace</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">write_tx</span><span style="color:#908CAA;--shiki-dark:#908CAA">();</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">  tx</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">insert</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">&#x26;</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">partition</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#F6C177;--shiki-dark:#F6C177"> "hello"</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#F6C177;--shiki-dark:#F6C177"> "welt"</span><span style="color:#908CAA;--shiki-dark:#908CAA">);</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">  //</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> If we drop a transaction without committing,</span></span>
-<span class="line"><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">  //</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> all writes are rolled back</span></span>
-<span class="line"><span style="color:#EA9A97;--shiki-dark:#EA9A97">  drop</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">tx</span><span style="color:#908CAA;--shiki-dark:#908CAA">);</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#EA9A97;--shiki-dark:#EA9A97">  assert_eq!</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">b"world"</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> &#x26;*</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">partition</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">get</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"hello"</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">unwrap</span><span style="color:#908CAA;--shiki-dark:#908CAA">());</span></span>
-<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">}</span></span>
-<span class="line"></span></code></pre>
-<p>Because the write transaction takes an actual lock, starting a second transaction in the same thread would deadlock the program.
-So don’t do that.</p>
-<h2 id="serializable-snapshot-isolation">Serializable snapshot isolation</h2>
-<p>2.2 now features multi-writer transactions with optimistic concurrency control.
-To be more precise, serializable snapshot isolation (SSI) is used.
-This is the same way <a href="https://wiki.postgresql.org/wiki/SSI">Postgres’ serializable isolation level</a> works, and is more thoroughly explained in <a href="https://courses.cs.washington.edu/courses/cse444/08au/544M/READING-LIST/fekete-sigmod2008.pdf">this paper</a>.</p>
-<p>The API features all the functions the single-writer transactions offer, as well.</p>
-<p>To use SSI transactions, one has to toggle a feature flag:</p>
-<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="toml"><code><span class="line"><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">fjall</span><span style="color:#908CAA;--shiki-dark:#908CAA"> =</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> version</span><span style="color:#908CAA;--shiki-dark:#908CAA"> =</span><span style="color:#F6C177;--shiki-dark:#F6C177"> "2.2"</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> default-features</span><span style="color:#908CAA;--shiki-dark:#908CAA"> =</span><span style="color:#EA9A97;--shiki-dark:#EA9A97"> false</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> features</span><span style="color:#908CAA;--shiki-dark:#908CAA"> =</span><span style="color:#908CAA;--shiki-dark:#908CAA"> [</span></span>
-<span class="line"><span style="color:#F6C177;--shiki-dark:#F6C177">  "bloom"</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic"> #</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> &#x3C;- this is enabled by default</span></span>
-<span class="line"><span style="color:#F6C177;--shiki-dark:#F6C177">  "lz4"</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic"> #</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> &#x3C;- this is enabled by default</span></span>
-<span class="line"><span style="color:#F6C177;--shiki-dark:#F6C177">  "ssi_tx"</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic"> #</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> &#x3C;- use SSI</span></span>
-<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">]</span><span style="color:#908CAA;--shiki-dark:#908CAA"> }</span></span>
-<span class="line"></span></code></pre>
-<p>It is important to be aware that SSI transactions cannot simply be slotted into existing code without adjusting it a bit.
-SSI transactions can - and will - fail, and have to be retried.
-To do so one can simply run the transaction body in a loop, and check for success:</p>
-<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">loop</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
-<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    let</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> mut</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> tx</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> keyspace</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">write_tx</span><span style="color:#908CAA;--shiki-dark:#908CAA">();</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> prev</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> tx</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">get</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">&#x26;</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">partition</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#F6C177;--shiki-dark:#F6C177"> "hello"</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">    tx</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">insert</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">&#x26;</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">partition</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#F6C177;--shiki-dark:#F6C177"> "hello"</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#F6C177;--shiki-dark:#F6C177"> "welt"</span><span style="color:#908CAA;--shiki-dark:#908CAA">);</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    if</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> tx</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">commit</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">is_ok</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
-<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">      break</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
-<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">    }</span></span>
-<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> our transaction has succeeded</span></span>
-<span class="line"></span></code></pre>
-<p>You may notice that the transaction commit now returns a wrapped <code>Result&#x3C;Result&#x3C;()>></code>.
-The first result can safely be short-circuited using the <code>?</code> operator, because it will only trigger when an I/O error occurs, which is pretty fatal.
-The second result describes whether the transaction succeeded without conflict.</p>
-<p>This API is partly inspired by Sled’s compare-and-swap API, you can read more <a href="https://sled.rs/errors.html">about it here</a>.</p>
-<h2 id="summary">Summary</h2>
-<p>Fjall 2.2 now supports both single-writer and multi-writer transactions.
-If in doubt, single-writer transactions (the default) are a sensible choice, unless you know your workload has longer running transactions that do not interfere too much.</p>
-<h2 id="credits">Credits</h2>
-<p>Big thanks to Jerome Gravel-Niquet @ <a href="https://github.com/jeromegn">https://github.com/jeromegn</a> for making this release possible by implementing serializable snapshot isolation!</p> <h2>Interested in LSM-trees and Rust?</h2> <p>
+<p>In low-cache scenarios, this can effectively double the setup cost of short range reads.</p>
+<h2 id="parallel-compactions-in-leveled-compaction-strategy">Parallel compactions in Leveled compaction strategy</h2>
+<p>Previously, one compaction would fully lock its source and destination level, which blocks more compaction tasks being registered for those levels.
+If the compaction is slower than the ingestion of new data, write stalls may occur.
+Now, compactions granularly lock its portion of disk segments such that other compaction tasks can be registered in parallel, making more use of multi-core machines for write heavy workloads, and allows for more granular compactions, which decreases temporary space usage.</p>
+<p>This benchmark writes rather large (1 kilobyte) values with random keys:</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-25/random_write_ops.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-25/random_write_percentiles.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-25/random_write_space_amp.png">
+</div>
+<h2 id="shorter-snapshot-point-read-hot-path">Shorter snapshot point read hot path</h2>
+<p>Further optimizations made the point read hot path a bit shorter.
+However this is not really noticable on large data sets, but gives a nice read boost for very small data sets.</p>
+<p>Here is a benchmark with 100% random point reads of 1’000 KVs, all stored in the memtable:</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-25/snapshot_point_latency.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-25/snapshot_point_rate.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-25/snapshot_point_percentiles.png">
+</div>
+<h2 id="avoiding-heap-allocation-for-insert-operations">Avoiding heap allocation for insert operations</h2>
+<p>Write operations such as <code>insert()</code> and <code>remove()</code> previously used a <code>AsRef&#x3C;[u8]></code> trait bound.
+While flexible, this trait bound would more or less force a heap allocation for every write operation.</p>
+<p>Now, all write operations require a <code>Into&#x3C;Slice></code> as input, which can avoid that heap allocation, especially when using the new <code>bytes</code> feature flag.</p>
+<p>With the trait bound being different now, some singular generic parameters may fail to compile, but hopefully the existing <code>Into&#x3C;_></code> implementations catch all common use cases, and makes the change worth it.</p>
+<h2 id="24">2.4</h2>
+<p>2.4 was a very small release that did not warrant its own blog entry.</p>
+<h3 id="tokio-bytes-support">Tokio Bytes support</h3>
+<p>Fjall 2.4+ now support the <a href="https://github.com/tokio-rs/bytes">Tokio <code>bytes</code> crate</a> as its underlying <code>Slice</code> implementation for keys and values, allowing better compatibility with projects that use <code>bytes</code> (especially <code>actix-web</code> and <code>axum</code>).
+This can be enabled using the <code>bytes</code> feature flag.</p>
+<p>Thanks to <a href="https://github.com/carlsverre"><strong>@carlsverre</strong></a> for implementing both the <code>bytes</code> feature flag and the <code>Into&#x3C;_></code> trait bounds.</p>
+<h3 id="size_of">size_of</h3>
+<p>Also, there is a new <a href="https://docs.rs/fjall/latest/fjall/struct.PartitionHandle.html#method.size_of"><code>size_of</code></a> function that is logically the same as <code>db.get(key)?.len()</code>; however, for a key-value separated tree it is more efficient as it does not need to read the blob from disk (because the size is stored in the index tree already).</p> <h2>Interested in LSM-trees and Rust?</h2> <p>
 Check out <a href="https://github.com/fjall-rs/fjall" target="_blank">fjall</a>, an MIT-licensed
   LSM-based storage engine written in Rust.
-</p> <iframe src="https://github.com/sponsors/fjall-rs/card" title="Sponsor fjall" height="80" width="100%" style="border: 0;"></iframe> </article>   <hr class="h-1 mb-2 border-gray-200 dark:border-gray-700"> <div class="flex flex-col gap-3"> <div class="dark:text-gray-300 italic">Tags</div> <ul class="text-sm text-sky-800 dark:text-sky-300 flex flex-wrap items-center gap-3"> <li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/concurrency control" data-astro-transition-scope="astro-x7amp3kc-1">
-#concurrency control </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/release" data-astro-transition-scope="astro-x7amp3kc-2">
-#release </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/serializable snapshot isolation" data-astro-transition-scope="astro-x7amp3kc-3">
-#serializable snapshot isolation </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/short" data-astro-transition-scope="astro-x7amp3kc-4">
-#short </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/transactions" data-astro-transition-scope="astro-x7amp3kc-5">
-#transactions </a> </li> </ul> </div>  </main> <footer class="flex flex-col gap-5 py-10 mx-auto max-w-3xl w-full"> <!-- TODO: move into a fixed FAB button, outside of footer --> <div class="text-right"> <button onclick="scrollToTop()">Back to top</button> </div> <div class="text-center">
+</p> <iframe src="https://github.com/sponsors/fjall-rs/card" title="Sponsor fjall" height="80" width="100%" style="border: 0;"></iframe> </article>   <hr class="h-1 mb-2 border-gray-200 dark:border-gray-700"> <div class="flex flex-col gap-3"> <div class="dark:text-gray-300 italic">Tags</div> <ul class="text-sm text-sky-800 dark:text-sky-300 flex flex-wrap items-center gap-3"> <li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/block index" data-astro-transition-scope="astro-x7amp3kc-1">
+#block index </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/leveling" data-astro-transition-scope="astro-x7amp3kc-2">
+#leveling </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/performance" data-astro-transition-scope="astro-x7amp3kc-3">
+#performance </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/point reads" data-astro-transition-scope="astro-x7amp3kc-4">
+#point reads </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/release" data-astro-transition-scope="astro-x7amp3kc-5">
+#release </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/short" data-astro-transition-scope="astro-x7amp3kc-6">
+#short </a> </li> </ul> </div>  </main> <footer class="flex flex-col gap-5 py-10 mx-auto max-w-3xl w-full"> <!-- TODO: move into a fixed FAB button, outside of footer --> <div class="text-right"> <button onclick="scrollToTop()">Back to top</button> </div> <div class="text-center">
 &copy; 2025 fjall-rs 
 - powered by <a class="text-sky-700 dark:text-sky-300 italic transition-all hover:brightness-80" href="https://github.com/marvin-j97/nanoblog" target="_blank">
 nanoblog
