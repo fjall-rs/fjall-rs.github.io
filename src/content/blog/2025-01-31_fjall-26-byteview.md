@@ -1,7 +1,7 @@
 ---
 title: "When Rust's Arc is not enough: Announcing Fjall 2.6"
 slug: fjall-2-6-byteview
-description: Introducing byteview for better memory usage in Fjall
+description: Introducing byteview for better performance in Fjall
 tags:
   - release
   - performance
