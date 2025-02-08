@@ -143,14 +143,14 @@ For small values there can be some big space savings:
 The basic concept of `byteview` is pretty simple.
 The struct size is fixed at 24 bytes.
 The length is stored as 4 bytes at the very start.
-If the string is 20 characters or shorter, it is directly inlined into the string, no pointer or heap allocation needed.
+If the string is 20 bytes or shorter, it is directly inlined into the string, no pointer or heap allocation needed.
 
 > In this case, the memory overhead is (20 - n + 4) bytes.
 
-Indeed, `byteview` allows inlined strings up to 20 characters (instead of 12 as is typical with other implementations); the struct is larger because of its additional pointer.
+Indeed, `byteview` allows inlined strings up to 20 bytes (instead of 12 as is typical with other implementations); the struct is larger because of its additional pointer.
 Luckily, 16 byte strings tend to be pretty common, because that is the size of all common UUID-like string schemas, bringing quite significant space savings there (as seen above).
 
-If the string is larger than 20 characters, it will be heap allocated and the pointer + length stored in the struct.
+If the string is larger than 20 bytes, it will be heap allocated and the pointer + length stored in the struct.
 The remaining 4 bytes store the first four bytes (prefix) of the string, allowing short-circuiting some `eq` and `cmp` operations without pointer dereference.
 The heap allocation contains a single strong count and the byte slice.
 
