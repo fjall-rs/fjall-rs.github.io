@@ -1,0 +1,674 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v4.15.11"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="sitemap" href="/sitemap-index.xml"><!-- SEO --><title>When Rust&#39;s Arc is not enough: Announcing Fjall 2.6 | fjall-rs</title><meta name="title" content="When Rust's Arc is not enough: Announcing Fjall 2.6"><meta name="description" content="Introducing byteview for better memory usage in Fjall"><!-- OG --><meta property="og:title" content="When Rust's Arc is not enough: Announcing Fjall 2.6"><meta property="og:description" content="Introducing byteview for better memory usage in Fjall"><meta property="og:url" content="https://fjall-rs.github.io/post/fjall-2-6-byteview/"><meta property="og:image" content="https://fjall-rs.github.io/media/thumbs/arch-bridge.jpg"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://fjall-rs.github.io/post/fjall-2-6-byteview/"><meta property="twitter:title" content="When Rust's Arc is not enough: Announcing Fjall 2.6"><meta property="twitter:description" content="Introducing byteview for better memory usage in Fjall"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><link rel="stylesheet" href="/_astro/index.D3oNjecl.css">
+<style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}[data-astro-transition-scope]{animation:none!important}}
+@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-cyrillic-ext-400-normal.tyfMZHQw.woff2) format("woff2"),url(/_astro/inter-cyrillic-ext-400-normal.CzG7Kr3z.woff) format("woff");unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-cyrillic-400-normal.Df6ckaLK.woff2) format("woff2"),url(/_astro/inter-cyrillic-400-normal.JrS_4yms.woff) format("woff");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-greek-ext-400-normal.CIdlr5YK.woff2) format("woff2"),url(/_astro/inter-greek-ext-400-normal._Rr29XE2.woff) format("woff");unicode-range:U+1F00-1FFF}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-greek-400-normal.DQXyrmoy.woff2) format("woff2"),url(/_astro/inter-greek-400-normal.DvIPHDQ7.woff) format("woff");unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-vietnamese-400-normal.Cnt0N5Vm.woff2) format("woff2"),url(/_astro/inter-vietnamese-400-normal.DIOGfGLL.woff) format("woff");unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-latin-ext-400-normal.D3W-OpO-.woff2) format("woff2"),url(/_astro/inter-latin-ext-400-normal.8tIzm-yw.woff) format("woff");unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-latin-400-normal.BT1H-PT_.woff2) format("woff2"),url(/_astro/inter-latin-400-normal.Cdi8t5Mu.woff) format("woff");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}.astro-route-announcer{position:absolute;left:0;top:0;clip:rect(0 0 0 0);clip-path:inset(50%);overflow:hidden;white-space:nowrap;width:1px;height:1px}:not(.astro-code *){font-family:Inter,sans-serif}
+:target{scroll-margin-top:80px!important}article{overflow-x:hidden}article a{color:#075985!important;text-decoration:underline dotted!important;text-underline-offset:3px;display:inline-block;transition:transform .1s ease-in-out,filter .1s ease-in-out}article a:hover{transform:translateY(-2px)}.dark article a{color:#38bdf8!important}code:before,code:after{display:none}.astro-code{font-size:15px}p code{border-radius:4px;padding:2px 4px;white-space:normal!important}p strong{color:#c1e4f8!important}.dark p code{color:#c1e4f8!important;background:#07598554!important}html:not(.dark) p code{color:#045280!important;background:#99d4f566!important}.dark article blockquote{border-left-color:#064566!important}html:not(.dark) article blockquote{border-left-width:.25rem;border-left-style:solid;border-left-color:#63c8ff!important}html.dark .astro-code,html.dark .astro-code span{color:var(--shiki-dark)!important;background-color:var(--shiki-dark-bg)!important;font-style:var(--shiki-dark-font-style)!important;font-weight:var(--shiki-dark-font-weight)!important;text-decoration:var(--shiki-dark-text-decoration)!important}
+</style><script type="module" src="/_astro/hoisted.D_PRw2OY.js"></script>
+<script type="module" src="/_astro/page.VIllvXJD.js"></script><style>[data-astro-transition-scope="astro-x7amp3kc-1"] { view-transition-name: astro-x7amp3kc-1; }@layer astro { ::view-transition-old(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-2"] { view-transition-name: astro-x7amp3kc-2; }@layer astro { ::view-transition-old(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-3"] { view-transition-name: astro-x7amp3kc-3; }@layer astro { ::view-transition-old(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-4"] { view-transition-name: astro-x7amp3kc-4; }@layer astro { ::view-transition-old(astro-x7amp3kc-4) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-4) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-4) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-4) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-5"] { view-transition-name: astro-x7amp3kc-5; }@layer astro { ::view-transition-old(astro-x7amp3kc-5) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-5) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-5) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-5) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-6"] { view-transition-name: benchmark; }@layer astro { ::view-transition-old(benchmark) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(benchmark) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(benchmark) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(benchmark) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-7"] { view-transition-name: byteview; }@layer astro { ::view-transition-old(byteview) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(byteview) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(byteview) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(byteview) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-7"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-7"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-7"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-7"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-7"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-7"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-7"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-7"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-8"] { view-transition-name: memory_20usage; }@layer astro { ::view-transition-old(memory_20usage) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(memory_20usage) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(memory_20usage) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(memory_20usage) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-8"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-8"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-8"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-8"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-8"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-8"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-8"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-8"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-9"] { view-transition-name: performance; }@layer astro { ::view-transition-old(performance) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(performance) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(performance) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(performance) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-9"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-9"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-9"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-9"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-9"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-9"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-9"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-9"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-10"] { view-transition-name: release; }@layer astro { ::view-transition-old(release) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(release) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(release) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(release) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-10"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-10"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-10"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-10"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-10"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-10"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-10"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-10"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style></head> <body class="text-gray-700 dark:text-gray-400 dark:bg-gray-950"> <header class="backdrop-blur w-full px-8 py-5 fixed z-10 border-b dark:border-gray-900 bg-white/80 dark:bg-gray-950/75"> <div class="flex items-center gap-5 mx-auto w-full max-w-3xl"> <a class="text-black dark:text-white font-medium transition-colors hover:brightness-80" href="/" class="text-lg"> <!-- SETUP: If you have a logo, replace this component with it --><span> fjall-rs </span> </a> <div class="flex-grow"></div> <div class="flex items-center gap-4"> <a href="/posts" class="text-gray-800 dark:text-gray-400 transition-colors hover:brightness-80"> Posts </a><a href="/tags" class="text-gray-800 dark:text-gray-400 transition-colors hover:brightness-80"> Tags </a> </div> <div class="flex items-center gap-3"> <a href="/search" aria-label="Search content" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path><path d="M21 21l-6 -6"></path></svg> </a> <button aria-label="Switch theme" class="theme-switch transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path></svg> </button> <script>
+  const iconMoon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" /></svg>`;
+  const iconSun = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" /></svg>`;
+
+  function theme() {
+    const local = localStorage.getItem("theme");
+    if (local) {
+      return local;
+    }
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      return "dark";
+    }
+    return "light";
+  }
+
+  function registerStuff(document) {
+    const root = document.documentElement;
+    const themeSwitch = document.querySelector(".theme-switch");
+
+    if (theme() === "light") {
+      root.classList.remove("dark");
+      themeSwitch.innerHTML = iconMoon;
+    } else {
+      root.classList.add("dark");
+      themeSwitch.innerHTML = iconSun;
+    }
+
+    themeSwitch.addEventListener("click", () => {
+      const isDark = root.classList.contains("dark");
+      localStorage.setItem("theme", isDark ? "light" : "dark");
+      console.log(isDark);
+
+      if (isDark) {
+        root.classList.remove("dark");
+        themeSwitch.innerHTML = iconMoon;
+      } else {
+        root.classList.add("dark");
+        themeSwitch.innerHTML = iconSun;
+      }
+    });
+  }
+
+  registerStuff(document);
+
+  document.addEventListener("astro:after-swap", (ev) => {
+    registerStuff(document);
+  });
+</script> <a target="_blank" href="https://github.com/fjall-rs" aria-label="Open GitHub page" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-github"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path></svg> </a> </div> </div> </header> <main class="px-4 pt-30 mx-auto max-w-3xl">   <div class="reading-progress z-10 fixed left-0 top-0 h-1 dark:bg-sky-500 bg-sky-700 opacity-75"></div> <script>
+  /**
+   * Gets the vertical scroll percent (0.0 - 1.0)
+   */
+  function getScrollPercent() {
+    const doc = document.documentElement;
+    const body = document.body;
+
+    return (
+      (doc.scrollTop || body.scrollTop) /
+      ((doc.scrollHeight || body.scrollHeight) - doc.clientHeight)
+    );
+  }
+
+  document.addEventListener("astro:page-load", () => {
+    document.addEventListener("scroll", () => {
+      const el = document.querySelector(".reading-progress");
+      if (el) {
+        el.style.width = `${getScrollPercent() * 100}%`;
+      }
+    });
+  });
+</script> <div class="flex flex-col gap-4"> <h1 class="text-sky-800 dark:text-sky-400 text-4xl md:text-5xl font-bold"> When Rust&#39;s Arc is not enough: Announcing Fjall 2.6 </h1> <div class="flex items-center gap-2">  <div> February 8, 2025 </div> 
+- <div>12 min. read</div>  </div> <ul class="text-sm text-sky-800 dark:text-sky-300 flex flex-wrap items-center gap-3"> <li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/benchmark" data-astro-transition-scope="astro-x7amp3kc-6">
+#benchmark </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/byteview" data-astro-transition-scope="astro-x7amp3kc-7">
+#byteview </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/memory usage" data-astro-transition-scope="astro-x7amp3kc-8">
+#memory usage </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/performance" data-astro-transition-scope="astro-x7amp3kc-9">
+#performance </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/release" data-astro-transition-scope="astro-x7amp3kc-10">
+#release </a> </li> </ul> <img class="mt-5 rounded-xl w-full object-cover bg-center aspect-2" src="/media/thumbs/arch-bridge.jpg" alt="Blog post thumbnail"> </div>  <article class="my-10 w-full !max-w-full prose dark:prose-invert text-justify dark:prose-gray"> <p>As teased in the <a href="/post/announcing-fjall-2">2.0 announcement</a>, the newly introduced <code>Slice</code> type allowed changing the underlying implementation without breaking changes.
+Until now, an <code>Arc&#x3C;[u8]></code> was used.</p>
+<p>The 2.6 release now introduces a new underlying byte slice type to optimize memory usage and deserialization speed.</p>
+<h2 id="arc-basics">Arc basics</h2>
+<p><code>Arc&#x3C;T></code> (<strong>A</strong>tomically <strong>R</strong>eference <strong>C</strong>ounted) is a smart pointer in the Rust standard library that can be shared between threads.
+Its contents (the generic parameter <code>T</code>) are allocated on the heap, including some atomic counters (called the <em>strong</em> and <em>weak</em> count) that defines how often the value is currently referenced.
+Whenever an <code>Arc</code> is cloned, the <em>strong count</em> is incremented by 1, using atomic CPU instructions.
+When an <code>Arc</code> is dropped, the <em>strong count</em> is decremented by 1.
+Because an atomic fetch-and-subtract operation returns the previous value, one - and only one - dropped <code>Arc</code> will be the “last owner”, making sure it will free the heap-allocated memory.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/arc.svg">
+</div>
+<p>Arcs are a simple way to share some data across your application, no matter how many threads there are.
+However, there are a couple of caveats:</p>
+<ul>
+<li>the Arc’s contents (the <code>T</code>) are read-only, unless you can guarantee you are the sole owner (using <a href="https://doc.rust-lang.org/std/sync/struct.Arc.html#method.get_mut"><code>Arc::get_mut</code></a> or synchronization such as a Mutex)</li>
+<li>each <em>newly constructed</em> Arc has additional memory overhead because of its additional reference counts (<em>strong</em> and <em>weak</em>)</li>
+<li>sharing Arcs (by “cloning”) is more expensive than a reference because of the atomic CPU instruction(s) used</li>
+</ul>
+<h2 id="arcd-slices">Arc’d slices</h2>
+<p>Things get a bit more complicated when you want to store a slice of values (<code>[T]</code>) inside an Arc.
+Now, we also have to keep track of the slice’s length.
+This is done using a “fat” pointer.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/arc_slice.svg">
+</div>
+<p>When constructing an Arc’d slice, there is no proper API for that, one easy way is to use an intermediary Vec:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> v</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#EA9A97;--shiki-dark:#EA9A97"> vec!</span><span style="color:#908CAA;--shiki-dark:#908CAA">[</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">0</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> len</span><span style="color:#908CAA;--shiki-dark:#908CAA">];</span><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic"> //</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> heap allocation</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> a</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">:</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Arc</span><span style="color:#908CAA;--shiki-dark:#908CAA">&#x3C;[</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">u8</span><span style="color:#908CAA;--shiki-dark:#908CAA">]></span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> v</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">into</span><span style="color:#908CAA;--shiki-dark:#908CAA">();</span><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic"> //</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> heap allocation</span></span>
+<span class="line"></span></code></pre>
+<p>Unfortunately, this requires 2 heap allocations.</p>
+<p>When storing a slice, an Arc has a stack size of 16 bytes (fat pointer), plus 16 bytes for the strong and weak counts, giving us a memory overhead of 32 bytes per value.</p>
+<h2 id="usage-of-arcu8-inside-lsm-tree">Usage of <code>Arc&#x3C;[u8]></code> inside <code>lsm-tree</code></h2>
+<p><code>lsm-tree</code>, by default, represents keys and values using an <code>Arc&#x3C;[u8]></code>, in a newtype called <code>Slice</code>.
+One interesting property is that LSM-trees are an append-only data structure - so we never need to update a value, meaning all <code>Slices</code> are immutable.</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">struct</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Slice</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Arc</span><span style="color:#908CAA;--shiki-dark:#908CAA">&#x3C;[</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">u8</span><span style="color:#908CAA;--shiki-dark:#908CAA">]>);</span></span>
+<span class="line"><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> ----------^</span></span>
+<span class="line"><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> the Slice is opaque, the user does not know it uses an Arc internally</span></span>
+<span class="line"></span></code></pre>
+<p><code>lsm-tree</code> already supports <code>bytes</code> as an underlying <code>Slice</code> implementation since version <a href="/post/fjall-2-5#tokio-bytes-support">2.4.0</a>.
+However, while flexible, <code>bytes</code> is not a silver bullet, and using it as the default would include another required dependency.
+So for the default implementation, replacing <code>Arc</code> could be beneficial as it has some downsides:</p>
+<h3 id="downside-deserialization-into-arct">Downside: Deserialization into <code>Arc&#x3C;[T]></code></h3>
+<p>When deserializing a data block from an I/O reader, each key and value is constructed, using something like this:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> len</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#EA9A97;--shiki-dark:#EA9A97"> read_len</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">file_reader</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic"> //</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> values are prefixed by length</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> v</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#EA9A97;--shiki-dark:#EA9A97"> vec!</span><span style="color:#908CAA;--shiki-dark:#908CAA">[</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">0</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> len</span><span style="color:#908CAA;--shiki-dark:#908CAA">];</span><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic"> //</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> heap allocation</span></span>
+<span class="line"><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">v</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">read_exact</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">file_reader</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> v</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Slice</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">from</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">v</span><span style="color:#908CAA;--shiki-dark:#908CAA">);</span><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic"> //</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> construct Arc&#x3C;[u8]> from vector; heap allocation again</span></span>
+<span class="line"></span></code></pre>
+<p>In this scenario, we want fast deserialization speed, so skipping the second heap allocation would be beneficial.</p>
+<h3 id="downside-weak-count">Downside: Weak count</h3>
+<p>Next to the <em>strong count</em> there is also a <em>weak count</em>.
+However this <em>weak count</em> is never used.
+Because each key and value is an <code>Arc&#x3C;[u8]></code>, each cached key and value carries an (unused) <em>weak count</em>.
+Omitting the <em>weak count</em> would save 8 bytes per <code>Slice</code>.</p>
+<h3 id="downside-empty-slices-allocate">Downside: Empty slices allocate</h3>
+<p>When using <code>Arc&#x3C;[T]></code>, empty slices still need a heap allocation:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">for</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> _</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> in</span><span style="color:#EA9A97;--shiki-dark:#EA9A97"> 0</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">..</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">1_000</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">  let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> a</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> std</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">sync</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Arc</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#908CAA;--shiki-dark:#908CAA">&#x3C;[</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">u8</span><span style="color:#908CAA;--shiki-dark:#908CAA">]></span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">from</span><span style="color:#908CAA;--shiki-dark:#908CAA">([]);</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">}</span></span>
+<span class="line"></span></code></pre>
+<p>If you run this example, it will perform 1’000 heap allocations, even though the slice is empty.
+While empty slices are not commonly used, they can still play a pivotal role in certain situations:</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/myrocks_key.png">
+</div>
+<p>As shown in MyRocks’ key schema, every secondary index entry is just an encoded key, with no value (“<em>N/A</em>”).
+Here, not needing a heap allocation for the empty value would be very beneficial.</p>
+<h3 id="consideration-large-strings-have-no-real-life-use">Consideration: Large strings have no real life use</h3>
+<p>The <code>len</code> field takes 8 bytes, so it can represent every possible string.
+However, large byte slices simply do not exist in real world KV scenarios (<code>lsm-tree</code> supports 32-bits of length, though I would not recommend anything above ~1 MB).
+Reducing it to 4 bytes still allows slices of up to 4GB, saving another 4 bytes per slice.</p>
+<h2 id="introducing-byteview">Introducing <code>byteview</code></h2>
+<p><code>byteview</code> is a new Rust crate that implements a thin, immutable, clonable byte slice.
+It is based on <a href="https://cedardb.com/blog/german_strings/">Umbra/CedarDB’s “German-style”</a> strings (also found in projects like <a href="https://pola.rs/posts/polars-string-type/">Polars</a>, <a href="https://arrow.apache.org/">Apache Arrow</a> and <a href="https://engineering.fb.com/2023/03/09/open-source/velox-open-source-execution-engine/">Meta’s Velox</a>).
+However, <code>byteview</code> uses an additional pointer to support a slice-copy operation like <a href="https://crates.io/crates/bytes">Tokio’s <code>bytes</code> crate</a>.</p>
+<p>For small values there can be some big space savings:</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/byteview_mem.svg">
+</div>
+<h2 id="how-byteview-works">How <code>byteview</code> works</h2>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/byteview.svg">
+</div>
+<div class="text-sm mt-1" style="text-align: center; opacity: 0.75">
+  <i>Memory layout of byteview</i>
+</div>
+<p>The basic concept of <code>byteview</code> is pretty simple.
+The struct size is fixed at 24 bytes.
+The length is stored as 4 bytes at the very start.
+If the string is 20 characters or shorter, it is directly inlined into the string, no pointer or heap allocation needed.</p>
+<blockquote>
+<p>In this case, the memory overhead is (20 - n + 4) bytes.</p>
+</blockquote>
+<p>Indeed, <code>byteview</code> allows inlined strings up to 20 characters (instead of 12 as is typical with other implementations); the struct is larger because of its additional pointer.
+Luckily, 16 byte strings tend to be pretty common, because that is the size of all common UUID-like string schemas, bringing quite significant space savings there (as seen above).</p>
+<p>If the string is larger than 20 characters, it will be heap allocated and the pointer + length stored in the struct.
+The remaining 4 bytes store the first four bytes (prefix) of the string, allowing short-circuiting some <code>eq</code> and <code>cmp</code> operations without pointer dereference.
+The heap allocation contains a single strong count and the byte slice.</p>
+<blockquote>
+<p>In this case, the memory overhead is 32 bytes.</p>
+</blockquote>
+<h2 id="results">Results</h2>
+<h3 id="block-deserialization-speed-benchmark">Block deserialization speed benchmark</h3>
+<p><code>byteview</code> natively supports deserialization from any <a href="https://doc.rust-lang.org/std/io/trait.Read.html"><code>io::Read</code></a> without intermediate buffer for construction:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> len</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#EA9A97;--shiki-dark:#EA9A97"> read_len</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">file_reader</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic"> //</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> values are prefixed by length</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> v</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> ByteView</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">from_reader</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">file_reader</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> len</span><span style="color:#908CAA;--shiki-dark:#908CAA">);</span><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic"> //</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> (possibly) heap allocation</span></span>
+<span class="line"></span></code></pre>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/ctor_long_bench.png">
+</div>
+<p>For inlinable values, there is no heap allocation:</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/ctor_short_bench.png">
+</div>
+<h3 id="reading-large-blobs">Reading large blobs</h3>
+<p>In a key-value separated LSM-tree, the user value is not stored as-is, but prefixed by some additional metadata.
+Because we cannot return that metadata to the user, previously <code>lsm-tree</code> had to clone out the user value into a new <code>Slice</code>.
+For large blobs, this would cause one additional heap allocation per blob read, and an <em>O(n)</em> memcpy for each value.</p>
+<p>Because all inserts are initially added to the memtable as an inlined value, fresh inserts also needed to be cloned when read.</p>
+<p><code>byteview</code> supports slicing an existing heap allocation, so we can skip the heap allocation and copying, giving constant time performance for such blob values.</p>
+<p>The following benchmark is a bit contrived, but illustrates the issue.
+10 x 64 KiB blobs are written to the database and then read randomly (Zipfian).</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/blob_memtable_point_read_rate.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/blob_memtable_point_read_percentiles.png">
+</div>
+<hr>
+<p>Using a more realistic workload, here are 1 million 1K values that are read randomly (truly random) with no cache.
+Because the data set is now ~1 GB, not all reads are terminated at the memtable, still reads are about 20% faster.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/blob_point_read_rate.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/blob_point_read_percentiles.png">
+</div>
+<h3 id="compaction-performance">Compaction performance</h3>
+<p>In <code>lsm-tree</code>, compactions need to read an entire disk segment block-by-block, so improving deserialization speeds inadvertently increases compaction throughput.</p>
+<p>The following benchmark compacts 10 disk segments with 1 million key-value-pairs (around 24 - 150 bytes per value) each.</p>
+<p>Before (2.6.0 without byteview):</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/compaction_before_bv.png">
+</div>
+<p>After (2.6.0 with byteview):</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/compaction_after_bv.png">
+</div>
+<blockquote>
+<p>(Open the image in a new tab to zoom into the flame graph)</p>
+</blockquote>
+<p>With <code>Arc&#x3C;[u8]></code> around 44% of the runtime is spent in <code>Slice::from_reader</code> because of the superfluous heap allocations, buffer zeroing and memory copies when constructing each <code>Slice</code>.</p>
+<p>With <code>ByteView</code>, this stage is reduced to 26%.</p>
+<h3 id="uncached-read-performance">Uncached read performance</h3>
+<p>Read performance is generally better across the board, here’s a benchmark reading randomly from 1 million 128-byte values, with no cache:</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/random_read_rate.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/random_read_percentiles.png">
+</div>
+<p>With a block size of 32 KiB (above is 4 KiB):</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/random_read_32k_rate.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/random_read_32k_percentiles.png">
+</div>
+<p>And here’s the same without using jemalloc (but the default Ubuntu system allocator instead):</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/random_read_32k_sysalloc_rate.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/random_read_32k_sysalloc_percentiles.png">
+</div>
+<p>And, for good measure, here is mimalloc:</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/random_read_32k_mimalloc_rate.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/random_read_32k_mimalloc_percentiles.png">
+</div>
+<h2 id="other-compaction-improvements">Other compaction improvements</h2>
+<p>Until now, compactions used the same read path as a normal read request:</p>
+<ol>
+<li>look into block cache</li>
+<li>if found in cache, load block from cache</li>
+<li>else, load block from disk</li>
+</ol>
+<p>However, the possibility of the majority of blocks being cached is slim, so the overhead of looking into the block cache actually did not really help with compaction speeds.</p>
+<p>Additionally, the compaction streams did not own their file descriptors, but instead borrowed them from a global file descriptor cache for each block read.
+This would also increase overhead because yielding the file descriptor caused the next block read to need an <code>fseek</code> syscall.
+Also the compaction stream could not use a higher buffer size (for reading ahead).</p>
+<p>That does not mean, compactions cannot profit from I/O caching.
+The reads still go through the operating system’s page cache, so not every block read may end up performing I/O, though this is at the mercy of the operating system in use.</p>
+<p>Now, every compaction stream uses its own file descriptor and does not access the block cache.
+This makes the read-and-write compaction path much simpler, yielding some great performance boost:</p>
+<p>Before (2.5.0):</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/compaction_before.png">
+</div>
+<p>After (2.6.0):</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/compaction_after.png">
+</div>
+<blockquote>
+<p>(Open the image in a new tab to zoom into the flame graph)</p>
+</blockquote>
+<h2 id="msrv">MSRV</h2>
+<p>The minimum supported <code>rustc</code> version has increased from <strong>1.74</strong> to <strong>1.75</strong>.</p>
+<h2 id="fjall-26">Fjall 2.6</h2>
+<p><code>lsm-tree</code> and <code>fjall</code> 2.6 are now available in all cargo registries near you.</p>
+<p>Oh, and <a href="https://crates.io/crates/byteview"><code>byteview</code> is MIT-licensed!</a>!</p> <h2>Interested in LSM-trees and Rust?</h2> <p>
+Check out <a href="https://github.com/fjall-rs/fjall" target="_blank">fjall</a>, an MIT-licensed
+  LSM-based storage engine written in Rust.
+</p> <iframe src="https://github.com/sponsors/fjall-rs/card" title="Sponsor fjall" height="80" width="100%" style="border: 0;"></iframe> </article>   <hr class="h-1 mb-2 border-gray-200 dark:border-gray-700"> <div class="flex flex-col gap-3"> <div class="dark:text-gray-300 italic">Tags</div> <ul class="text-sm text-sky-800 dark:text-sky-300 flex flex-wrap items-center gap-3"> <li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/benchmark" data-astro-transition-scope="astro-x7amp3kc-1">
+#benchmark </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/byteview" data-astro-transition-scope="astro-x7amp3kc-2">
+#byteview </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/memory usage" data-astro-transition-scope="astro-x7amp3kc-3">
+#memory usage </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/performance" data-astro-transition-scope="astro-x7amp3kc-4">
+#performance </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-sky-400/10 dark:bg-sky-800/10 hover:dark:bg-sky-800/30 rounded p-2" href="/tag/release" data-astro-transition-scope="astro-x7amp3kc-5">
+#release </a> </li> </ul> </div>  </main> <footer class="flex flex-col gap-5 py-10 mx-auto max-w-3xl w-full"> <!-- TODO: move into a fixed FAB button, outside of footer --> <div class="text-right"> <button onclick="scrollToTop()">Back to top</button> </div> <div class="text-center">
+&copy; 2025 fjall-rs 
+- powered by <a class="text-sky-700 dark:text-sky-300 italic transition-all hover:brightness-80" href="https://github.com/marvin-j97/nanoblog" target="_blank">
+nanoblog
+</a>  </div> <div class="flex gap-3 justify-center"> <a target="_blank" href="https://github.com/fjall-rs" aria-label="Open GitHub page" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-github"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path></svg> </a> <a target="_blank" href="/rss.xml" aria-label="Get RSS feed" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path> <path d="M5 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path> <path d="M4 4a16 16 0 0 1 16 16"></path> <path d="M4 11a9 9 0 0 1 9 9"></path>  </svg> </a> </div> </footer> <script>
+  function scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }
+</script>  </body> </html> 
