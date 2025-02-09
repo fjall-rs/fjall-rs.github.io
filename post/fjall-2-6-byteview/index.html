@@ -513,7 +513,7 @@ Reducing it to 4 bytes still allows slices of up to 4GB, saving another 4 bytes 
 <h2 id="introducing-byteview">Introducing <code>byteview</code></h2>
 <p><code>byteview</code> is a new Rust crate that implements a thin, immutable, clonable byte slice.
 It is based on <a href="https://cedardb.com/blog/german_strings/">Umbra/CedarDB’s “German-style”</a> strings (also found in projects like <a href="https://pola.rs/posts/polars-string-type/">Polars</a>, <a href="https://arrow.apache.org/">Apache Arrow</a> and <a href="https://engineering.fb.com/2023/03/09/open-source/velox-open-source-execution-engine/">Meta’s Velox</a>).
-However, <code>byteview</code> uses an additional pointer to support a slice-copy operation like <a href="https://crates.io/crates/bytes">Tokio’s <code>bytes</code> crate</a>.</p>
+However, <code>byteview</code> uses some additional meta data to support a slice-copy operation like <a href="https://crates.io/crates/bytes">Tokio’s <code>bytes</code> crate</a>.</p>
 <p>For small values there can be some big space savings:</p>
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
   <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-26-byteview/byteview_mem.svg">
