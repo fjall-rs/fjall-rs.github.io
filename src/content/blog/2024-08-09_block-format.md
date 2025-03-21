@@ -172,7 +172,7 @@ Building this block index is easy: every time you write a block, look at the the
 
 fn spill_block() {
   let block = Block::serialize(&buffer, file_pos)?;
-  index.add(block.start_key, file_pos);
+  index.add(block.end_key, file_pos);
   bytes_written += file.write_all(block)?;
   buffer.clear();
 }
@@ -182,7 +182,7 @@ fn spill_block() {
 
 So, how can we retrieve the index when reloading the database from disk (perhaps after a system crash)? Reading every data block again is wasteful and could increase startup times to many seconds or even minutes, which is unacceptable.
 
-Instead, let’s write the block index out to disk as well, after the data blocks. Let’s call that section “index block”. Now, on recovery we only need to read that portion of the file to restore the block index, scanning kilobytes, or a couple of megabytes at most for many gigabytes of user data. This is how LevelDB (and RocksDB by default) work roughly.
+Instead, let’s write the block index out to disk as well, after the data blocks. Let’s call that section “block index”. Now, on recovery we only need to read that portion of the file to restore the block index, scanning kilobytes, or a couple of megabytes at most for many gigabytes of user data. This is how LevelDB (and RocksDB by default) work roughly.
 
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
   <img style="border-radius: 16px; max-height: 500px" src="/media/posts/block-format/segment_with_block_index_persisted.svg" />
