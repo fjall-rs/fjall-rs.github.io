@@ -46,8 +46,8 @@ const cards = [
 <!-- SETUP: This component serves as the landing page's main content (hero section) -->
 <h1 class="text-2xl">Organizing data in Rust</h1>
 
-<section id="projects">
-  <h2 class="mb-3 italic">Repositories</h2>
+<section class="flex flex-col gap-4" id="projects">
+  <h2 class="italic">Repositories</h2>
   <div class="grid grid-cols-2 md:grid-cols-2 sm:grid-cols-2 gap-4">
     {
       cards.map((card) => (
@@ -69,5 +69,17 @@ const cards = [
         </a>
       ))
     }
+  </div>
+
+  <h2 class="mb-3 italic">Sponsors</h2>
+  <div class="flex flex-wrap gap-8">
+    <a href="https://sqlsync.dev">
+      <img class="max-w-80 dark:hidden" src="/logos/orbitinghail.svg" alt="Orbitinghail" />
+      <img
+        class="max-w-80 hidden dark:block"
+        src="/logos/orbitinghail_dark.svg"
+        alt="Orbitinghail"
+      />
+    </a>
   </div>
 </section>
