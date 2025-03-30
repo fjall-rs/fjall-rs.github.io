@@ -1,0 +1,867 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v5.3.1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="sitemap" href="/sitemap-index.xml"><!-- SEO --><title>Announcing Fjall 2.0 | fjall-rs</title><meta name="title" content="Announcing Fjall 2.0"><meta name="description" content="Available in all Cargo registries near you"><!-- OG --><meta property="og:title" content="Announcing Fjall 2.0"><meta property="og:description" content="Available in all Cargo registries near you"><meta property="og:url" content="https://fjall-rs.github.io/post/fjall-2/"><meta property="og:image" content="https://fjall-rs.github.io/media/thumbs/denali.jpg"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://fjall-rs.github.io/post/fjall-2/"><meta property="twitter:title" content="Announcing Fjall 2.0"><meta property="twitter:description" content="Available in all Cargo registries near you"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.DIkHUG1B.js"></script><link rel="stylesheet" href="/_astro/index.BDY9t8rF.css">
+<style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}[data-astro-transition-scope]{animation:none!important}}
+@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-cyrillic-ext-400-normal.tyfMZHQw.woff2) format("woff2"),url(/_astro/inter-cyrillic-ext-400-normal.CzG7Kr3z.woff) format("woff");unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-cyrillic-400-normal.Df6ckaLK.woff2) format("woff2"),url(/_astro/inter-cyrillic-400-normal.JrS_4yms.woff) format("woff");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-greek-ext-400-normal.CIdlr5YK.woff2) format("woff2"),url(/_astro/inter-greek-ext-400-normal._Rr29XE2.woff) format("woff");unicode-range:U+1F00-1FFF}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-greek-400-normal.DQXyrmoy.woff2) format("woff2"),url(/_astro/inter-greek-400-normal.DvIPHDQ7.woff) format("woff");unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-vietnamese-400-normal.Cnt0N5Vm.woff2) format("woff2"),url(/_astro/inter-vietnamese-400-normal.DIOGfGLL.woff) format("woff");unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-latin-ext-400-normal.D3W-OpO-.woff2) format("woff2"),url(/_astro/inter-latin-ext-400-normal.8tIzm-yw.woff) format("woff");unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-latin-400-normal.BT1H-PT_.woff2) format("woff2"),url(/_astro/inter-latin-400-normal.Cdi8t5Mu.woff) format("woff");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}.astro-route-announcer{position:absolute;left:0;top:0;clip:rect(0 0 0 0);clip-path:inset(50%);overflow:hidden;white-space:nowrap;width:1px;height:1px}:not(.astro-code *){font-family:Inter,sans-serif}
+:target{scroll-margin-top:80px!important}article{overflow-x:hidden}article a{color:#075985!important;text-decoration:underline dotted!important;text-underline-offset:3px;display:inline-block;transition:transform .1s ease-in-out,filter .1s ease-in-out}article a:hover{transform:translateY(-2px)}.dark article a{color:#38bdf8!important}code:before,code:after{display:none}.astro-code{font-size:15px}p code{border-radius:4px;padding:2px 4px;white-space:normal!important}p strong{color:#c1e4f8!important}.dark p code{color:#c1e4f8!important;background:#07598554!important}html:not(.dark) p code{color:#045280!important;background:#99d4f566!important}.dark article blockquote{border-left-color:#064566!important}html:not(.dark) article blockquote{border-left-width:.25rem;border-left-style:solid;border-left-color:#63c8ff!important}html.dark .astro-code,html.dark .astro-code span{color:var(--shiki-dark)!important;background-color:var(--shiki-dark-bg)!important;font-style:var(--shiki-dark-font-style)!important;font-weight:var(--shiki-dark-font-weight)!important;text-decoration:var(--shiki-dark-text-decoration)!important}
+</style><script type="module" src="/_astro/page.VIllvXJD.js"></script><style>[data-astro-transition-scope="astro-x7amp3kc-1"] { view-transition-name: astro-x7amp3kc-1; }@layer astro { ::view-transition-old(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-2"] { view-transition-name: astro-x7amp3kc-2; }@layer astro { ::view-transition-old(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-3"] { view-transition-name: astro-x7amp3kc-3; }@layer astro { ::view-transition-old(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-4"] { view-transition-name: astro-x7amp3kc-4; }@layer astro { ::view-transition-old(astro-x7amp3kc-4) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-4) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-4) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-4) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-5"] { view-transition-name: astro-x7amp3kc-5; }@layer astro { ::view-transition-old(astro-x7amp3kc-5) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-5) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-5) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-5) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-6"] { view-transition-name: astro-x7amp3kc-6; }@layer astro { ::view-transition-old(astro-x7amp3kc-6) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-6) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-6) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-6) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-7"] { view-transition-name: astro-x7amp3kc-7; }@layer astro { ::view-transition-old(astro-x7amp3kc-7) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-7) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-7) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-7) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-7"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-7"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-7"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-7"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-7"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-7"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-7"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-7"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-8"] { view-transition-name: astro-x7amp3kc-8; }@layer astro { ::view-transition-old(astro-x7amp3kc-8) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-8) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-8) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-8) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-8"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-8"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-8"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-8"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-8"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-8"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-8"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-8"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-9"] { view-transition-name: benchmark; }@layer astro { ::view-transition-old(benchmark) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(benchmark) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(benchmark) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(benchmark) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-9"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-9"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-9"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-9"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-9"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-9"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-9"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-9"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-10"] { view-transition-name: compression; }@layer astro { ::view-transition-old(compression) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(compression) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(compression) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(compression) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-10"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-10"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-10"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-10"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-10"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-10"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-10"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-10"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-11"] { view-transition-name: garbage_20collection; }@layer astro { ::view-transition-old(garbage_20collection) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(garbage_20collection) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(garbage_20collection) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(garbage_20collection) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-11"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-11"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-11"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-11"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-11"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-11"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-11"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-11"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-12"] { view-transition-name: key_20value_20separation; }@layer astro { ::view-transition-old(key_20value_20separation) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(key_20value_20separation) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(key_20value_20separation) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(key_20value_20separation) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-12"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-12"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-12"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-12"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-12"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-12"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-12"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-12"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-13"] { view-transition-name: major; }@layer astro { ::view-transition-old(major) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(major) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(major) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(major) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-13"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-13"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-13"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-13"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-13"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-13"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-13"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-13"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-14"] { view-transition-name: performance; }@layer astro { ::view-transition-old(performance) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(performance) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(performance) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(performance) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-14"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-14"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-14"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-14"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-14"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-14"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-14"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-14"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-15"] { view-transition-name: release; }@layer astro { ::view-transition-old(release) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(release) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(release) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(release) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-15"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-15"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-15"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-15"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-15"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-15"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-15"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-15"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-16"] { view-transition-name: value_20log; }@layer astro { ::view-transition-old(value_20log) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(value_20log) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(value_20log) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(value_20log) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-16"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-16"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-16"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-16"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-16"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-16"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-16"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-16"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style></head> <body class="text-gray-700 dark:text-gray-400 dark:bg-gray-950"> <header class="backdrop-blur w-full px-3 md:px-7 py-5 fixed z-10 border-b dark:border-gray-900 bg-white/80 dark:bg-gray-950/75"> <div class="flex items-center gap-3 md:gap-5 mx-auto w-full max-w-3xl"> <a class="text-black dark:text-white font-medium transition-colors hover:brightness-80" href="/" class="md:text-lg"> <!-- SETUP: If you have a logo, replace this component with it --><span class="md:text-lg whitespace-pre"> fjall-rs </span> </a> <div class="flex-grow"></div> <div class="flex items-center gap-4"> <a href="/posts" class="text-gray-800 dark:text-gray-400 transition-colors hover:brightness-80"> Posts </a><a href="/tags" class="text-gray-800 dark:text-gray-400 transition-colors hover:brightness-80"> Tags </a> </div> <div class="flex items-center gap-3"> <a href="/search" aria-label="Search content" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path><path d="M21 21l-6 -6"></path></svg> </a> <button aria-label="Switch theme" class="theme-switch transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path></svg> </button> <script>
+  const iconMoon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" /></svg>`;
+  const iconSun = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" /></svg>`;
+
+  function theme() {
+    const local = localStorage.getItem("theme");
+    if (local) {
+      return local;
+    }
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      return "dark";
+    }
+    return "light";
+  }
+
+  function registerStuff(document) {
+    const root = document.documentElement;
+    const themeSwitch = document.querySelector(".theme-switch");
+
+    if (theme() === "light") {
+      root.classList.remove("dark");
+      themeSwitch.innerHTML = iconMoon;
+    } else {
+      root.classList.add("dark");
+      themeSwitch.innerHTML = iconSun;
+    }
+
+    themeSwitch.addEventListener("click", () => {
+      const isDark = root.classList.contains("dark");
+      localStorage.setItem("theme", isDark ? "light" : "dark");
+      console.log(isDark);
+
+      if (isDark) {
+        root.classList.remove("dark");
+        themeSwitch.innerHTML = iconMoon;
+      } else {
+        root.classList.add("dark");
+        themeSwitch.innerHTML = iconSun;
+      }
+    });
+  }
+
+  registerStuff(document);
+
+  document.addEventListener("astro:after-swap", (ev) => {
+    registerStuff(document);
+  });
+</script> <a target="_blank" href="https://github.com/fjall-rs" aria-label="Open GitHub page" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-github"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path></svg> </a> <a target="_blank" href="https://discord.gg/HvYGp4NFFk" aria-label="Join Discord server" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-discord"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M8 12a1 1 0 1 0 2 0a1 1 0 0 0 -2 0"></path><path d="M14 12a1 1 0 1 0 2 0a1 1 0 0 0 -2 0"></path><path d="M15.5 17c0 1 1.5 3 2 3c1.5 0 2.833 -1.667 3.5 -3c.667 -1.667 .5 -5.833 -1.5 -11.5c-1.457 -1.015 -3 -1.34 -4.5 -1.5l-.972 1.923a11.913 11.913 0 0 0 -4.053 0l-.975 -1.923c-1.5 .16 -3.043 .485 -4.5 1.5c-2 5.667 -2.167 9.833 -1.5 11.5c.667 1.333 2 3 3.5 3c.5 0 2 -2 2 -3"></path><path d="M7 16.5c3.5 1 6.5 1 10 0"></path></svg> </a> </div> </div> </header> <main class="px-4 pt-30 mx-auto max-w-3xl">   <div class="reading-progress z-10 fixed left-0 top-0 h-1 dark:bg-blue-500 bg-blue-700 opacity-75"></div> <script>
+  /**
+   * Gets the vertical scroll percent (0.0 - 1.0)
+   */
+  function getScrollPercent() {
+    const doc = document.documentElement;
+    const body = document.body;
+
+    return (
+      (doc.scrollTop || body.scrollTop) /
+      ((doc.scrollHeight || body.scrollHeight) - doc.clientHeight)
+    );
+  }
+
+  document.addEventListener("astro:page-load", () => {
+    document.addEventListener("scroll", () => {
+      const el = document.querySelector(".reading-progress");
+      if (el) {
+        el.style.width = `${getScrollPercent() * 100}%`;
+      }
+    });
+  });
+</script> <div class="flex flex-col gap-4"> <h1 class="text-blue-800 dark:text-blue-400 text-4xl md:text-5xl font-bold"> Announcing Fjall 2.0 </h1> <div class="flex items-center gap-2">  <div> September 20, 2024 </div> 
+- <div>13 min. read</div>  </div> <ul class="text-sm text-blue-800 dark:text-blue-300 flex flex-wrap items-center gap-3"> <li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/benchmark" data-astro-transition-scope="astro-x7amp3kc-9">
+#benchmark </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/compression" data-astro-transition-scope="astro-x7amp3kc-10">
+#compression </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/garbage collection" data-astro-transition-scope="astro-x7amp3kc-11">
+#garbage collection </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/key value separation" data-astro-transition-scope="astro-x7amp3kc-12">
+#key value separation </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/major" data-astro-transition-scope="astro-x7amp3kc-13">
+#major </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/performance" data-astro-transition-scope="astro-x7amp3kc-14">
+#performance </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/release" data-astro-transition-scope="astro-x7amp3kc-15">
+#release </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/value log" data-astro-transition-scope="astro-x7amp3kc-16">
+#value log </a> </li> </ul> <img class="mt-5 rounded-xl w-full object-cover bg-center aspect-2" src="/media/thumbs/denali.jpg" alt="Blog post thumbnail"> </div>  <article class="my-10 w-full !max-w-full prose dark:prose-invert text-justify dark:prose-gray"> <p>Today, I am announcing the release of Fjall 2.0.</p>
+<p>With more than <strong>500</strong> commits and <em>countless</em> hours spent on benchmarks, this release is pretty huge to say the least.
+While the changelog is pretty comprehensive, this update has laid important groundwork for all future 2.x releases.</p>
+<h2 id="about">About</h2>
+<p>Fjall is an embeddable LSM-based forbid-unsafe Rust key-value storage engine.
+Its goal is to be a reliable &amp; predictable but performant general-purpose KV storage engine.
+V2 features a new (breaking) disk format, which grants some new features:</p>
+<h2 id="miniz-zlib-compression-support">Miniz (zlib) compression support</h2>
+<p>Fjall 1.x used LZ4 compression (powered by <a href="https://github.com/PSeitz/lz4_flex"><code>lz4-flex</code></a> - shoutout to <a href="https://github.com/PSeitz"><code>PSeitz</code></a> and his work on <a href="https://github.com/quickwit-oss/tantivy"><code>tantivy</code></a>), and LZ4 is still the default in version 2.
+But now, compression algorithms can be adjusted on a per-partition basis; including zlib/DEFLATE compression, powered by <a href="https://github.com/Frommi/miniz_oxide"><code>miniz-oxide</code></a>, yielding better compression ratios at the cost of slower reads and writes.</p>
+<p>Miniz support can be enabled using the <code>miniz</code> feature flag.</p>
+<h3 id="compression-efficiency">Compression efficiency</h3>
+<p>This benchmark is storing 10GB of <em>ethically sourced</em> HTML pages (average page size: ~3.6 MB), with key-value separation enabled.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center"><img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/compression_html.svg"/></div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center"><img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/compression_html_space_amp.svg"/></div>
+<p>With compression, we can achieve much higher storage density.
+But it’s not just storage density we are optimizing for: trading some CPU time ends up reducing the transfer time between application and disk, and can have quite a significant impact on write and read performance.</p>
+<p>The following benchmark writes all 10 GB of HTML, then reads every single HTML item back.
+On an SSD we get:</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center"><img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/compression_ssd_perf.svg"/></div>
+<p>And on an HDD (WD Blue 1 TB):</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center"><img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/compression_hdd_perf.svg"/></div>
+<h2 id="slice-type">Slice type</h2>
+<p>Fjall 1.x used <code>Arc&lt;[u8]&gt;</code> for most of its operations, making reads to cached data allocation and memcpy free (just need to increment the Arc’s reference count).
+Now all operations are built around the new <code>Slice</code> type, which is some immutable, cloneable byte slice.
+Currently it is backed by an <code>Arc&lt;[u8]&gt;</code>, but it will allow some optimizations regarding heap allocations in the future.</p>
+<h2 id="key-value-separation">Key-value separation</h2>
+<p>2.0 now features (optional) key-value separation, inspired by RocksDB’s <a href="https://github.com/facebook/rocksdb/wiki/BlobDB"><code>BlobDB</code></a> and PingCAP’s <a href="https://docs.pingcap.com/tidb/stable/titan-overview"><code>Titan</code></a>, and powered by another newly released crate, <a href="https://github.com/fjall-rs/value-log"><code>value-log</code></a>.
+Key-value separation is intended for large value use cases on SSDs, and allows for adjustable online garbage collection.</p>
+<p>There will be a separate blog post at some point about key-value separation, <code>value-log</code> and so on - but the basic idea behind key-value separation is to separate large values out of the LSM-tree into a tertiary disk structure (“value log”), to minimize write amplification.
+It is somewhat similar to how B-trees use overflow pages.</p>
+<p>Key-value separation is disabled by default, but can be toggled on a per-partition basis:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4;overflow-x:auto" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> opts</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> PartitionCreateOptions</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">default</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">with_kv_separation</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">KvSeparationOptions</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">default</span><span style="color:#908CAA;--shiki-dark:#908CAA">());</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> blobs</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> keyspace</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">open_partition</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">&quot;blobs&quot;</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> opts</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span></code></pre>
+<p>Note that, as is intended with key-value separation, data is not eagerly deleted.
+This increases performance (lower write amp) at the cost of possibly costing more space (higher space amp).</p>
+<h3 id="garbage-collection-api">Garbage collection API</h3>
+<p>Now, with key-value separation comes the idea of garbage collection, which gives the user fine-grained control over how eagerly stale data is evicted.</p>
+<blockquote>
+<p>If you do not intend to delete any data, no need for garbage collection at all, so skip this!</p>
+</blockquote>
+<p>Garbage collection has two phases: scanning for eligible eviction, and actually performing eviction.</p>
+<p>Scanning can be performed at any time, using <code>Gc::scan</code>:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4;overflow-x:auto" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">use</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> fjall</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">GarbageCollection</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> blobs is the partition from earlier</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> report</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> blobs</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">gc_scan</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#EA9A97;--shiki-dark:#EA9A97">println!</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">&quot;</span><span style="color:#908CAA;--shiki-dark:#908CAA">{</span><span style="color:#F6C177;--shiki-dark:#F6C177">report</span><span style="color:#908CAA;--shiki-dark:#908CAA">}</span><span style="color:#F6C177;--shiki-dark:#F6C177">&quot;</span><span style="color:#908CAA;--shiki-dark:#908CAA">);</span></span></code></pre>
+<p>The <a href="https://docs.rs/value-log/1.0.0/value_log/struct.GcReport.html">GC report</a> contains useful, aggregated statistics such as stale data percentage, space amplification, and more.</p>
+<p>To actually perform garbage collection, it can be run using two different strategies:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4;overflow-x:auto" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">blobs</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">gc_with_space_amp_target</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">2</span><span style="color:#908CAA;--shiki-dark:#908CAA">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">0</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span></code></pre>
+<p><code>with_space_amp_target</code> will try and find a least-effort selection of disk segments to reach a given space amplification target.
+Depending on the space amp target this can be expensive.
+Something around 1.5-3.0 is a sensible default, but higher space amplification allows less time spent on cleaning up stale data, reducing GC overhead.</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4;overflow-x:auto" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> Defragment segments with 70% or more stale data</span></span>
+<span class="line"><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">blobs</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">gc_with_staleness_threshold</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">0</span><span style="color:#908CAA;--shiki-dark:#908CAA">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">7</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span></code></pre>
+<p><code>with_staleness_threshold</code> will defragment disk segments that have a certain percentage of stale data.
+If the percentage is very high, it can be very low-cost to rewrite these segments as a lot of data can simply be dropped.
+However, higher percentage implies - unless the distribution of deletions is very skewed - a higher space amplification required, which may be undesirable to wait for.</p>
+<p>The garbage collection strategies can be mixed and matched to achieve certain behaviour, for example:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4;overflow-x:auto" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> First, run scan</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> report</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> blobs</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">gc_scan</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> We never want to surpass 3x space amp</span></span>
+<span class="line"><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">blobs</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">gc_with_space_amp_target</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">3</span><span style="color:#908CAA;--shiki-dark:#908CAA">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">0</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> But even if our space amp is low, we may want to</span></span>
+<span class="line"><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> get rid of very fragmented segments</span></span>
+<span class="line"><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">blobs</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">gc_with_staleness_threshold</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">0</span><span style="color:#908CAA;--shiki-dark:#908CAA">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">9</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span></code></pre>
+<p>Also, <code>drop_stale_segments</code> simply drops stale segments, which has essentially no cost.
+There is no need to call it when using the other garbage collection strategies, as they will call it implicitly anyway.
+But if you know that data is deleted in a certain order (e.g. a task queue), it may be cheapest to wait for segments to become stale and then drop them.</p>
+<p>All garbage collection functions are <em>blocking</em>, and need to be called/scheduled manually.</p>
+<p>This can be easily achieved with both native threads and async tasks, here’s a Tokio example:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4;overflow-x:auto" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">use</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> fjall</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#908CAA;--shiki-dark:#908CAA">{</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Config</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> GarbageCollection</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> KvSeparationOptions</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> PartitionCreateOptions</span><span style="color:#908CAA;--shiki-dark:#908CAA">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">#[</span><span style="color:#E0DEF4;--shiki-dark:#E0DEF4">tokio</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#E0DEF4;--shiki-dark:#E0DEF4">main</span><span style="color:#908CAA;--shiki-dark:#908CAA">]</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">async</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> fn</span><span style="color:#EA9A97;--shiki-dark:#EA9A97"> main</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> -&gt;</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> fjall</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Result</span><span style="color:#908CAA;--shiki-dark:#908CAA">&lt;()&gt;</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> keyspace</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Config</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">default</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">open</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> opts</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> PartitionCreateOptions</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">default</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">        .</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">with_kv_separation</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">KvSeparationOptions</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">default</span><span style="color:#908CAA;--shiki-dark:#908CAA">());</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> blobs</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> keyspace</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">open_partition</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">&quot;blobs&quot;</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> opts</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">    {</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">        let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> blobs</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> blobs</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">clone</span><span style="color:#908CAA;--shiki-dark:#908CAA">();</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">        tokio</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">spawn</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">async</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> move</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">            use</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> fjall</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#908CAA;--shiki-dark:#908CAA">{</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Error</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Gc</span><span style="color:#908CAA;--shiki-dark:#908CAA">};</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">            use</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> std</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">time</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#908CAA;--shiki-dark:#908CAA">{</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Duration</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Instant</span><span style="color:#908CAA;--shiki-dark:#908CAA">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">            loop</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
+<span class="line"><span style="color:#EA9A97;--shiki-dark:#EA9A97">                eprintln!</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">&quot;Running GC for partition </span><span style="color:#908CAA;--shiki-dark:#908CAA">{</span><span style="color:#F6C177;--shiki-dark:#F6C177">:?</span><span style="color:#908CAA;--shiki-dark:#908CAA">}</span><span style="color:#F6C177;--shiki-dark:#F6C177">&quot;</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> blobs</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#E0DEF4;--shiki-dark:#E0DEF4">name</span><span style="color:#908CAA;--shiki-dark:#908CAA">);</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">                let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> start</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Instant</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">now</span><span style="color:#908CAA;--shiki-dark:#908CAA">();</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">                let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> blobs</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> blobs</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">clone</span><span style="color:#908CAA;--shiki-dark:#908CAA">();</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">                let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> result</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> tokio</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">task</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">spawn_blocking</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">move</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> ||</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">                    let</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> _report</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> blobs</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">gc_scan</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
+<span class="line"><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">                    blobs</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">gc_with_space_amp_target</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">3</span><span style="color:#908CAA;--shiki-dark:#908CAA">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">0</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
+<span class="line"><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">                    Ok</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#908CAA;--shiki-dark:#908CAA">&lt;</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">_</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Error</span><span style="color:#908CAA;--shiki-dark:#908CAA">&gt;(())</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">                })</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">                .await</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">                .</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">unwrap</span><span style="color:#908CAA;--shiki-dark:#908CAA">();</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">                if</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> let</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Err</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">e</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> result</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
+<span class="line"><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">                    //</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> error handling</span></span>
+<span class="line"><span style="color:#EA9A97;--shiki-dark:#EA9A97">                    eprintln!</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">&quot;GC failed: </span><span style="color:#908CAA;--shiki-dark:#908CAA">{</span><span style="color:#F6C177;--shiki-dark:#F6C177">e:?</span><span style="color:#908CAA;--shiki-dark:#908CAA">}</span><span style="color:#F6C177;--shiki-dark:#F6C177">&quot;</span><span style="color:#908CAA;--shiki-dark:#908CAA">);</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">                }</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> else</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
+<span class="line"><span style="color:#EA9A97;--shiki-dark:#EA9A97">                    eprintln!</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">&quot;GC done in </span><span style="color:#908CAA;--shiki-dark:#908CAA">{</span><span style="color:#F6C177;--shiki-dark:#F6C177">:?</span><span style="color:#908CAA;--shiki-dark:#908CAA">}</span><span style="color:#F6C177;--shiki-dark:#F6C177">&quot;</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#E0DEF4;font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> start</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">elapsed</span><span style="color:#908CAA;--shiki-dark:#908CAA">());</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">                }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#908CAA;font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">                //</span><span style="color:#6E6A86;font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> Sleep 24 hours</span></span>
+<span class="line"><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">                tokio</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">time</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">sleep</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Duration</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">from_secs</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">60</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> *</span><span style="color:#EA9A97;--shiki-dark:#EA9A97"> 60</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> *</span><span style="color:#EA9A97;--shiki-dark:#EA9A97"> 24</span><span style="color:#908CAA;--shiki-dark:#908CAA">))</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.await</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">            }</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">        });</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">    Ok</span><span style="color:#908CAA;--shiki-dark:#908CAA">(())</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">}</span></span></code></pre>
+<p>The primitiveness of the GC API allows tailoring the garbage collection behaviour to (hopefully) any application’s needs.
+You can run GC on an interval, specific schedules, manual triggers (HTTP?), trigger via a channel or possibly a semaphore.
+Not to sound corny, but the possibilities really are endless.</p>
+<h3 id="configuration">Configuration</h3>
+<p>Of course, there are a couple of configuration options.</p>
+<p>First, there’s <code>blob_file_separation_threshold</code>, which controls how large a value needs to be to be separated into the value log.
+This can be controlled per-partition.
+Increasing this option much is not really recommended, setting it to way below 0.5 KiB is not recommended either.
+The default is <strong>1 KiB</strong>.</p>
+<p>Then, there’s <code>blob_file_target_size</code>.
+This can also be controlled per-partition.
+Using smaller blob files increases the amount of files on disk and maintenance overhead, while allowing more granular compaction.
+You may want to increase this option (i.e. something like 256 MiB) if you know you will store a lot of data (&gt;10 GB), or are not frequently updating/deleting blobs.
+The default is <strong>64 MiB</strong>.</p>
+<h3 id="when-to-use">When to use</h3>
+<p>When to use key-value separation:</p>
+<ul>
+<li>when you always store large values (e.g. JSON, HTML, etc.)</li>
+<li>when the size of values is unknown and may be large (e.g. user-written chat messages, descriptions, etc.)</li>
+</ul>
+<p>When <em>not</em> to use key-value separation:</p>
+<ul>
+<li>when values are known to be small (e.g. time series, small database rows)</li>
+<li>when values are written in monotonic order and <strong>never never never</strong> deleted</li>
+</ul>
+<h3 id="benchmark-garbage-collection">Benchmark: Garbage collection</h3>
+<p>This benchmark writes a history of blob items, truncating it, if there are more than 5 versions for the same key.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center"><img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/webtable_gc_du.png"/></div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center"><img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/webtable_gc_spaceamp.png"/></div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center"><img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/webtable_gc_writeamp.png"/></div>
+<ul>
+<li>Green used no garbage collection, hence the ever increasing disk space</li>
+<li>Blue, Purple and Yellow used increasingly lax garbage collection, resulting in different temporary space amplification and write amplification</li>
+<li>The write amplification is sometimes below 2, which might seem impossible because every value is written twice (WAL + value log) - this is because of compression</li>
+</ul>
+<p>Without key-value separation, large values take up a lot of disk I/O when compacting, reducing disk bandwidth that could instead be used to serve requests:</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center"><img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/webtable_kvsep.png"/></div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center"><img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/webtable_kvsep4.png"/></div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center"><img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/webtable_kvsep2.png"/></div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center"><img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/webtable_kvsep3.png"/></div>
+<p>Compared to the non-KV-separated flavour, enabling key-value separation gives essentially linear write scaling through very low write amplification.
+Both GC configurations perform very similarly, but the more aggressive GC prevents higher temporary space usage, with essentially the same write amplification.
+Note that the plateaus in the graphs are caused by the workload stopping writes to truncate the history of items.</p>
+<h3 id="benchmark-bulk-loading-blobs">Benchmark: Bulk loading blobs</h3>
+<p>Testing rig: i9 11900k, Samsung PM9A3 960 GB</p>
+<p>This benchmark bulk loads the above data set (10GB HTML), then reads for 1 minute from it, using a Zipfian distribution.
+Cache size: 64 MB (32 + 32 for Fjall).</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center"><img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/html_cmp_du.png"/></div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center"><img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/html_cmp_spaceamp.png"/></div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center"><img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/html_cmp_writeamp.png"/></div>
+<p>Fjall uses by far the least amount of disk space, because of its built-in blob compression.
+Because of key-value separation and the compression, the write amplification is also the lowest.
+Sled had its <code>compression</code> feature turned on, yet used the most amount of disk space.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center"><img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-2/html_cmp_read.png"/></div>
+<p>Point reads are pretty competitive between all the engines.</p>
+<p>Notes:</p>
+<ul>
+<li>Sled ended up taking <strong>~11 GB</strong> of memory, so it is disqualified</li>
+<li>Fjall, Sled and Persy used low durability writes</li>
+<li>ReDB used the <code>Immediate</code> durability and a single write transaction. The <code>None</code> durability was faster, but would cause reads to be slow (probably fragmentation?)</li>
+</ul>
+<h2 id="into-the-future">Into the future</h2>
+<p>The rest of 2.x is more or less planned out, so there will be a pretty regular, more bite-sized release schedule of new features, better documentation, performance improvements and maintenance; instead of cramming everything into the 2.0 release, I will <a href="https://www.youtube.com/watch?v=0cjpAz5iUnA">take it slow</a>.</p> <hr> <h2>Discord</h2> <p>
+Join the discord server if you want to chat about databases, Rust or whatever: <a href="https://discord.gg/HvYGp4NFFk">https://discord.gg/HvYGp4NFFk</a> </p> <h2>Interested in LSM-trees and Rust?</h2> <p>
+Check out <a href="https://github.com/fjall-rs/fjall" target="_blank">fjall</a>, an MIT-licensed
+  LSM-based storage engine written in Rust.
+</p> <iframe src="https://github.com/sponsors/fjall-rs/card" title="Sponsor fjall" height="80" width="100%" style="border: 0;"></iframe> </article>   <hr class="h-1 mb-2 border-gray-200 dark:border-gray-700"> <div class="flex flex-col gap-3"> <div class="dark:text-gray-300 italic">Tags</div> <ul class="text-sm text-blue-800 dark:text-blue-300 flex flex-wrap items-center gap-3"> <li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/benchmark" data-astro-transition-scope="astro-x7amp3kc-1">
+#benchmark </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/compression" data-astro-transition-scope="astro-x7amp3kc-2">
+#compression </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/garbage collection" data-astro-transition-scope="astro-x7amp3kc-3">
+#garbage collection </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/key value separation" data-astro-transition-scope="astro-x7amp3kc-4">
+#key value separation </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/major" data-astro-transition-scope="astro-x7amp3kc-5">
+#major </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/performance" data-astro-transition-scope="astro-x7amp3kc-6">
+#performance </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/release" data-astro-transition-scope="astro-x7amp3kc-7">
+#release </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/value log" data-astro-transition-scope="astro-x7amp3kc-8">
+#value log </a> </li> </ul> </div>  </main> <footer class="flex flex-col gap-5 py-10 mx-auto max-w-3xl w-full"> <!-- TODO: move into a fixed FAB button, outside of footer --> <div class="text-right"> <button onclick="scrollToTop()">Back to top</button> </div> <div class="text-center">
+&copy; 2025 fjall-rs 
+- powered by <a class="text-blue-700 dark:text-blue-300 italic transition-all hover:brightness-80" href="https://github.com/marvin-j97/nanoblog" target="_blank">
+nanoblog
+</a>  </div> <div class="flex gap-3 justify-center"> <a target="_blank" href="https://github.com/fjall-rs" aria-label="Open GitHub page" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-github"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path></svg> </a> <a target="_blank" href="/rss.xml" aria-label="Get RSS feed" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path> <path d="M5 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path> <path d="M4 4a16 16 0 0 1 16 16"></path> <path d="M4 11a9 9 0 0 1 9 9"></path>  </svg> </a> </div> </footer> <script>
+  function scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }
+</script>  </body> </html> 
