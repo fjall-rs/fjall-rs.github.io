@@ -332,6 +332,9 @@ This API takes a sorted iterator and creates a list of disk segments (a.k.a. <co
   <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-28/ingest_cpu.png">
 </div>
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-28/ingest_mem.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
   <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-28/ingest_write_amp.png">
 </div>
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
@@ -342,7 +345,8 @@ This API takes a sorted iterator and creates a list of disk segments (a.k.a. <co
 </div>
 <p>Note:</p>
 <ul>
-<li><code>redb</code> used a single write transaction to load all the data, which is the fastest way to load a lot of data</li>
+<li><code>redb</code> uses a single write transaction to load all the data, which is the fastest way to load a lot of data</li>
+<li><code>heed</code> uses a single write transaction, plus the <code>M_APPEND</code> put flag</li>
 <li><code>sled</code> does not have a bulk loading mechanism, so comparing it would be unfair</li>
 </ul>
 <h2 id="unified-cache-api">Unified cache API</h2>
