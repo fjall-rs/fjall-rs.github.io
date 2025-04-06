@@ -327,7 +327,7 @@ This API takes a sorted iterator and creates a list of disk segments (a.k.a. <co
 <p>* Actually the write amp in such case is 3 currently, but <a href="https://github.com/fjall-rs/lsm-tree/issues/121">that will change to be 2 in the future</a>.</p>
 </blockquote>
 <h3 id="benchmark">Benchmark</h3>
-<p>This benchmark writes 100 million monotonically ascending <code>u128</code> integer keys with 100 byte values:</p>
+<p>This benchmark writes 100 million monotonically ascending <code>u128</code> integer keys with 100 fully random byte values:</p>
 <div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
   <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-28/ingest_cpu.png">
 </div>
