@@ -790,7 +790,7 @@ Disjoint levels in <a href="/post/lsm-leveling#level-fanout">Leveled trees</a> c
 <p>When setting up a range read, each segment that is not filtered by the algorithm above, is collected.
 This causes unnecessarily many Arc clones. Large or (partially) open ranges can have thousands of segments, resulting in <strong>microseconds</strong> of time spent in this stage.
 Also each segment was immediately converted into a SegmentReader, which is cheap, but not for thousands of segments!
-For large trees, this can make operations like first_key_value or last_key_value too slow.
+For large trees, this can make operations such as <code>first_key_value</code> or <code>last_key_value</code> too slow.
 Again, the responsible code in question has O(n) complexity.</p>
 <p>To reduce Arc clones, we need to be able to clone an entire Level in O(1) time.
 To do so, levels are now themselves wrapped in an Arc.
