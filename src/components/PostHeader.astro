@@ -12,6 +12,10 @@ interface Props {
 }
 
 const { title, publishedAt, author, readingMinutes, tags, image } = Astro.props;
+
+const dateStr = new Intl.DateTimeFormat("en", {
+  dateStyle: "long",
+}).format(new Date(publishedAt));
 ---
 
 <div class="flex flex-col gap-4">
@@ -29,12 +33,8 @@ const { title, publishedAt, author, readingMinutes, tags, image } = Astro.props;
         </>
       )
     }
-    <div>
-      {
-        new Intl.DateTimeFormat("en", {
-          dateStyle: "long",
-        }).format(new Date(publishedAt))
-      }
+    <div title={new Date(publishedAt).toISOString()}>
+      {dateStr}
     </div>
     {
       config.post.readingTime.enabled && (
