@@ -11,6 +11,7 @@ tags:
 published_at: 2024-08-09T18:01:53.233Z
 last_modified_at: 2024-08-11T23:30:53.233Z
 image: /media/thumbs/pantheon.jpg
+outdated: true
 ---
 
 [Fjall](https://github.com/fjall-rs/fjall) is an LSM-tree based storage engine written in Rust.

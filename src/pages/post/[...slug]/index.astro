@@ -34,6 +34,14 @@ const readingMinutes = Math.max(
   <!-- Global -->
   {config.post.showReadingProgress && <ReadingProgressBar />}
 
+  {
+    post.data.outdated && (
+      <div class="border border-amber-300 dark:border-amber-800 text-amber-700 dark:text-amber-200 p-5 mb-10 bg-amber-100 dark:bg-amber-500/30 rounded-xl">
+        This post is very outdated.
+      </div>
+    )
+  }
+
   <!-- Post header -->
   <PostHeader
     title={post.data.title}
@@ -45,7 +53,9 @@ const readingMinutes = Math.max(
   />
 
   <!-- Content -->
-  <article class="my-10 w-full !max-w-full prose dark:prose-invert text-justify dark:prose-gray">
+  <article
+    class="[&_p]:dark:text-gray-300/90 my-10 w-full !max-w-full prose dark:prose-invert text-justify dark:prose-gray"
+  >
     <Content />
     <hr />
     <ArticleAddendum />
@@ -72,6 +82,15 @@ const readingMinutes = Math.max(
 
   article {
     overflow-x: hidden;
+  }
+
+  article h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    text-align: left;
   }
 
   article a {
@@ -102,8 +121,8 @@ const readingMinutes = Math.max(
   }
 
   p code {
-    border-radius: 4px;
-    padding: 2px 4px;
+    border-radius: 5px;
+    padding: 3px 5px;
     white-space: normal !important;
   }
 
@@ -112,7 +131,7 @@ const readingMinutes = Math.max(
   }
 
   .dark p code {
-    color: rgb(193, 228, 248) !important;
+    color: rgb(150, 228, 255) !important;
     background: rgba(7, 89, 133, 0.33) !important;
   }
 
@@ -139,5 +158,7 @@ const readingMinutes = Math.max(
     font-style: var(--shiki-dark-font-style) !important;
     font-weight: var(--shiki-dark-font-weight) !important;
     text-decoration: var(--shiki-dark-text-decoration) !important;
+    font-size: 14px;
+ 	line-height: 25px;
   }
 </style>

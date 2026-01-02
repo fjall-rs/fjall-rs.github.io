@@ -44,7 +44,7 @@ const { title, publishedAt, author, readingMinutes, tags, image } = Astro.props;
       )
     }
   </div>
-  {tags.length > 0 && <TagList transition items={tags} />}
+  {tags.length > 0 && tags.length <= config.post.maxTags && <TagList transition items={tags} />}
   {
     image && (
       <img
