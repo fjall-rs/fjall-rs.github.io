@@ -1,0 +1,1495 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v5.14.1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="sitemap" href="/sitemap-index.xml"><!-- SEO --><title>Releasing Fjall 3.0 | fjall-rs</title><meta name="title" content="Releasing Fjall 3.0"><meta name="description" content="A year in the making"><!-- OG --><meta property="og:title" content="Releasing Fjall 3.0"><meta property="og:description" content="A year in the making"><meta property="og:url" content="https://fjall-rs.github.io/post/fjall-3/"><meta property="og:image" content="https://fjall-rs.github.io/media/thumbs/kirkjufell.jpg"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://fjall-rs.github.io/post/fjall-3/"><meta property="twitter:title" content="Releasing Fjall 3.0"><meta property="twitter:description" content="A year in the making"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.7vq8zEUA.js"></script><link rel="stylesheet" href="/_astro/index.BeyvVpSy.css">
+<style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}[data-astro-transition-scope]{animation:none!important}}
+@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-cyrillic-ext-400-normal.tyfMZHQw.woff2) format("woff2"),url(/_astro/inter-cyrillic-ext-400-normal.CzG7Kr3z.woff) format("woff");unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-cyrillic-400-normal.Df6ckaLK.woff2) format("woff2"),url(/_astro/inter-cyrillic-400-normal.JrS_4yms.woff) format("woff");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-greek-ext-400-normal.CIdlr5YK.woff2) format("woff2"),url(/_astro/inter-greek-ext-400-normal._Rr29XE2.woff) format("woff");unicode-range:U+1F00-1FFF}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-greek-400-normal.DQXyrmoy.woff2) format("woff2"),url(/_astro/inter-greek-400-normal.DvIPHDQ7.woff) format("woff");unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-vietnamese-400-normal.Cnt0N5Vm.woff2) format("woff2"),url(/_astro/inter-vietnamese-400-normal.DIOGfGLL.woff) format("woff");unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-latin-ext-400-normal.D3W-OpO-.woff2) format("woff2"),url(/_astro/inter-latin-ext-400-normal.8tIzm-yw.woff) format("woff");unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:400;src:url(/_astro/inter-latin-400-normal.BT1H-PT_.woff2) format("woff2"),url(/_astro/inter-latin-400-normal.Cdi8t5Mu.woff) format("woff");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}.astro-route-announcer{position:absolute;left:0;top:0;clip:rect(0 0 0 0);clip-path:inset(50%);overflow:hidden;white-space:nowrap;width:1px;height:1px}:not(.astro-code *){font-family:Inter,sans-serif}
+:target{scroll-margin-top:80px!important}article{overflow-x:hidden}article h1,h2,h3,h4,h5,h6{text-align:left}article a{color:#075985!important;text-decoration:underline dotted!important;text-underline-offset:3px;display:inline-block;transition:transform .1s ease-in-out,filter .1s ease-in-out}article a:hover{transform:translateY(-2px)}.dark article a{color:#38bdf8!important}code:before,code:after{display:none}.astro-code{font-size:15px}p code{border-radius:5px;padding:3px 5px;white-space:normal!important}p strong{color:#c1e4f8!important}.dark p code{color:#96e4ff!important;background:#07598554!important}html:not(.dark) p code{color:#045280!important;background:#99d4f566!important}.dark article blockquote{border-left-color:#064566!important}html:not(.dark) article blockquote{border-left-width:.25rem;border-left-style:solid;border-left-color:#63c8ff!important}html.dark .astro-code,html.dark .astro-code span{color:var(--shiki-dark)!important;background-color:var(--shiki-dark-bg)!important;font-style:var(--shiki-dark-font-style)!important;font-weight:var(--shiki-dark-font-weight)!important;text-decoration:var(--shiki-dark-text-decoration)!important;font-size:14px;line-height:25px}
+</style><script type="module" src="/_astro/page.VIllvXJD.js"></script><style>[data-astro-transition-scope="astro-x7amp3kc-1"] { view-transition-name: astro-x7amp3kc-1; }@layer astro { ::view-transition-old(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-1) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-1"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-2"] { view-transition-name: astro-x7amp3kc-2; }@layer astro { ::view-transition-old(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-2) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-2"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-3"] { view-transition-name: astro-x7amp3kc-3; }@layer astro { ::view-transition-old(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-3) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-3"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-3"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-4"] { view-transition-name: astro-x7amp3kc-4; }@layer astro { ::view-transition-old(astro-x7amp3kc-4) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-4) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-4) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-4) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-4"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-4"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-5"] { view-transition-name: astro-x7amp3kc-5; }@layer astro { ::view-transition-old(astro-x7amp3kc-5) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-5) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-5) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-5) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-5"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-5"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-6"] { view-transition-name: astro-x7amp3kc-6; }@layer astro { ::view-transition-old(astro-x7amp3kc-6) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-6) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-6) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-6) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-6"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-6"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-7"] { view-transition-name: astro-x7amp3kc-7; }@layer astro { ::view-transition-old(astro-x7amp3kc-7) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-7) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-7) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-7) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-7"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-7"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-7"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-7"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-7"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-7"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-7"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-7"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-8"] { view-transition-name: astro-x7amp3kc-8; }@layer astro { ::view-transition-old(astro-x7amp3kc-8) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-8) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-8) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-8) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-8"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-8"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-8"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-8"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-8"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-8"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-8"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-8"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-9"] { view-transition-name: astro-x7amp3kc-9; }@layer astro { ::view-transition-old(astro-x7amp3kc-9) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-9) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-9) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-9) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-9"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-9"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-9"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-9"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-9"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-9"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-9"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-9"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-10"] { view-transition-name: astro-x7amp3kc-10; }@layer astro { ::view-transition-old(astro-x7amp3kc-10) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-10) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-10) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-10) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-10"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-10"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-10"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-10"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-10"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-10"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-10"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-10"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-11"] { view-transition-name: astro-x7amp3kc-11; }@layer astro { ::view-transition-old(astro-x7amp3kc-11) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-11) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-11) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-11) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-11"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-11"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-11"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-11"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-11"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-11"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-11"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-11"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-12"] { view-transition-name: astro-x7amp3kc-12; }@layer astro { ::view-transition-old(astro-x7amp3kc-12) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-12) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-12) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-12) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-12"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-12"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-12"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-12"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-12"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-12"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-12"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-12"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-13"] { view-transition-name: astro-x7amp3kc-13; }@layer astro { ::view-transition-old(astro-x7amp3kc-13) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-13) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-13) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-13) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-13"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-13"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-13"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-13"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-13"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-13"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-13"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-13"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-14"] { view-transition-name: astro-x7amp3kc-14; }@layer astro { ::view-transition-old(astro-x7amp3kc-14) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-14) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-14) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-14) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-14"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-14"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-14"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-14"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-14"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-14"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-14"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-14"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-15"] { view-transition-name: astro-x7amp3kc-15; }@layer astro { ::view-transition-old(astro-x7amp3kc-15) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-15) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-15) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-15) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-15"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-15"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-15"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-15"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-15"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-15"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-15"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-15"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-16"] { view-transition-name: astro-x7amp3kc-16; }@layer astro { ::view-transition-old(astro-x7amp3kc-16) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-16) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-16) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-16) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-16"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-16"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-16"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-16"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-16"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-16"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-16"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-16"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-17"] { view-transition-name: astro-x7amp3kc-17; }@layer astro { ::view-transition-old(astro-x7amp3kc-17) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-17) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-17) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-17) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-17"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-17"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-17"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-17"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-17"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-17"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-17"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-17"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-x7amp3kc-18"] { view-transition-name: astro-x7amp3kc-18; }@layer astro { ::view-transition-old(astro-x7amp3kc-18) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-x7amp3kc-18) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-x7amp3kc-18) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-x7amp3kc-18) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-18"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-18"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-18"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-18"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-x7amp3kc-18"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-x7amp3kc-18"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-x7amp3kc-18"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-x7amp3kc-18"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style></head> <body class="text-gray-700 dark:text-gray-400 dark:bg-gray-950"> <header class="backdrop-blur w-full px-3 md:px-7 py-5 fixed z-10 border-b dark:border-gray-900 bg-white/80 dark:bg-gray-950/75"> <div class="flex items-center gap-3 md:gap-5 mx-auto w-full max-w-3xl"> <a class="text-black dark:text-white font-medium transition-colors hover:brightness-80" href="/" class="md:text-lg"> <!-- SETUP: If you have a logo, replace this component with it --><span class="md:text-lg whitespace-pre"> fjall-rs </span> </a> <div class="flex-grow"></div> <div class="flex items-center gap-4"> <a href="/posts" class="text-gray-800 dark:text-gray-400 transition-colors hover:brightness-80"> Posts </a><a href="/tags" class="text-gray-800 dark:text-gray-400 transition-colors hover:brightness-80"> Tags </a> </div> <div class="flex items-center gap-3"> <a href="/search" aria-label="Search content" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path><path d="M21 21l-6 -6"></path></svg> </a> <button aria-label="Switch theme" class="theme-switch transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path></svg> </button> <script>
+  const iconMoon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" /></svg>`;
+  const iconSun = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" /></svg>`;
+
+  function theme() {
+    const local = localStorage.getItem("theme");
+    if (local) {
+      return local;
+    }
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      return "dark";
+    }
+    return "light";
+  }
+
+  function registerStuff(document) {
+    const root = document.documentElement;
+    const themeSwitch = document.querySelector(".theme-switch");
+
+    if (theme() === "light") {
+      root.classList.remove("dark");
+      themeSwitch.innerHTML = iconMoon;
+    } else {
+      root.classList.add("dark");
+      themeSwitch.innerHTML = iconSun;
+    }
+
+    themeSwitch.addEventListener("click", () => {
+      const isDark = root.classList.contains("dark");
+      localStorage.setItem("theme", isDark ? "light" : "dark");
+      console.log(isDark);
+
+      if (isDark) {
+        root.classList.remove("dark");
+        themeSwitch.innerHTML = iconMoon;
+      } else {
+        root.classList.add("dark");
+        themeSwitch.innerHTML = iconSun;
+      }
+    });
+  }
+
+  registerStuff(document);
+
+  document.addEventListener("astro:after-swap", (ev) => {
+    registerStuff(document);
+  });
+</script> <a target="_blank" href="https://github.com/fjall-rs" aria-label="Open GitHub page" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-github"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path></svg> </a> <a target="_blank" href="https://discord.gg/HvYGp4NFFk" aria-label="Join Discord server" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-discord"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M8 12a1 1 0 1 0 2 0a1 1 0 0 0 -2 0"></path><path d="M14 12a1 1 0 1 0 2 0a1 1 0 0 0 -2 0"></path><path d="M15.5 17c0 1 1.5 3 2 3c1.5 0 2.833 -1.667 3.5 -3c.667 -1.667 .5 -5.833 -1.5 -11.5c-1.457 -1.015 -3 -1.34 -4.5 -1.5l-.972 1.923a11.913 11.913 0 0 0 -4.053 0l-.975 -1.923c-1.5 .16 -3.043 .485 -4.5 1.5c-2 5.667 -2.167 9.833 -1.5 11.5c.667 1.333 2 3 3.5 3c.5 0 2 -2 2 -3"></path><path d="M7 16.5c3.5 1 6.5 1 10 0"></path></svg> </a> </div> </div> </header> <main class="px-4 pt-30 mx-auto max-w-3xl">   <div class="reading-progress z-10 fixed left-0 top-0 h-1 dark:bg-blue-500 bg-blue-700 opacity-75"></div> <script>
+  /**
+   * Gets the vertical scroll percent (0.0 - 1.0)
+   */
+  function getScrollPercent() {
+    const doc = document.documentElement;
+    const body = document.body;
+
+    return (
+      (doc.scrollTop || body.scrollTop) /
+      ((doc.scrollHeight || body.scrollHeight) - doc.clientHeight)
+    );
+  }
+
+  document.addEventListener("astro:page-load", () => {
+    document.addEventListener("scroll", () => {
+      const el = document.querySelector(".reading-progress");
+      if (el) {
+        el.style.width = `${getScrollPercent() * 100}%`;
+      }
+    });
+  });
+</script> <div class="flex flex-col gap-4"> <h1 class="text-blue-800 dark:text-blue-400 text-4xl md:text-5xl font-bold"> Releasing Fjall 3.0 </h1> <div class="flex items-center gap-2">  <div title="2026-01-02T16:30:00.548Z"> January 2, 2026 </div> 
+- <div>39 min. read</div>  </div>  <img class="mt-5 rounded-xl w-full object-cover bg-center aspect-2" src="/media/thumbs/kirkjufell.jpg" alt="Blog post thumbnail"> </div>  <article class="[&_p]:dark:text-gray-300/90 my-10 w-full !max-w-full prose dark:prose-invert text-justify dark:prose-gray"> <p>Version 3 is the future-proofing, and by far largest release for Fjall.</p>
+<p><a href="https://github.com/fjall-rs/fjall">Fjall</a> is a log-structured embeddable key-value storage engine (think RocksDB) written in Rust.
+Version 3 features better performance for large data sets, improved memory usage, more extensive configuration, and a new disk format made for longevity and forwards compatibility, plus fully revamped APIs.
+As of now, I believe Fjall v3 is the most capable Rust-based storage engine out there.</p>
+<p>This post is <em>long</em> and would not want my worst enemies to have to read through all of it, so if you only care about benchmarks, <a href="#benchmarks">here they are</a>.
+Otherwise, <a href="https://music.youtube.com/watch?v=Dns6C3MTauI&#x26;list=PLSjVUUdmfjxqhBlcBrpwvqYUkVdvgBswi&#x26;index=1">here is a soundtrack</a> for the next 40-or-so minutes.</p>
+<h2 id="short-lsm-tree-primer">Short LSM-tree primer</h2>
+<p>Like LevelDB, RocksDB and other similar storage engines, Fjall uses log-structured merge (LSM)-trees, providing high random write throughput, and low disk space usage, compared to typical B-tree implementations.</p>
+<p>LSM-trees operate on immutable, sorted disk files (we will call them <em>tables</em>) to provide an ordered, persistent key-value map.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 800px" src="/media/posts/fjall-3/lsmtree.svg">
+</div>
+<p>Table files are densely packed (and optionally compressed per block), providing very high disk space utilization (low fragmentation).
+Because files are only written in batches, only sequential I/O is used; which is both advantageous for SSDs and HDDs, and provides low write amplification when writing small values (e.g. timeseries data, or small database rows).
+Furthermore, because data is never organized eagerly, writing into an LSM-tree does not perform random read I/O (which can heavily slow down writes, especially when the data set does not fit into RAM).</p>
+<p>Because simply amassing tables will degrade read performance, tables are merged together into disjoint “runs” of tables (simplifying here).
+By using exponentially increasing capacities per level (one level is one “run”), we get a <code>O(log N)</code> number of levels, so <code>O(log N)</code> reads.</p>
+<p>V3 started out as a rewrite of the block format, but essentially ended up being a rewrite of the whole codebase.</p>
+<h2 id="revamping-the-block-format">Revamping the block format</h2>
+<p>The old block format was really simple and naive.
+Basically each data block was just a <code>Vec&#x3C;KV></code> serialized to disk.
+This requires deserializing the entire block on read.
+While that gives really fast reads in blocks, and needs no additional metadata, it requires a lot of upfront work.
+If a workload is read I/O heavy (e.g. large data sets), this would cause higher CPU usage, high tail latencies, and higher memory usage.
+Also deserialization takes O(n) time, which makes large block size less attractive.</p>
+<p>The rationale behind this was: it was simple, easy to write (even in safe Rust), and… it was fairly old code.
+Also it surprisingly performed decently for smaller block sizes.</p>
+<p>But not deserializing items needs some information embedded into blocks to be able to quickly find items in it.
+When loaded from disk, a block is now always a single heap allocation; basically one big <code>Vec&#x3C;u8></code>.
+Key-value tuple are still densely packed next to each other; however, every block now has an embedded index for binary search.
+Every so often, a KV’s offset is sampled and saved into the index, creating a sparse index.
+If the block is &#x3C;=64 KiB (likely) in size, the index pointers are stored as u16; otherwise u32.
+For u16s and the default sampling interval (<code>restart_interval</code>) of <em>16</em>, that means <em>2</em> bytes per <em>16</em> items -> <strong>1</strong> bit per item of additional space overhead.</p>
+<p>Now that each block has become a single allocation, does that mean the optimizations in <a href="/post/fjall-2-6-byteview">2.6</a> have become more or less nullified?
+When it comes to memory usage, for the most part, yes.
+Because allocations are now always very large (uncompressed blocks are typically 4 - 64 KiB), the relative overhead of an allocation is very small.
+However, we still take advantage of the fact byteview allows us to allocate a reference-counted, non-zeroed buffer in one allocation; both to make block loads faster (by not zeroing the buffer, which can only be done using unsafe code), and have the possibility to return a subslice without additional heap allocation (only a single atomic FAA).</p>
+<p>Many of the core components are now also fuzz- and mutation tested.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/v3_block_deser.png">
+</div>
+<p>Note that this benchmark ran on an i9 11900K - slower CPUs will probably take even longer, making the jump from V2 to V3 even more noticeable.</p>
+<h3 id="block-read-path">Block read path</h3>
+<p>When searching for a key, we perform a binary search over the binary search index.
+Each pointer needs to be dereferenced; the pointee’s key needs to be parsed and compared to the searched key.
+When the binary search finds the highest candidate restart interval (the last restart head that has a key &#x3C;= searched key), it performs a linear scan to (hopefully) find the requested item.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/v3_block_binary_index.svg">
+</div>
+<p>As you can imagine, the binary search &#x26; on-the-fly parsing adds some overhead to the search, however the benefits far outweigh the additional CPU overhead:</p>
+<ol>
+<li>blocks become a single heap allocation -> less memory fragmentation, and lower overhead (2x - 5x for smallish keys &#x26; values); pressure on memory allocator is reduced a lot</li>
+<li>deserialization is completely skipped, making uncached block reads <strong>much</strong> faster (2x-100x, depending on the block size and item count)</li>
+<li>more memory and space can be used to pay for more competitive read performance, so we gain more flexibility</li>
+</ol>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/v3_bin_index_reads.png">
+</div>
+<h3 id="prefix-truncation">Prefix truncation</h3>
+<p>Keys are lexicographically sorted, meaning common prefixes will sit next to each other, e.g.:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>user1#created_at</span></span>
+<span class="line"><span>user1#id</span></span>
+<span class="line"><span>user1#name</span></span>
+<span class="line"><span>user2#created_at</span></span>
+<span class="line"><span>user2#id</span></span>
+<span class="line"><span>user2#name</span></span>
+<span class="line"><span>user3#created_at</span></span>
+<span class="line"><span>user3#id</span></span>
+<span class="line"><span>user3#name</span></span></code></pre>
+<p>Prefix truncation would look something like this:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>user1#created_at</span></span>
+<span class="line"><span>      id</span></span>
+<span class="line"><span>      name</span></span>
+<span class="line"><span>    2#created_at</span></span>
+<span class="line"><span>    2#id</span></span>
+<span class="line"><span>    2#name</span></span>
+<span class="line"><span>    3#created_at</span></span>
+<span class="line"><span>    3#id</span></span>
+<span class="line"><span>    3#name</span></span></code></pre>
+<p>which can save a lot of space, especially for longer compound keys.</p>
+<p>However, it inherently introduces a coupling of locality.
+If we wanted to get the <em>last</em> item, we would need to get the <em>first</em> item first to get its key, then <strong>scan</strong> to the last item, and calculate the final key (<code>user3#name</code>).</p>
+<p>For that reason, restart points are stored with the full key:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>user1#created_at | RESTART</span></span>
+<span class="line"><span>      id</span></span>
+<span class="line"><span>      name</span></span>
+<span class="line"><span>    2#created_at</span></span>
+<span class="line"><span>    2#id</span></span>
+<span class="line"><span>    2#name</span></span>
+<span class="line"><span>user3#created_at | RESTART</span></span>
+<span class="line"><span>      id</span></span>
+<span class="line"><span>      name</span></span></code></pre>
+<p>In this example, we could jump to <code>user3#created_at</code>, then scan to the end, as explained above.</p>
+<p>Consider a different example, where we store <a href="/post/recreating-webtable">Webtable-like</a> records:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>com.android.developer/reference/#lang                                       -> EN</span></span>
+<span class="line"><span>com.android.developer/reference/androidx/constraintlayout/packages#lang     -> EN</span></span>
+<span class="line"><span>com.android.developer/reference/packages#lang                               -> EN</span></span>
+<span class="line"><span>com.android.developer/reference/reference/android/databinding/packages#lang -> EN</span></span></code></pre>
+<p>becomes:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>com.android.developer/reference/#lang                                       -> EN</span></span>
+<span class="line"><span>                                androidx/constraintlayout/packages#lang     -> EN</span></span>
+<span class="line"><span>                                packages#lang                               -> EN</span></span>
+<span class="line"><span>                                reference/android/databinding/packages#lang -> EN</span></span></code></pre>
+<p>saving quite a few bytes.</p>
+<blockquote>
+<p>But compression takes care of that!</p>
+</blockquote>
+<p>Well kind of, yes, but only for blocks that reside on disk or in kernel cache.
+For uncompressed blocks in the block cache, truncated keys can save a lot of space, making it possible to fit more blocks into the block cache.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/prefix_trunc_space_amp.png">
+</div>
+<div class="text-sm mt-2" style="text-align: center; opacity: 0.75">
+  <i>Writing KVs with long keys and comparatively short values can save a lot of space when using prefix truncation</i>
+</div>
+<h3 id="block-hash-index">Block hash index</h3>
+<p>Blocks can also additionally use hash indexes to skip the binary index search when performing point reads.</p>
+<p>The hash index is a compact hash map embedded into a block.
+Each key is mapped to a bucket.
+A bucket is 1 byte in size, and starts out as <code>FREE</code>.
+Mapping a key means storing the <strong>index</strong> of its restart interval.
+When another key is mapped to an already-mapped bucket, the bucket is marked as <code>CONFLICT</code>ed.
+Because of these two special flags (<code>FREE</code>, <code>CONFLICT</code>), we can reference up to <em>254</em> pointers = <em>4064</em> items (with default restart interval = <strong>16</strong>).
+The number of buckets is calculated using <code>items * hash_ratio</code>.</p>
+<p>To perform a point read with the hash index, the searched key is hashed and its corresponding bucket is accessed.
+If the bucket is conflicted, we immediately fallback to binary search.
+Otherwise, we take the bucket value = <code>N</code>, and lookup <code>binary_index[N]</code>.
+Then we simply linearly scan to find the requested item as before.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/v3_block_hash_index.svg">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/v3_hash_index_reads_16.png">
+</div>
+<p>RocksDB uses the term “hash utilization ratio”, meaning <code>keys / buckets</code>; a lower number means more buckets, so generally better read performance.
+We will use the inverse of the “utilization ratio”, meaning our hash ratio is <code>1 / hash_util_ratio</code>; a <em>higher</em> number means <em>more</em> bytes (and thus buckets) per key, so better read performance.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/v3_hash_index_waste.png">
+</div>
+<p>In a fully cached read-heavy workload, the hash index may help improve searching through blocks.
+Note that this benchmarks uses 16K blocks while <code>redb</code> uses 4K blocks, and a less complex page format, so inherently searches are going to be slower for <code>fjall 3</code>.
+However, with a <code>hash ratio = 8.0</code>, we can recoup some read performance:</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/v3_hash_index_bench.png">
+</div>
+<h3 id="shortening-sequence-numbers">Shortening sequence numbers</h3>
+<p>Sequence numbers (seqno) are the basis for MVCC (multi-version concurrency control), which allows snapshot reads.
+Seqnos are monotonically increasing, so using <a href="https://crates.io/crates/varint-rs">varint-encoding</a> for them will eventually end up being less and less attractive.</p>
+<p>To make the varint encoding more efficient again, compaction will reset the sequence numbers to 0 (which will be encoded in a single byte), if no snapshot reads can possibly be affected by it.
+This can save some space when working with small keys and values (e.g. time series data, or secondary indexes with empty value).</p>
+<p>Even though this can only performed on the last level, it still allows shortening sequence numbers of ~90% of KVs.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/seqno_zeroing.png">
+</div>
+<div class="text-sm mt-2" style="text-align: center; opacity: 0.75">
+  <i>100M empty-valued KVs with 8-byte keys were written, then compacted into the last level - shortening sequence numbers greatly reduces the footprint of sequence numbers on disk, as they are monotonically increasing variable-length encoded integers</i>
+</div>
+<h2 id="versioning">Versioning</h2>
+<p>This is long overdue - like RocksDB, the internal structure of the LSM-tree is now held in a <code>(Super)Version</code>.
+A <code>Version</code> is a point-in-time state of the LSM-tree’s tables (and blob files, if they exist).
+Whenever a compaction changes the level structure or a flush adds a new table, a new <code>Version</code> is created copy-on-write-style.
+Old versions are only deleted once it is safe to do so, i.e. when there is no read snapshot holding that version anymore.
+Only then can tables that were compacted away be actually freed from disk.</p>
+<p>Together with this change, <code>value-log</code>, which was a standalone crate for the… value log implementation, has since been moved into <code>lsm-tree</code>.
+This makes handling the list of blob files much easier because we can store them in the same <code>Version</code>, which makes it easier to reason about operations that change blob files (flushes and garbage collection, see next chapter).</p>
+<p>Together with this change, the <code>Tree</code> now uses a single coarse <code>RwLock</code> instead of three (Memtable, Sealed Memtables, Version).
+This is generally refered to as a <code>SuperVersion</code> in RocksDB terminology.
+This reduces lock access costs from 3 to 1, but also makes locking simpler in general (no more lock orders).
+Also, preparing compactions previously held a write lock to the levels for serializability, which shortly blocked incoming reads; now, preparing compactions do not affect readers at all, while serializability is achieved using a write lock that is only taken by the compactors.</p>
+<p>Unlike RocksDB, snapshot reads are not affected by compaction filters or <code>drop_range</code> (<code>"DeleteFilesInRange"</code>) operations.</p>
+<h2 id="key-value-separation-redux">Key-value separation, redux</h2>
+<p><a href="/post/fjall-2/">2.0</a> introduced the first implementation of key-value separation.
+Key-value separation, as proposed in the <a href="https://dl.acm.org/doi/abs/10.1145/3033273">WiscKey paper</a>, separates large values from its keys into tertiary data files (the value log), (massively) reducing compaction overhead when large values are stored in the LSM-tree.
+Instead of a single value log as used in the paper, we used the same principle as <a href="https://github.com/facebook/rocksdb/wiki/BlobDB">RocksDB’s BlobDB</a> or <a href="https://github.com/tikv/titan">Titan</a>: store blobs in immutable, sorted files (blob files).
+To reclaim space, those files are sometimes rewritten (during a garbage collection process), getting rid of unreferenced (garbage) blobs.</p>
+<p>Choosing blob files to garbage collect was performed somewhat similarly to <a href="https://github.com/hypermodeinc/badger">BadgerDB</a>: collect statistics about blob fragmentation for each file and then trigger a GC process.
+The GC rewrites the given blob files and rewrites new blob files with garbage removed, and inserts updated pointers (vHandles) into the LSM-tree.
+To determine whether a blob is actually unreferenced, it queries the LSM-tree to check if the pointer for that key still points to that blob.</p>
+<p>Until now, the blob GC process needed manual care to start this mark-and-sweep style GC.
+Also, the GC was basically stop-the-world, plus the GC scans would not scale unless the index tree was sufficiently small or scans were somewhat infrequent.</p>
+<p>Now, a scheme more similar to RocksDB’s BlobDB is used: the compaction process is used to collect statistics about fragmentation (by counting blobs that are updated/removed), and then blobs are relocated directly during a compaction.
+This removes the need to store back the new vHandles into the “top” of the LSM-tree, making it interfere less with foreground work (user transactions/inserts/reads).
+Also it is easier to reason about because all the blob GC mechanisms use the <code>Version</code> system.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/gc_perf.jpg">
+</div>
+<p>Ultimately, this completely removes the need for manual work to do blob GC; instead, there are garbage collection parameters that can be tweaked and will be used to kick off GC during compactions.</p>
+<h2 id="sfa-simple-file-archive">SFA: Simple file archive</h2>
+<p>While we lost <code>value-log</code> along the way, there’s a new crate in town:</p>
+<p><em>SFA</em> (<strong>S</strong>imple <strong>f</strong>ile <strong>a</strong>rchive) is a minimal, flat file archive encoding/decoding library, and used as file scaffolding for table, blob and version files in <code>lsm-tree</code>.
+Think of it as a zip-like archive file (without compression), but extremely minimal.</p>
+<p>To get an idea, here’s a pseudo table being written:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">use</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> sfa</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#908CAA;--shiki-dark:#908CAA">{</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Writer</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Reader</span><span style="color:#908CAA;--shiki-dark:#908CAA">};</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">use</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> std</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">io</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#908CAA;--shiki-dark:#908CAA">{</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Read</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Write</span><span style="color:#908CAA;--shiki-dark:#908CAA">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> mut</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> writer</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Writer</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">new_at_path</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">&#x26;</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">path</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
+<span class="line"><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">writer</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">start</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"data"</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> write data blocks (writer is a std::io::Write instance)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">writer</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">start</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"index"</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> write index block</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">writer</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">start</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"filter"</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> write filter</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">writer</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">start</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"meta"</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> write table metadata</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">writer</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">finish</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span></code></pre>
+<p>To retrieve, let’s say, the table metadata, we do:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> reader</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Reader</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">new</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">&#x26;</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">path</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> handle</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> reader</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">toc</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">section</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"meta"</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">unwrap</span><span style="color:#908CAA;--shiki-dark:#908CAA">();</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> meta</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#EA9A97;--shiki-dark:#EA9A97"> parse_metadata</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">&#x26;</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">path</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> handle</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">pos</span><span style="color:#908CAA;--shiki-dark:#908CAA">(),</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> handle</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">len</span><span style="color:#908CAA;--shiki-dark:#908CAA">())</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span></code></pre>
+<p>And that’s it really!
+<em>SFA</em> takes care of keeping track where sections start in a file and builds an index (table of contents/ToC) that can be queried later on.
+The ToC is additionally protected by a 128-bit XXH3 checksum.</p>
+<p><a href="https://github.com/fjall-rs/sfa">It’s MIT-licensed!</a></p>
+<h2 id="reworked-messaging--backpressure">Reworked messaging &#x26; backpressure</h2>
+<p>To satisfy global write buffer size, journal and memtable limits, flush memtables to table files and further compact tables, fjall uses background worker threads.
+In v2, this was kind of a mix of semaphores, queues and brute-force checking of thresholds.
+In very write-intensive workloads, the v2 backpressure system could misbehave, and overload the messaging system, similar to an <code>interrupt storm</code>.
+v3 has been massively reworked to use a more robust thread pool with messaging (currently) using bounded <code>flume</code> queues, and less aggressive backpressure (while still trying to stay within threshold).</p>
+<h2 id="partitioned-filters">Partitioned filters</h2>
+<p>V2 already had partitioned (two-level) block indexes implemented; V3 now also supports partitioned filters.</p>
+<p>Partitioned filters work similarly to partitioned indexes:
+instead of having a single filter block, the filter is cut into partitions, and a top-level index is loaded instead.
+When searching for a key, the index lookup tells what filter partition to load and check for key existence.</p>
+<p>This way:</p>
+<ol>
+<li>filters can be partially paged out</li>
+<li>a cache miss only loads a filter partition (e.g. 4K) instead of the entire filter</li>
+</ol>
+<p>For now, the top-level index is always loaded, because it is much, much smaller than the filter.
+But in the future - for extremely large databases - paging out the top-level index could also be a possibility.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench_little_cache_write_ops.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench_little_cache_read_percentiles.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench_little_cache_index_block_io.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench_little_cache_filter_block_io.png">
+</div>
+<h2 id="new-iterators-api">New iterators API</h2>
+<p>Up until now, the iterator syntax could not really represent key-value separation.</p>
+<p>For instance, if we wanted to get the list of keys of a prefix in V2:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> keys</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> db</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">prefix</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"user1</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">\0</span><span style="color:#F6C177;--shiki-dark:#F6C177">"</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    .</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">map</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">|</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">kv</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">|</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> kv</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">map</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">|</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">k</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> _</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">|</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> k</span><span style="color:#908CAA;--shiki-dark:#908CAA">))</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    .</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">collect</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#908CAA;--shiki-dark:#908CAA">&#x3C;</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Result</span><span style="color:#908CAA;--shiki-dark:#908CAA">&#x3C;</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">_</span><span style="color:#908CAA;--shiki-dark:#908CAA">>>();</span></span></code></pre>
+<p>This would end up loading all blobs as well, because <code>prefix()</code> returns all <em>tuples</em> (key + value) eagerly.</p>
+<p>To combat this, it <em>would</em> require specialized APIs for key-value separated trees, such as:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> size</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> db</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">prefix_size</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"user1#"</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">map</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Result</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">unwrap</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">sum</span><span style="color:#908CAA;--shiki-dark:#908CAA">();</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> keys</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> db</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">prefix_keys</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"user1#"</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">collect</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#908CAA;--shiki-dark:#908CAA">&#x3C;</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Result</span><span style="color:#908CAA;--shiki-dark:#908CAA">&#x3C;</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">_</span><span style="color:#908CAA;--shiki-dark:#908CAA">>>();</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> values</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> db</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">prefix_values</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"user1#"</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">collect</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#908CAA;--shiki-dark:#908CAA">&#x3C;</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Result</span><span style="color:#908CAA;--shiki-dark:#908CAA">&#x3C;</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">_</span><span style="color:#908CAA;--shiki-dark:#908CAA">>>();</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> ... and the same for range_*</span></span></code></pre>
+<p>Introducting essentially 8 (!) new functions across the code base.
+Down the line, adding those functions would require around 24 new functions (tree API + Fjall Keyspace API + Fjall Transaction-Keyspace API), increasing the API surface <strong>a lot</strong>.</p>
+<p>Also, they still do not really allow to decide whether to load a value dynamically for a given key or not.</p>
+<p>Instead now, iterators return a <code>Guard</code> struct, that allows accessing fields, i.e.:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">for</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> guard</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> in</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> db</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">prefix</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"user1#"</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> k</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> guard</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">key</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic"> //</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> does NOT load blob -> faster</span></span>
+<span class="line"><span style="color:#EA9A97;--shiki-dark:#EA9A97">    eprintln!</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"found key: </span><span style="color:#908CAA;--shiki-dark:#908CAA">{</span><span style="color:#F6C177;--shiki-dark:#F6C177">k:?</span><span style="color:#908CAA;--shiki-dark:#908CAA">}</span><span style="color:#F6C177;--shiki-dark:#F6C177">"</span><span style="color:#908CAA;--shiki-dark:#908CAA">);</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">}</span></span></code></pre>
+<p>There are some getters to choose from:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">trait</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Guard</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    fn</span><span style="color:#EA9A97;--shiki-dark:#EA9A97"> key</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">self</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> -></span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> crate::</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Result</span><span style="color:#908CAA;--shiki-dark:#908CAA">&#x3C;</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">UserKey</span><span style="color:#908CAA;--shiki-dark:#908CAA">>;</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">    //</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> ^ does NOT load blob</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    fn</span><span style="color:#EA9A97;--shiki-dark:#EA9A97"> value</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">self</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> -></span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> crate::</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Result</span><span style="color:#908CAA;--shiki-dark:#908CAA">&#x3C;</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">UserKey</span><span style="color:#908CAA;--shiki-dark:#908CAA">>;</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">    //</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> ^ loads blob</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    fn</span><span style="color:#EA9A97;--shiki-dark:#EA9A97"> into_inner</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">self</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> -></span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> crate::</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Result</span><span style="color:#908CAA;--shiki-dark:#908CAA">&#x3C;(</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">UserKey</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> UserValue</span><span style="color:#908CAA;--shiki-dark:#908CAA">)>;</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">    //</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> ^ loads blob</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    fn</span><span style="color:#EA9A97;--shiki-dark:#EA9A97"> size</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">self</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> -></span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> crate::</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Result</span><span style="color:#908CAA;--shiki-dark:#908CAA">&#x3C;</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">u32</span><span style="color:#908CAA;--shiki-dark:#908CAA">>;</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">    //</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> ^ does NOT load blob</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    fn</span><span style="color:#EA9A97;--shiki-dark:#EA9A97"> into_inner</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">self</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> pred</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> -></span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> crate::</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Result</span><span style="color:#908CAA;--shiki-dark:#908CAA">&#x3C;</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Option</span><span style="color:#908CAA;--shiki-dark:#908CAA">&#x3C;(</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">UserKey</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> UserValue</span><span style="color:#908CAA;--shiki-dark:#908CAA">)>>;</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">    //</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> ^ maybe loads blob, see below</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">}</span></span></code></pre>
+<p>This works for all iterators (<code>iter()</code>, <code>range()</code>, <code>prefix()</code>):</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">for</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> guard</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> in</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> db</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">iter</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> k</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> guard</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">key</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic"> //</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> does NOT load blob -> faster</span></span>
+<span class="line"><span style="color:#EA9A97;--shiki-dark:#EA9A97">    eprintln!</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"found key: </span><span style="color:#908CAA;--shiki-dark:#908CAA">{</span><span style="color:#F6C177;--shiki-dark:#F6C177">k:?</span><span style="color:#908CAA;--shiki-dark:#908CAA">}</span><span style="color:#F6C177;--shiki-dark:#F6C177">"</span><span style="color:#908CAA;--shiki-dark:#908CAA">);</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">for</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> guard</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> in</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> db</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">range</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">lo</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">..</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">hi</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> k</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> guard</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">key</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic"> //</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> does NOT load blob -> faster</span></span>
+<span class="line"><span style="color:#EA9A97;--shiki-dark:#EA9A97">    eprintln!</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"found key: </span><span style="color:#908CAA;--shiki-dark:#908CAA">{</span><span style="color:#F6C177;--shiki-dark:#F6C177">k:?</span><span style="color:#908CAA;--shiki-dark:#908CAA">}</span><span style="color:#F6C177;--shiki-dark:#F6C177">"</span><span style="color:#908CAA;--shiki-dark:#908CAA">);</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">for</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> guard</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> in</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> db</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">prefix</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"user1#"</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> k</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> guard</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">key</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic"> //</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> does NOT load blob -> faster</span></span>
+<span class="line"><span style="color:#EA9A97;--shiki-dark:#EA9A97">    eprintln!</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"found key: </span><span style="color:#908CAA;--shiki-dark:#908CAA">{</span><span style="color:#F6C177;--shiki-dark:#F6C177">k:?</span><span style="color:#908CAA;--shiki-dark:#908CAA">}</span><span style="color:#F6C177;--shiki-dark:#F6C177">"</span><span style="color:#908CAA;--shiki-dark:#908CAA">);</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">}</span></span></code></pre>
+<p>Furthermore, we can conditionally load blobs based on the key:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">for</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> guard</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> in</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> db</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">iter</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    if</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> let</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Some</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">kv</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> guard</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">into_inner_if</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">|</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">key</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">|</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> key</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">ends_with</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">b"#html_body"</span><span style="color:#908CAA;--shiki-dark:#908CAA">))</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">        //</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> does not load blobs that are not suffixed by "#html_body"</span></span>
+<span class="line"><span style="color:#EA9A97;--shiki-dark:#EA9A97">        eprintln!</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"=> </span><span style="color:#908CAA;--shiki-dark:#908CAA">{</span><span style="color:#F6C177;--shiki-dark:#F6C177">kv:?</span><span style="color:#908CAA;--shiki-dark:#908CAA">}</span><span style="color:#F6C177;--shiki-dark:#F6C177">"</span><span style="color:#908CAA;--shiki-dark:#908CAA">);</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">    }</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">}</span></span></code></pre>
+<h2 id="revamped-transaction-apis">Revamped transaction APIs</h2>
+<p>Fjall has 2 “modes” for transactions: single-writer transactions, with a single writer and non-blocking readers, and serializable snapshot isolation using optimistic concurrency control.
+Previously these could be toggled by feature flags, however these are now simply exported as their own types, reducing the number of feature flags by 2.
+Additionally, write transactions now implement a <code>Readable</code> trait which is also implemented by snapshots/read transactions; this allows passing write transactions into functions that normally expect read transactions, e.g.:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">use</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> fjall</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#908CAA;--shiki-dark:#908CAA">{</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Readable</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Result</span><span style="color:#908CAA;--shiki-dark:#908CAA">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">fn</span><span style="color:#EA9A97;--shiki-dark:#EA9A97"> do_something</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">tx</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">:</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> &#x26;impl</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Readable</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> -></span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Result</span><span style="color:#908CAA;--shiki-dark:#908CAA">&#x3C;()></span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
+<span class="line"><span style="color:#EA9A97;--shiki-dark:#EA9A97">  todo!</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span></span>
+<span class="line"><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">  Ok</span><span style="color:#908CAA;--shiki-dark:#908CAA">(())</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">}</span></span></code></pre>
+<h2 id="checksumming">Checksumming</h2>
+<p>By default, block &#x26; blob loads will now perform a 128-bit xxh3 checksum check when reading from disk.
+While sacrificing a bit of CPU when loading data from disk or OS page cache, this makes it very unlikely to read corrupted data from a storage medium.</p>
+<p>Corruptions are real; they happen, though rarely:</p>
+<blockquote>
+<p>Based on our measurements, corruptions are introduced at the RocksDB level roughly once every three months for each 100 PB of data.</p>
+<p>From <a href="https://www.usenix.org/system/files/fast21-dong.pdf">https://www.usenix.org/system/files/fast21-dong.pdf</a></p>
+</blockquote>
+<h2 id="changing-the-keyspace-partition-terminology">Changing the keyspace-partition terminology</h2>
+<p>Originally, <code>Keyspace</code> being called like that was inspired by Cassandra’s <code>Keyspace</code> -> <code>Column Family</code> naming.
+Column Families imply storing columns, but as a key-value store, we have no idea what the user is storing.
+So “column families” were instead called “partitions”, because you can use them to partition your data across differently configured LSM-trees.</p>
+<p>However, it makes more sense for the top-level object to be called <code>Database</code>. Then, a <code>Partition</code> is a <code>Keyspace</code>, because it is its own isolated key space.</p>
+<p>Migrating should be pretty easy:</p>
+<ol>
+<li>Replace all “Keyspace” with “Database”</li>
+<li>Replace all “keyspace” with “database”</li>
+<li>Replace all “Partition” with “Keyspace”</li>
+<li>Replace all “partition” with “keyspace”</li>
+</ol>
+<hr>
+<p>Also, opening a DB has changed slightly from:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> keyspace</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Config</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">new</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">path</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">open</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> partition</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> keyspace</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">open_partition</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"name"</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Default</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">default</span><span style="color:#908CAA;--shiki-dark:#908CAA">())</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> or</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> keyspace</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Config</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">new</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">path</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">open_transactional</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> ...</span></span></code></pre>
+<p>to</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> db</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Database</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">builder</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">path</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">open</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> keyspace</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> db</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">keyspace</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"name"</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> Default</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">default</span><span style="color:#908CAA;--shiki-dark:#908CAA">())</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> or</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> db</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> TxDatabase</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">builder</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">path</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">open</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> ...</span></span></code></pre>
+<h2 id="less-tombstones">Less tombstones</h2>
+<p>The Leveled compaction strategy has been reworked to (logically) promote levels into L6 immediately.
+The old implementation would get tombstones stuck in the middle levels and never be able to clean them up.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/tombstones.png">
+</div>
+<h2 id="caching-blob-file-descriptors">Caching blob file descriptors</h2>
+<p>Previously, reading an uncached blob would always require a <code>fopen()</code> syscall, which could account for a considerable amount of time when the same blob file is accessed multiple times.
+Unlike LSM-tree tables, blob file descriptors were not cached.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/blob_read_before.png">
+</div>
+<p>Now blob file descriptors will be cached in the global <code>DescriptorTable</code>, saving ~15% time in this benchmark:</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/blob_read_after.png">
+</div>
+<p>Thanks to <a href="https://github.com/k-jingyang">@k-jingyang</a> for originally implementing file descriptor caching support in <code>value-log</code>!</p>
+<h2 id="journal-compression">Journal compression</h2>
+<p>By default, large values will now be compressed when written to the journal.
+Even in the case of key-value separation, large values (blobs) still need to be written once to the journal.
+If blobs are pretty compressible, that can reduce write I/O by trading in some additional CPU per insert.
+Can be disabled.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/journal_comp_write_latency.jpg">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/journal_comp_cpu.jpg">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/journal_comp_write_io.jpg">
+</div>
+<h2 id="unpinning-filters--indexes">Unpinning filters &#x26; indexes</h2>
+<p>In V1 &#x26; V2, bloom filters for <em>all</em> disk tables were always pinned in memory.
+That’s generally nice for minimizing cache lookups and disk IO, however, for very large databases and a non-uniform read distribution, the filters can take up memory that could be used to cache other blocks, plus it implicitly coupled the maximum database size (in # keys) to the available memory, roughly <code>num_keys = (RAM - cache_size - other_overhead) / 10 bits</code>.</p>
+<p>We can instead choose to not require filters to be loaded.
+In that situation a point read will first try and get the filter from the block cache; if not found, it will load the filter from disk and cache it.</p>
+<p>This dramatically reduces memory usage for very large databases, while being more flexible about paging in and out blocks that are actually “hot”.</p>
+<p>By default, L0 and L1 filters are still pinned in memory to avoid them ever getting kicked out of the cache, because they are very small and read very frequently.</p>
+<p>This change also speeds up database recovery, because most filters do not need to be eagerly loaded on startup.</p>
+<p>The effect is quite obvious: in a write-only workload, memory pressure does not increase linearly anymore, because filter blocks will be paged out as tables reach deeper levels.</p>
+<p>The same applies to index blocks.
+While not as large as filters, very large databases can still have quite large indexes, which can now also be paged out as needed.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/filter_pinning.png">
+</div>
+<div class="text-sm mt-2" style="text-align: center; opacity: 0.75">
+  <i>Around 300M items were written - making filters take around 375 MB of space. In v3, only filters in the smaller, upper levels were pinned. If needed, pinning can be further reduced, or fully disabled - which introduces more cache lookups.</i>
+</div>
+<h2 id="fluid-configuration">Fluid configuration</h2>
+<p>The level structure of LSM-trees inherently structure it such that most data is stored in the deeper, larger levels, and more recent, hot data is stored in the upper, smaller levels.
+This allows us to tweak the levels differently to optimize for read, storage and write costs.
+For instance, RocksDB allows setting the compression type per level; setting it to a lightweight compression type in the upper levels (e.g. LZ4), which are comparatively small, speeds up reads and writes, while only trading in comparatively little disk space.</p>
+<p>But the way this is done is limited, and inconsistent.
+For example, <code>set_compression_per_level</code> conflicts with <code>set_bottommost_compression_type</code>, <code>set_compression_type</code> and <code>set_min_level_to_compress</code>, so it’s hard to see what option is prioritized, and bloats the number of configuration options.
+Furthermore, this per-level configuration is very limited: it basically only exists for compression.
+So why not make use of the fluid nature of the LSM-tree architecture, and make per-level configuration consistent?</p>
+<p>So here we are, almost all keyspace configurations can now be controlled per level.
+But chances are, you do not really need to touch configuration, except maybe the main knobs such as the <code>block cache capacity</code>.</p>
+<p>Here is a non-exhaustive list of examples:</p>
+<h3 id="fine-tuning-compression-algorithms">Fine-tuning compression algorithms</h3>
+<p>We can also set the compression algorithm &#x26; level to use per level:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">use</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> fjall</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#908CAA;--shiki-dark:#908CAA">{</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">KeyspaceCreateOptions</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> CompressionType</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> CompressionPolicy</span><span style="color:#908CAA;--shiki-dark:#908CAA">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> opts</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> KeyspaceCreateOptions</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">default</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    .</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">data_block_compression_policy</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span></span>
+<span class="line"><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">        CompressionPolicy</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">new</span><span style="color:#908CAA;--shiki-dark:#908CAA">([</span></span>
+<span class="line"><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">            CompressionType</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">None</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic"> //</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> L0</span></span>
+<span class="line"><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">            CompressionType</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">None</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic"> //</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> L1</span></span>
+<span class="line"><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">            CompressionType</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Lz4</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span></span>
+<span class="line"><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">            CompressionType</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">HeavyCompression</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic"> //</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> just an example</span></span>
+<span class="line"><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">            CompressionType</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">VeryHeavyCompression</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">        ])</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">    );</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> keyspace</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> db</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">keyspace</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"items"</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> opts</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span></code></pre>
+<p>L0 and L1 only store ~512 MB of data by default, so skipping compression here can speed up reads &#x26; writes without losing a lot of disk space.</p>
+<p>To set all levels, repetitive statements can be replaced with:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">use</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> fjall</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#908CAA;--shiki-dark:#908CAA">{</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">CompressionPolicy</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> CompressionType</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Lz4</span><span style="color:#908CAA;--shiki-dark:#908CAA">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> opts</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> KeyspaceCreateOptions</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">default</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    .</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">data_block_compression_policy</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">CompressionPolicy</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">all</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Lz4</span><span style="color:#908CAA;--shiki-dark:#908CAA">));</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> or</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> opts</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> KeyspaceCreateOptions</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">default</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    .</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">data_block_compression_policy</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">CompressionPolicy</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">disabled</span><span style="color:#908CAA;--shiki-dark:#908CAA">());</span></span></code></pre>
+<h3 id="skipping-filters-in-the-last-level">Skipping filters in the last level</h3>
+<p>For huge databases, filters can take a considerable amount of space (~10 bits per key by default, so ~1.25 GB per 1 <em>billion</em> keys).
+However, if we expect point reads to generally find an item eventually, filters in the last level are useless because we know they will get a hit anyways (filters are supposed to filter out non-existing keys).
+Unluckily, the last level also contains the most data (on average 90% of all data), meaning disabling filters in the last level reduces the size of filters by 90%, reducing pressure on the block cache and using less disk space.</p>
+<p><code>expect_point_read_hits</code> is a hint given to the storage engine that you know that your workload generally finds items when using <code>get()</code>, <code>contains_key()</code> or <code>size_of()</code>:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">use</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> fjall</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#908CAA;--shiki-dark:#908CAA">{</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">KeyspaceCreateOptions</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> FilterConstructionPolicy</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> filters</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">Bloom</span><span style="color:#908CAA;--shiki-dark:#908CAA">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> this is basically RocksDB's optimize_filters_for_hits = true</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> opts</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> KeyspaceCreateOptions</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">default</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    .</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">expect_point_read_hits</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">true</span><span style="color:#908CAA;--shiki-dark:#908CAA">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> keyspace</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> db</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">keyspace</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"items"</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> opts</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span></code></pre>
+<h3 id="using-partitioned-indexesfilters">Using partitioned indexes/filters</h3>
+<p>Similar to the filters, we can choose whether to fully load block indexes/filter or not.</p>
+<p>If <a href="/post/block-format#partitioning-the-block-index">not fully loaded</a>, only a lightweight top-level index will be loaded instead, and index/filter blocks will be cached and loaded on demand.</p>
+<p>By partitioning indexes/filters, we:</p>
+<ul>
+<li>only need to load a partition (e.g. 4K) of a block index/filter in case of a cache miss, reducing read I/O compared to a uncached full index/filter</li>
+<li>are able to page in only parts of a table’s block index/filter (instead of all of it)</li>
+</ul>
+<p>So partitioned indexes/filters are advantageous in situations where we expect that we do not have enough block cache capacity to cache most of our indexes/filters.</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">use</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> fjall</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#908CAA;--shiki-dark:#908CAA">{</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">KeyspaceCreateOptions</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> PartitionPolicy</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> BlockIndexMode</span><span style="color:#908CAA;--shiki-dark:#908CAA">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> opts</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> KeyspaceCreateOptions</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">default</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    .</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">index_partitioning_policy</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span></span>
+<span class="line"><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">        PartitionPolicy</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">new</span><span style="color:#908CAA;--shiki-dark:#908CAA">([</span></span>
+<span class="line"><span style="color:#EA9A97;--shiki-dark:#EA9A97">            false</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span></span>
+<span class="line"><span style="color:#EA9A97;--shiki-dark:#EA9A97">            false</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span></span>
+<span class="line"><span style="color:#EA9A97;--shiki-dark:#EA9A97">            false</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span></span>
+<span class="line"><span style="color:#EA9A97;--shiki-dark:#EA9A97">            true</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">        ])</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">    );</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">let</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> keyspace</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> =</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> db</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">keyspace</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"items"</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> opts</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">?</span><span style="color:#908CAA;--shiki-dark:#908CAA">;</span></span></code></pre>
+<h2 id="goodbye-miniz">Goodbye Miniz</h2>
+<p><code>miniz_oxide</code> support was retired and will be replaced by <a href="https://github.com/trifectatechfoundation/zlib-rs"><code>zlib-rs</code></a> in the near future.
+<code>zlib-rs</code> is a newer, faster Rust implementation of <code>zlib</code>.</p>
+<p>On GitHub: <a href="https://github.com/fjall-rs/lsm-tree/pull/155">https://github.com/fjall-rs/lsm-tree/pull/155</a></p>
+<h2 id="less-strict-keyspace-names">Less strict keyspace names</h2>
+<p>Keyspace names now don’t have to be filename-safe.
+Internally, keyspace names are mapped to an integer (Keyspace ID), which is monotonically increasing.</p>
+<h2 id="database-locking">Database locking</h2>
+<p>V3 now uses Rust’s <a href="https://blog.rust-lang.org/2025/08/07/Rust-1.89.0/">new file locking API</a> to exclusively lock a database to protect it from multi-process access (which is not supported).</p>
+<h2 id="msrv">MSRV</h2>
+<p>The MSRV has increased quite dramatically from 1.75 to 1.91 to remove a lot of legacy workaround for code that was not possible with old rustc versions (such as <code>std::path::absolute</code> or file locking mentioned previously).</p>
+<h2 id="v2-v3-migration">V2->V3 migration</h2>
+<p>There is a migration tool to migrate a V2 “keyspace” to a V3 “database” from one folder to another:</p>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#EA9A97;--shiki-dark:#EA9A97">cargo</span><span style="color:#F6C177;--shiki-dark:#F6C177"> add</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> \</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">  --package</span><span style="color:#F6C177;--shiki-dark:#F6C177"> fjall_v2_v3_migrator</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> \</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">  --git</span><span style="color:#F6C177;--shiki-dark:#F6C177"> https://github.com/fjall-rs/migrate-v2-v3</span></span></code></pre>
+<pre class="astro-code astro-code-themes rose-pine-moon rose-pine-moon" style="background-color:#232136;--shiki-dark-bg:#232136;color:#e0def4;--shiki-dark:#e0def4; overflow-x: auto;" tabindex="0" data-language="rs"><code><span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">use</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> fjall_v2_v3_migrator</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#908CAA;--shiki-dark:#908CAA">{</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">DefaultOptionsFactory</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#E0DEF4;--shiki-dark:#E0DEF4"> migrate</span><span style="color:#908CAA;--shiki-dark:#908CAA">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">pub</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> fn</span><span style="color:#EA9A97;--shiki-dark:#EA9A97"> main</span><span style="color:#908CAA;--shiki-dark:#908CAA">()</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
+<span class="line"><span style="color:#EA9A97;--shiki-dark:#EA9A97">    migrate</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#F6C177;--shiki-dark:#F6C177">"v2_folder"</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#F6C177;--shiki-dark:#F6C177"> "v3_folder"</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> DefaultOptionsFactory</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">.</span><span style="color:#EA9A97;--shiki-dark:#EA9A97">unwrap</span><span style="color:#908CAA;--shiki-dark:#908CAA">();</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">//</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> By implementing a custom options factory, you can configure keyspaces</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">impl</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> OptionsFactory</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> for</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> MyOptionsFactory</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
+<span class="line"><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">    fn</span><span style="color:#EA9A97;--shiki-dark:#EA9A97"> get_options</span><span style="color:#908CAA;--shiki-dark:#908CAA">(</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">&#x26;</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic">self</span><span style="color:#908CAA;--shiki-dark:#908CAA">,</span><span style="color:#E0DEF4;--shiki-light-font-style:italic;--shiki-dark:#E0DEF4;--shiki-dark-font-style:italic"> keyspace_name</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">:</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> &#x26;</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">str</span><span style="color:#908CAA;--shiki-dark:#908CAA">)</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0"> -></span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8"> fjall3</span><span style="color:#3E8FB0;--shiki-dark:#3E8FB0">::</span><span style="color:#9CCFD8;--shiki-dark:#9CCFD8">KeyspaceCreateOptions</span><span style="color:#908CAA;--shiki-dark:#908CAA"> {</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-light-font-style:italic;--shiki-dark:#908CAA;--shiki-dark-font-style:italic">        //</span><span style="color:#6E6A86;--shiki-light-font-style:italic;--shiki-dark:#6E6A86;--shiki-dark-font-style:italic"> Match on keyspace_name and build its Options</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">    }</span></span>
+<span class="line"><span style="color:#908CAA;--shiki-dark:#908CAA">}</span></span></code></pre>
+<hr>
+<h2 id="looking-back-and-looking-ahead">Looking back and looking ahead</h2>
+<p>The very first Git commit for what is now <code>fjall</code> dates back to April 6th, 2022 - then called <code>rust-lsmt-prototype</code> (very original name).
+Initially it was a just a testing ground for building the very essential components of an LSM-tree (SSTables, Memtable, …).</p>
+<p>The very first release for <code>lsm-tree</code> came in December 2023, after I found that there was no proper LSM-tree crate out there for Rust, and I had the basics working.
+Shortly after, I decided to split the <code>lsm-tree</code> crate into its core backing storage (the LSM-tree), and the overarching fully featured storage engine (<code>fjall</code>).</p>
+<p>In some way, the pre-Fjall <code>lsm-tree</code> crate was more in line with LevelDB’s architecture (a single keyspace + log), while Fjall now has significant overlap with RocksDB’s architecture.
+I agree with many of RocksDB’s architectural decision (not so much with their naming or choice of language).
+On the other hand, I did not want to just rebuild RocksDB.
+Getting even somewhat close to 100% feature parity and compatibility with it and THEN chasing compatibility in the future would just be a huge source of pain.</p>
+<p>Fjall v1 was released in May 2024, pretty quickly followed by v2 in September 2024.
+Releasing v2 was the first step to the project having actual exposure, going from ~200 GitHub stars to 1’000 in 7 months, just as I had started finishing the very first, initial steps for V3.</p>
+<p>The entire Fjall code base (<code>fjall</code> + <code>lsm-tree</code> + <code>byteview</code> + <code>sfa</code>) currently sits at around 42k LoC (including inline tests &#x26; doctests), pretty comparable to LevelDB’s code size (~29k LoC), considering LevelDB has less features.
+RocksDB has become a huge code base, sitting at around ~700k LoC, which is very evident in its compile times:
+My Ryzen 9950X3D needs around 40s (pinned at 100% usage over all its cores) to compile a “Hello World” Rust project using RocksDB, building a ~12 MB binary.
+Embedding Fjall v3 currently takes around 3.5s, and gives you a ~2.2 MB binary, though binary size hasn’t been a priority as of now.</p>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bin_size.png">
+</div>
+<p>RocksDB is not 10x more feature rich, and it mostly definitely is not 10x faster; whether RocksDB’s huge size is justified or not, decide for yourself.</p>
+<p>I want a lean and reliable log-structured key-value storage engine, and I believe that a) Rust is the best language to build it with, and b) it can be achieved without needing half a million lines of code.
+Also, Fjall is an EU 🇪🇺 project, that’s all the rage right now, right?</p>
+<blockquote>
+<p>Where to go from here?</p>
+</blockquote>
+<p>There are still some major features that are missing, all of which can be incrementally implemented without breaking changes:</p>
+<h3 id="single-delete">Single delete</h3>
+<p>Single deletes are essentially implemented, and are available as a hidden, experimental API.
+Will be released soon.</p>
+<p>On GitHub: <a href="https://github.com/fjall-rs/fjall/issues/56">https://github.com/fjall-rs/fjall/issues/56</a></p>
+<h3 id="prefix-filters">Prefix filters</h3>
+<p>Prefix filters can improve read performance for <code>prefix()</code> queries, though they need a bit of manual configuration based on the key schema used.</p>
+<p>On GitHub: <a href="https://github.com/fjall-rs/lsm-tree/pull/151">https://github.com/fjall-rs/lsm-tree/pull/151</a></p>
+<h3 id="compaction-filters-mappers">Compaction filters (mappers?)</h3>
+<p>Compaction filters allow lazily dropping or changing data based on custom logic (e.g. TTL), without having to do scans through the database.</p>
+<p>On GitHub: <a href="https://github.com/fjall-rs/lsm-tree/pull/225">https://github.com/fjall-rs/lsm-tree/pull/225</a></p>
+<h3 id="zstd-compression-support">Zstd compression support</h3>
+<p>Zstd is a great, very flexible, compression algorithm.</p>
+<blockquote>
+<p>PSA: <a href="https://trifectatech.org/initiatives/data-compression/">Trifecta Tech Foundation is working on a Rust-based zstd implementation</a>.</p>
+</blockquote>
+<h3 id="checkpoint-backups">Checkpoint backups</h3>
+<p>Checkpointing allows quickly copying a database to a new location.
+If the location is the same file system, most data can be hard linked, which is very fast.
+By taking advantage of tables being immutable, backups can be made incrementally.</p>
+<p>Would be very nice for fast incremental, on-line backups of a database.</p>
+<p>On GitHub: <a href="https://github.com/fjall-rs/fjall/issues/52">https://github.com/fjall-rs/fjall/issues/52</a></p>
+<h3 id="merge-operator">Merge operator</h3>
+<p>Merge operators allow efficient read-modify-write operations by not reading at all.</p>
+<p>On GitHub: <a href="https://github.com/fjall-rs/lsm-tree/issues/104">https://github.com/fjall-rs/lsm-tree/issues/104</a></p>
+<h3 id="range-deletions">Range deletions</h3>
+<p>Range deletions allow deleting a range <code>[min, max]</code> of KVs in O(1) time.
+But they make the read path more difficult, and need a lot of attention to detail, making it probably the hardest feature to implement in this list.</p>
+<p>On Github: <a href="https://github.com/fjall-rs/lsm-tree/issues/2">https://github.com/fjall-rs/lsm-tree/issues/2</a></p>
+<h3 id="encryption">Encryption</h3>
+<p>Block-level encryption would be pretty easy to implement and may be desirable for some applications.</p>
+<h3 id="cli">CLI</h3>
+<p>An interactive CLI to inspect and verify (check for corruption) Fjall databases would be nice.</p>
+<!-- ### Database explorer
+
+I am also working on a visual database explorer where you can drop in table files and look at how they are structured. -->
+<h2 id="open-source">Open Source</h2>
+<p>If you’ve actually read this far, I will take the opportunity to remind you you can <a href="https://github.com/sponsors/fjall-rs">sponsor the project on GitHub</a>.
+More importantly, I want to redirect you to a couple of open-source projects that make my life easier in one way or another.
+I am a strong believer in <a href="https://xkcd.com/2347/">open source</a>, and that maintainers are <a href="https://opensourcepledge.com/">not reimbursed enough</a>.</p>
+<ul>
+<li>SolidJS: <a href="https://github.com/solidjs/solid">https://github.com/solidjs/solid</a></li>
+<li>atuin: <a href="https://atuin.sh/">https://atuin.sh/</a></li>
+<li>Biome: <a href="https://github.com/biomejs/biome">https://github.com/biomejs/biome</a></li>
+<li>quick-cache: <a href="https://github.com/arthurprs/quick-cache">https://github.com/arthurprs/quick-cache</a></li>
+<li>nextest: <a href="https://github.com/nextest-rs/nextest">https://github.com/nextest-rs/nextest</a></li>
+<li>cargo-mutants: <a href="https://github.com/sourcefrog/cargo-mutants">https://github.com/sourcefrog/cargo-mutants</a></li>
+<li>xxhash: <a href="https://github.com/DoumanAsh/xxhash-rust">https://github.com/DoumanAsh/xxhash-rust</a></li>
+<li>lz4_flex: <a href="https://github.com/PSeitz/lz4_flex">https://github.com/PSeitz/lz4_flex</a></li>
+</ul>
+<p>Also, thanks to <a href="https://github.com/zaidoon1">@zaidoon1</a> for sending a boat load of PRs during the development of 3.0.0.</p>
+<p>Contributions are as always welcome, but for the forseeable future active development on new features will mostly wind down going into 2026.</p>
+<hr>
+<h2 id="benchmarks">Benchmarks</h2>
+<p>Don’t take benchmarks for granted, and measure for your own workload and hardware yada yada.</p>
+<h3 id="testing-hardware">Testing hardware</h3>
+<p>All benchmarks were performed on</p>
+<ul>
+<li>a Ryzen 9950X3D</li>
+<li>64GB of RAM, artificially limited to 8 GB using <code>systemd</code></li>
+<li>ext4 on a Kingston DC2000B (960 GB), emptied before every run</li>
+</ul>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/hardware.jpg">
+</div>
+<h3 id="other-backends">Other backends</h3>
+<h4 id="sled">Sled</h4>
+<p>Sled is a full-Rust Bw-tree inspired library and by far the most popular Rust-based key-value store.
+I wouldn’t really compare Sled here because it is in alpha stage and its rewrite is not completed either, but it is so well known in the world of Rust KV stores, I will still include it for reference.</p>
+<h4 id="redb">ReDB</h4>
+<p>ReDB is a full-Rust B-tree based library inspired by LMDB, and probably the most well known one after <code>sled</code>.
+Compared to LMDB it does not use memory-mapping and has less specialized features (such as DUPSORT), but it has a more Rust-y API with better support for types.</p>
+<h4 id="sqlite">SQLite</h4>
+<p>SQLite is not a key-value store, but it is still included to give a rough comparison to the most ubiquitous embedded SQL database out there.
+It is implemented in C.
+In all benchmarks, WAL mode is used.
+Here, SQLite is used in conjunction with <code>rusqlite</code> and <code>r2d2</code>.</p>
+<h4 id="lmdb">LMDB</h4>
+<p>LMDB is the database made for OpenLDAP, implemented in C, and is based solely around memory mapping and copy-on-write operations.
+For this reason, setting the cache size does nothing, because LMDB has no user-space page cache.
+The <code>heed</code> wrapper crate by Meilisearch is used here; it is not an official Rust API, but endorsed by the LMDB author.</p>
+<h4 id="rocksdb">RocksDB</h4>
+<p>RocksDB is Meta’s (formerly Facebook) fork of Google’s LevelDB, and implemented in C++.
+The <code>rust-rocksdb</code> crate is used, which is community-maintained.</p>
+<h4 id="considerations">Considerations</h4>
+<ul>
+<li><code>mimalloc</code> was used in all benchmark runs</li>
+<li>LMDB and SQLite do not perform checksum checks when retrieving pages from disk, which may make them a little bit faster by using a bit less CPU per IO</li>
+<li>The benchmark suite and metrics take around 1-10% of the runtime</li>
+<li>LMDB uses memory mapping - that means the memory shown in the benchmark is not its resident set size (RSS); so the kernel can decide to page out the memory if needed. That’s why it can always use 100% of memory as cache; for the other engines, they use a user-space cache, while the rest of memory <em>can</em> be used by the kernel to cache disk pages; SQLite… I don’t know how it works but its memory is maybe not shown correctly for some reason</li>
+<li>The run will abort if 7+ out of the 8 GB of RAM is used; this is to prevent the benchmark exiting with <code>Terminated</code> in case of memory bloat (e.g. sled)</li>
+</ul>
+<h3 id="eventually-durable-writes-with-point-reads-ycsb-a-like">Eventually durable writes with point reads (YCSB A-like)</h3>
+<ul>
+<li>ReDB uses the <code>None</code> durability level; Heed uses <code>MDB_NOSYNC</code> which may not be safe to use; SQLite uses <code>PRAGMA synchronous=NORMAL</code></li>
+<li>10 million KVs are pre-loaded</li>
+<li>50% of operations are random point reads, 50% are random updates</li>
+<li>Key size is 16 bytes, value size is 100 bytes</li>
+<li>Caches are set to 2 GB</li>
+</ul>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/1_smol_updateheavy_memory.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/1_smol_updateheavy_write_amp.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/1_smol_updateheavy_space_amp.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/1_smol_updateheavy_write_rate.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/1_smol_updateheavy_point_read_lat.png">
+</div>
+<h3 id="synchronous-writes-with-point-reads-ycsb-b-like">Synchronous writes with point reads (YCSB B-like)</h3>
+<ul>
+<li>Sled is not included because it does not <a href="https://github.com/spacejam/sled/issues/1351">reliably fsync</a></li>
+<li>10 million KVs are pre-loaded</li>
+<li>95% of operations are random point reads, 5% are random updates</li>
+<li>Key size is 16 bytes, value size is 100 bytes</li>
+<li>Caches are set to 2 GB</li>
+</ul>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/2_smol_memory.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/2_smol_write_amp.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/2_smol_space_amp.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/2_smol_write_lat.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/2_smol_point_read_lat.png">
+</div>
+<h3 id="4k-random-values-with-point-reads">4K random values with point reads</h3>
+<ul>
+<li>Caches are set to 2 GB</li>
+<li>95% of operations are Zipfian point reads, 5% are random updates</li>
+<li>Fjall uses key-value separation with default settings; RocksDB uses BlobDB with default settings</li>
+<li>Journal/WAL compression is disabled</li>
+<li>Sled is not included because it does not <a href="https://github.com/spacejam/sled/issues/1351">reliably fsync</a></li>
+<li>The database is pre-loaded with 10 GB of data (2.5M blobs)</li>
+</ul>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/3_4k_blobs_memory.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/3_4k_blobs_write_amp.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/3_4k_blobs_space_amp.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/3_4k_blobs_write_lat.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/3_4k_blobs_point_read_lat.png">
+</div>
+<h3 id="medium-database-with-ycsb-b-like-workload">Medium database with YCSB-B like workload</h3>
+<ul>
+<li>Sled is not included because it does not <a href="https://github.com/spacejam/sled/issues/1351">reliably fsync</a></li>
+<li>100 million KVs are pre-loaded</li>
+<li>95% of operations are Zipfian point reads, 5% are random updates</li>
+<li>Key size is 16 bytes, value size is 200 bytes</li>
+<li>Caches are set to 2 GB</li>
+</ul>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/4_medium_memory.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/4_medium_write_amp.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/4_medium_du.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/4_medium_write_lat.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/4_medium_point_read_rate.png">
+</div>
+<h3 id="feed-workload">Feed workload</h3>
+<ul>
+<li>Simulates a workload similar to a social media feed, e.g. Bluesky</li>
+<li>Each user has a profile (<code>&#x3C;user_id>#p</code>) and a feed of posts (<code>&#x3C;user_id>#f#&#x3C;post_id></code>)</li>
+<li>50 million users are pre-loaded with 50 posts each</li>
+<li>Caches are set to 2 GB</li>
+<li>20% of requests write a post, 80% read a profile and its 20 latest posts (using a prefix scan)</li>
+<li>Sled is not included because it does not <a href="https://github.com/spacejam/sled/issues/1351">reliably fsync</a></li>
+</ul>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/5_feed_memory.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/5_feed_write_io.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/5_feed_du.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/5_feed_write_rate.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/5_feed_point_read_rate.png">
+</div>
+<div style="margin-top: 10px; width: 100%; display: flex; justify-content: center">
+  <img style="border-radius: 16px; max-height: 500px" src="/media/posts/fjall-3/bench/5_feed_range_lat.png">
+</div>
+<p>SQLite is really not happy with this workload, basically stopping to work completely, but allocating tons of disk space (maybe there’s something wrong with how it’s used, but it’s not exactly transparent).</p> <hr> <h2>Discord</h2> <p>
+Join the discord server if you want to chat about databases, Rust or whatever: <a href="https://discord.gg/HvYGp4NFFk">https://discord.gg/HvYGp4NFFk</a> </p> <h2>Interested in LSM-trees and Rust?</h2> <p>
+Check out <a href="https://github.com/fjall-rs/fjall" target="_blank">fjall</a>, an MIT-licensed
+  LSM-based storage engine written in Rust.
+</p> <iframe src="https://github.com/sponsors/fjall-rs/card" title="Sponsor fjall" height="80" width="100%" style="border: 0;"></iframe> </article>   <hr class="h-1 mb-2 border-gray-200 dark:border-gray-700"> <div class="flex flex-col gap-3"> <div class="dark:text-gray-300 italic">Tags</div> <ul class="text-sm text-blue-800 dark:text-blue-300 flex flex-wrap items-center gap-3"> <li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/benchmark" data-astro-transition-scope="astro-x7amp3kc-1">
+#benchmark </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/block cache" data-astro-transition-scope="astro-x7amp3kc-2">
+#block cache </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/block index" data-astro-transition-scope="astro-x7amp3kc-3">
+#block index </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/bloom filter" data-astro-transition-scope="astro-x7amp3kc-4">
+#bloom filter </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/compaction" data-astro-transition-scope="astro-x7amp3kc-5">
+#compaction </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/compression" data-astro-transition-scope="astro-x7amp3kc-6">
+#compression </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/data format" data-astro-transition-scope="astro-x7amp3kc-7">
+#data format </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/garbage collection" data-astro-transition-scope="astro-x7amp3kc-8">
+#garbage collection </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/key value separation" data-astro-transition-scope="astro-x7amp3kc-9">
+#key value separation </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/leveling" data-astro-transition-scope="astro-x7amp3kc-10">
+#leveling </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/lsm tree" data-astro-transition-scope="astro-x7amp3kc-11">
+#lsm tree </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/major" data-astro-transition-scope="astro-x7amp3kc-12">
+#major </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/memory usage" data-astro-transition-scope="astro-x7amp3kc-13">
+#memory usage </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/performance" data-astro-transition-scope="astro-x7amp3kc-14">
+#performance </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/point reads" data-astro-transition-scope="astro-x7amp3kc-15">
+#point reads </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/release" data-astro-transition-scope="astro-x7amp3kc-16">
+#release </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/sstable" data-astro-transition-scope="astro-x7amp3kc-17">
+#sstable </a> </li><li class="mb-2 transition-all hover:translate-y-[-1px] hover:brightness-90">  <a class="transition-all bg-blue-400/10 dark:bg-blue-800/10 hover:dark:bg-blue-800/30 rounded p-2" href="/tag/value log" data-astro-transition-scope="astro-x7amp3kc-18">
+#value log </a> </li> </ul> </div>  </main> <footer class="flex flex-col gap-5 py-10 mx-auto max-w-3xl w-full"> <!-- TODO: move into a fixed FAB button, outside of footer --> <div class="text-right"> <button class="hover:opacity-80 transition-opacity" onclick="scrollToTop()">Back to top</button> </div> <div class="text-center">
+&copy; 2026 fjall-rs 
+- powered by <a class="text-blue-700 dark:text-blue-300 italic transition-all hover:brightness-80" href="https://github.com/marvin-j97/nanoblog" target="_blank">
+nanoblog
+</a>  </div> <div class="flex gap-3 justify-center"> <a target="_blank" href="https://github.com/fjall-rs" aria-label="Open GitHub page" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-github"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path></svg> </a> <a target="_blank" href="/rss.xml" aria-label="Get RSS feed" class="transition-all hover:brightness-80 hover:scale-105"> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path> <path d="M5 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path> <path d="M4 4a16 16 0 0 1 16 16"></path> <path d="M4 11a9 9 0 0 1 9 9"></path>  </svg> </a> </div> </footer> <script>
+  function scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }
+</script>  </body> </html> 
