@@ -52,9 +52,9 @@ export default {
     /// Show reading progress bar on top of page
     showReadingProgress: true,
 
-    /// Hide the tags when there are too many tags
+    /// Hide the tags when there are too many.
     ///
-    /// Will always be shown in the footer
+    /// Tags will always be shown in the footer.
     maxTags: 10,
 
     /// Shows a reading time estimate on top of every blog post

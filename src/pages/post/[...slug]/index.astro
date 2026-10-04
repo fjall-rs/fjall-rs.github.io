@@ -6,22 +6,25 @@ import TagList from "../../../components/TagList.astro";
 import config from "../../../config";
 import { getPublishedPosts } from "../../../data/posts";
 import BaseLayout from "../../../layouts/base.astro";
+import { getEntry } from "astro:content";
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
 
   return posts.map((post) => ({
-    params: { slug: post.slug },
+    params: { slug: post.data.slug ?? post.id },
     props: { post },
   }));
 }
 
 const { post } = Astro.props;
-const { Content } = await post.render();
+// Load a rendered version of this post (HTML string)
+const full = await getEntry("blog", post.id);
+const contentHTML = full?.rendered?.html ?? "";
 
 const readingMinutes = Math.max(
   1,
-  Math.round(post.body.split(" ").length / config.post.readingTime.speed),
+  Math.round((post.body ?? "").split(" ").length / config.post.readingTime.speed),
 );
 ---
 
@@ -53,10 +56,8 @@ const readingMinutes = Math.max(
   />
 
   <!-- Content -->
-  <article
-    class="[&_p]:dark:text-gray-300/90 my-10 w-full !max-w-full prose dark:prose-invert text-justify dark:prose-gray"
-  >
-    <Content />
+  <article class="my-10 w-full !max-w-full prose dark:prose-invert text-justify dark:prose-gray">
+    <div set:html={contentHTML} />
     <hr />
     <ArticleAddendum />
   </article>
@@ -84,15 +85,6 @@ const readingMinutes = Math.max(
     overflow-x: hidden;
   }
 
-  article h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    text-align: left;
-  }
-
   article a {
     color: rgb(7 89 133) !important;
     text-decoration: underline dotted !important;
@@ -111,19 +103,43 @@ const readingMinutes = Math.max(
     color: rgb(56 189 248) !important;
   }
 
+  /* TODO: finish table styling */
+  article table {
+    table-layout: auto;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+  }
+
+  article table {
+    border-bottom: 1px solid #fafafa;
+  }
+
+  .dark article table {
+    border: 2px solid #1d232d;
+  }
+
+  .dark article table th {
+    border-bottom: 1px solid #1d232d;
+  }
+
+  article table th,
+  article table td {
+    padding: 0.6rem !important;
+  }
+
   code:before,
   code:after {
     display: none;
   }
 
-  .astro-code, .astro-code * {
-    font-family: "monospace";
-    font-size: 13px !important;
+  .astro-code {
+    font-size: 14px;
+    font-family: monospace;
   }
 
   p code {
-    border-radius: 5px;
-    padding: 3px 5px;
+    border-radius: 4px;
+    padding: 2px 4px;
     white-space: normal !important;
   }
 
@@ -132,7 +148,7 @@ const readingMinutes = Math.max(
   }
 
   .dark p code {
-    color: rgb(150, 228, 255) !important;
+    color: rgb(193, 228, 248) !important;
     background: rgba(7, 89, 133, 0.33) !important;
   }
 
@@ -159,7 +175,5 @@ const readingMinutes = Math.max(
     font-style: var(--shiki-dark-font-style) !important;
     font-weight: var(--shiki-dark-font-weight) !important;
     text-decoration: var(--shiki-dark-text-decoration) !important;
-    font-size: 14px;
- 	line-height: 25px;
   }
 </style>
