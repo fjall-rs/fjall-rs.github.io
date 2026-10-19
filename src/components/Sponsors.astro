@@ -1,0 +1,35 @@
+---
+const SPONSORS = [
+  {
+    name: "Orbitinghail",
+    logo: "/logos/orbitinghail.svg",
+    logoDark: "/logos/orbitinghail_dark.svg",
+    url: "https://sqlsync.dev",
+  },
+  {
+    name: "Svix",
+    logo: "/logos/svix.svg",
+    logoDark: "/logos/svix_dark.svg",
+    url: "https://www.svix.com",
+  },
+];
+---
+
+<div class="flex flex-col gap-3">
+  <h2 class="mb-3 italic">Sponsors</h2>
+  <div class="flex flex-wrap gap-8 items-center">
+    {
+      SPONSORS.map((sponsor) => (
+        <a class="hover:opacity-80 transition-opacity" href={sponsor.url} target="_blank">
+          <img
+            class="max-w-50 dark:hidden
+"
+            src={sponsor.logo}
+            alt={sponsor.name}
+          />
+          <img class="max-w-50 hidden dark:block" src={sponsor.logoDark} alt={sponsor.name} />
+        </a>
+      ))
+    }
+  </div>
+</div>

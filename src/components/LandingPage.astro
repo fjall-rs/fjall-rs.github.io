@@ -1,4 +1,6 @@
 ---
+import Sponsors from "./Sponsors.astro";
+
 const cards = [
   {
     name: "fjall",
@@ -46,44 +48,31 @@ const cards = [
 <!-- SETUP: This component serves as the landing page's main content (hero section) -->
 <h1 class="text-2xl">Organizing data in Rust</h1>
 
-<section class="flex flex-col gap-4" id="projects">
-  <h2 class="italic">Repositories</h2>
-  <div class="grid grid-cols-2 md:grid-cols-2 sm:grid-cols-2 gap-4">
-    {
-      cards.map((card) => (
-        <a
-          href={card.repo}
-          target="_blank"
-          class={`${card.colors.card} flex flex-col gap-2 rounded-lg border border-gray-500 border-opacity-30 bg-white bg-opacity-5 p-3 transition-all hover:bg-opacity-5`}
-        >
-          <div class="flex items-center justify-between gap-2">
-            <h3 class={`${card.colors.title} font-medium`}>{card.name}</h3>
-          </div>
-          <div class="opacity-75 text-sm">{card.description}</div>
-          <div class="grow" />
-          <div class="flex">
-            <div class="rounded bg-black bg-opacity-20 px-2 py-1 text-xs font-semibold">
-              {card.license}
+<section class="flex flex-col gap-5" id="projects">
+  <div class="flex flex-col gap-3">
+    <h2 class="italic">Repositories</h2>
+    <div class="grid grid-cols-2 md:grid-cols-2 sm:grid-cols-2 gap-4">
+      {
+        cards.map((card) => (
+          <a
+            href={card.repo}
+            target="_blank"
+            class={`${card.colors.card} flex flex-col gap-2 rounded-lg border border-gray-500 border-opacity-30 bg-white bg-opacity-5 p-3 transition-all hover:bg-opacity-5`}
+          >
+            <div class="flex items-center justify-between gap-2">
+              <h3 class={`${card.colors.title} font-medium`}>{card.name}</h3>
             </div>
-          </div>
-        </a>
-      ))
-    }
+            <div class="opacity-75 text-sm">{card.description}</div>
+            <div class="grow" />
+            <div class="flex">
+              <div class="rounded bg-black bg-opacity-20 px-2 py-1 text-xs font-semibold">
+                {card.license}
+              </div>
+            </div>
+          </a>
+        ))
+      }
+    </div>
   </div>
-
-  <h2 class="mb-3 italic">Sponsors</h2>
-  <div class="flex flex-wrap gap-8 items-center">
-    <a class="hover:opacity-80 transition-opacity" href="https://sqlsync.dev" target="_blank">
-      <img class="max-w-50 dark:hidden" src="/logos/orbitinghail.svg" alt="Orbitinghail" />
-      <img
-        class="max-w-50 hidden dark:block"
-        src="/logos/orbitinghail_dark.svg"
-        alt="Orbitinghail"
-      />
-    </a>
-    <a class="hover:opacity-80 transition-opacity" href="https://www.svix.com" target="_blank">
-      <img class="max-w-50 dark:hidden" src="/logos/svix.svg" alt="Svix" />
-      <img class="max-w-50 hidden dark:block" src="/logos/svix_dark.svg" alt="Svix" />
-    </a>
-  </div>
+  <Sponsors />
 </section>
