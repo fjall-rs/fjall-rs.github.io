@@ -6,7 +6,7 @@ import TagList from "../../../components/TagList.astro";
 import config from "../../../config";
 import { getPublishedPosts } from "../../../data/posts";
 import BaseLayout from "../../../layouts/base.astro";
-import { getEntry } from "astro:content";
+import { render } from "astro:content";
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
@@ -18,9 +18,7 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-// Load a rendered version of this post (HTML string)
-const full = await getEntry("blog", post.id);
-const contentHTML = full?.rendered?.html ?? "";
+const { Content } = await render(post);
 
 const readingMinutes = Math.max(
   1,
@@ -57,7 +55,7 @@ const readingMinutes = Math.max(
 
   <!-- Content -->
   <article class="my-10 w-full !max-w-full prose dark:prose-invert text-justify dark:prose-gray">
-    <div set:html={contentHTML} />
+    <Content />
     <hr />
     <ArticleAddendum />
   </article>

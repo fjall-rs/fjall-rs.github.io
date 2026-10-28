@@ -80,7 +80,9 @@ It is somewhat similar to how B-trees use overflow pages.
 Key-value separation is disabled by default, but can be toggled on a per-partition basis:
 
 ```rs
-let opts = PartitionCreateOptions::default().with_kv_separation(KvSeparationOptions::default());
+let opts = PartitionCreateOptions::default()
+    .with_kv_separation(KvSeparationOptions::default());
+
 let blobs = keyspace.open_partition("blobs", opts)?;
 ```
 

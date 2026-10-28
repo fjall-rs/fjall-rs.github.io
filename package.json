@@ -10,14 +10,14 @@
     "post:create": "node scripts/create_post.mjs"
   },
   "devDependencies": {
-    "@astrojs/check": "0.9.4",
-    "@astrojs/mdx": "4.3.13",
-    "@astrojs/rss": "4.0.12",
-    "@astrojs/sitemap": "3.6.0",
-    "@astrojs/solid-js": "5.1.1",
+    "@astrojs/check": "0.9.12",
+    "@astrojs/mdx": "8.1.1",
+    "@astrojs/rss": "4.0.19",
+    "@astrojs/sitemap": "3.7.4",
+    "@astrojs/solid-js": "7.1.1",
     "@unocss/reset": "66.6.0",
-    "astro": "5.17.3",
-    "prettier-plugin-astro": "0.14.1",
+    "astro": "7.4.2",
+    "prettier-plugin-astro": "1.1.2",
     "slug": "9.1.0",
     "typescript": "5.6.2",
     "unocss": "66.6.0"

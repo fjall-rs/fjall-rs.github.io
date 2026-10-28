@@ -5,7 +5,7 @@ description: Understanding the block format in an LSM-tree
 tags:
   - lsm tree
   - block index
-  - data format
+  - file format
   - performance
   - sstable
 published_at: 2024-08-09T18:01:53.233Z
